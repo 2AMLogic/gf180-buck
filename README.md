@@ -9,6 +9,11 @@ open-source xschem + ngspice flow.
 
 **Status: just opened, specification phase.** Nothing is designed yet.
 
+**T1 status:** tier verdict of record is `null` — 0 of 11 T1 evidence items
+met, graded by `klt signoff` from [`manifests/gf180-buck.json`](manifests/gf180-buck.json)
+and committed as [`manifests/gf180-buck.signoff.json`](manifests/gf180-buck.signoff.json);
+CI re-grades and fails on drift (see [`manifests/README.md`](manifests/README.md)).
+
 **Built agent-native.** Every specification, decision record, testbench, and
 line of documentation here is produced by AI agents working from a ratified
 spec and an append-only evidence trail — not human-authored work that agents
