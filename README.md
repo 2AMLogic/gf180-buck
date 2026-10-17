@@ -7,7 +7,7 @@ output capacitor — designed by AI agents driving
 [klayout-tools](https://github.com/2AMLogic/klayout-tools) and the
 open-source xschem + ngspice flow.
 
-**Status: just opened, specification phase.** Nothing is designed yet.
+**Status: specification ratified on merge of issue #2; nothing is designed yet.**
 
 **Built agent-native.** Every specification, decision record, testbench, and
 line of documentation here is produced by AI agents working from a ratified
@@ -51,25 +51,36 @@ the process rather than a stacked-device workaround.
   oscillator. Each is a candidate to adopt rather than redesign; the
   decision for each is recorded.
 
-## Target specification (DRAFT — engineering to ratify, see issue #1)
+## Target specification
+
+Ratified by [decision record 0001](spec/decision-records/0001-ratify-target-spec.md)
+on merge of the pull request that carries it; the full table (min / typ / max,
+grading condition, corner set, external parts, for all three tiers) is
+[`spec/target-spec.md`](spec/target-spec.md). A row is a design-to target,
+never a result: nothing here is simulated yet. Summary at the target tier, with
+the external parts every number assumes (inductor 3.3 µH ±20 %, DCR 100 mΩ typ,
+Isat ≥ 1.0 A; output capacitor 10 µF nominal, ≥ 4.7 µF effective, ESR ≤ 10 mΩ):
 
 | Parameter | Target | Fallback | Stretch |
 |---|---|---|---|
 | Input voltage | 5.0 V ±10% | 3.3 V ±10% | — |
-| Output voltage | 1.8 V fixed | 1.8 V fixed | 1.0–3.3 V programmable |
+| Output voltage | 1.8 V fixed, ±4% untrimmed | 1.8 V fixed, ±5% | 1.0–3.3 V programmable |
 | Load current | 0–500 mA | 0–200 mA | 0–1 A |
-| Switching frequency | 2 MHz | 1 MHz | 4 MHz |
-| Peak efficiency (simulated, with stated external parts) | ≥ 85% | ≥ 80% | ≥ 90% |
+| Light-load mode | forced PWM | forced PWM | forced PWM |
+| Switching frequency | 2 MHz ±15% | 1 MHz ±15% | 4 MHz ±15% |
+| Peak efficiency (simulated, post-layout, excludes inductor core loss) | ≥ 85% | ≥ 80% | ≥ 90% |
 | Output ripple | ≤ 1% of Vout | ≤ 2% | ≤ 0.5% |
 | Load-step transient | ≤ 5% of Vout, 10%–90% load step | ≤ 10% | ≤ 3% |
-| Protection | soft start, cycle-by-cycle current limit | soft start only | + thermal shutdown |
+| Control | voltage mode, PM ≥ 45°, GM ≥ 10 dB | same | same |
+| Dead time | 1–6 ns, zero overlap | 1–10 ns | 1–3 ns |
+| Protection | soft start, cycle-by-cycle current limit (0.70–2.1 A trip window) | soft start, current limit | + thermal shutdown |
 | Top metal | 30 kÅ MetalTop | thinner MetalTop option, argued | — |
 | Signoff | DRC + LVS clean, EM-checked, post-layout re-verified | — | — |
 
 Maturity ladder: spec ratified → power stage sized and EM budget recorded →
 controller and closed loop simulated across PVT → layout DRC/LVS-clean →
 post-layout re-verification → shuttle seat → measured silicon. **Current
-position: pre-spec.**
+position: spec ratified.**
 
 ## Repo layout
 

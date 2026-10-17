@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "record": "spec/decision-records/0001-ratify-target-spec.md",
+  "pinned": "2026-10-17",
+  "note": "Sibling blocks taken by pinned reference, not by import: no sibling file is copied or modified. 'status' is the adopt-or-keep decision of record 0001 section 7.",
+  "siblings": [
+    {
+      "block": "low_side_power_switch",
+      "sibling": "2AMLogic/gf180-gate-driver",
+      "sha": "98ca4a85849557489d73ed3e065c89da7870e075",
+      "spec": "spec/low-side-power-switch.md",
+      "status": "adopted",
+      "covers": "nfet_06v0 low-side switch, Ron.W baseline (3.6-5.0 V gate drive), DRM 14.2 electromigration method, Ron-sense OCP and thermal-sense reference structures",
+      "delta": "gate drive 5.5 V and 2.97-3.6 V not measured; switching loss and gate charge unmeasured; synchronous role; flyback diode not adopted"
+    },
+    {
+      "block": "high_side_power_switch",
+      "sibling": "2AMLogic/gf180-gate-driver",
+      "sha": "98ca4a85849557489d73ed3e065c89da7870e075",
+      "spec": "spec/low-side-power-switch.md",
+      "status": "not_adopted",
+      "covers": "pfet_06v0 Ron.W measured at cell-referenced |Vgs| 3.6-5.0 V as evidence only; nothing ratified for a high-side switch",
+      "delta": "VIN-referenced gate drive, level shift, dead time, PMOS body diode, EM budget on the VIN-to-switch strap"
+    },
+    {
+      "block": "bandgap_reference",
+      "sibling": "2AMLogic/gf180-bandgap",
+      "sha": "c68ccc6b0423344568df9506423ba2695f8b1b9b",
+      "spec": "README.md",
+      "status": "adopted_at_interface",
+      "covers": "1.20 V reference, 2 percent untrimmed (3 sigma), 3.3 V +/-10 percent supply",
+      "delta": "supply domain: needs a 3.3 V control rail derived from VIN at the 5 V target; load row is TBD in the sibling"
+    },
+    {
+      "block": "error_amplifier",
+      "sibling": "2AMLogic/gf180-opamp",
+      "sha": "cda7ff5ac3232049588e9315a0e5224433e18bc2",
+      "spec": "spec/target-spec.md",
+      "status": "adopted_at_interface",
+      "covers": "ratified (partial) 3.3 V op-amp target rows",
+      "delta": "supply domain; GBW into the type-III compensation load not yet checked against the sibling's recorded value"
+    },
+    {
+      "block": "pwm_and_current_limit_comparator",
+      "sibling": "2AMLogic/gf180-comparator",
+      "sha": "80402c061b639ed64289f8806f73456fe1abc1ea",
+      "spec": "README.md",
+      "status": "adopted_at_interface",
+      "covers": "ratified offset, noise, decision-time, kickback rows at 3.3 V",
+      "delta": "supply domain; current-limit sense input is the switch node (up to 6.0 V) against a 3.3 V part"
+    },
+    {
+      "block": "oscillator",
+      "sibling": "2AMLogic/gf180-rcosc",
+      "sha": "6e4c395198d28df57ecc1265f73ff8044e5c32ba",
+      "spec": "README.md",
+      "status": "kept",
+      "covers": "relaxation-oscillator topology and trim math by reference only",
+      "delta": "48 MHz vs 2 MHz, +85 C vs +125 C, untrimmed spread +/-35 percent vs the +/-15 percent frequency row"
+    }
+  ]
+}
