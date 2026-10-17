@@ -1,0 +1,26 @@
+* gf180-buck smoke bench: one minimal CMOS inverter, PDK models only.
+* Toolchain check, NOT a device choice: nothing here constrains the power
+* stage (see issue #2). Typical corner, nominal 5 V supply.
+* @MODEL_FILE@ / @DESIGN_INC@ are substituted by run.sh from sim/env.sh.
+.include @DESIGN_INC@
+.lib @MODEL_FILE@ typical
+
+Vdd vdd 0 5
+Vin in 0 PULSE(0 5 5n 100p 100p 10n 20n)
+Xp out in vdd vdd pfet_05v0 w=4u l=0.6u
+Xn out in 0 0 nfet_05v0 w=2u l=0.6u
+Cl out 0 10f
+
+.control
+op
+let vout_dc = v(out)
+let idd_dc = -i(Vdd)
+echo "RESULT op vin=0 v(out)= $&vout_dc idd= $&idd_dc"
+tran 50p 60n
+meas tran vout_hi FIND v(out) AT=24n
+meas tran vout_lo FIND v(out) AT=14n
+meas tran tphl TRIG v(in) VAL=2.5 RISE=1 TARG v(out) VAL=2.5 FALL=1
+meas tran tplh TRIG v(in) VAL=2.5 FALL=1 TARG v(out) VAL=2.5 RISE=1
+quit
+.endc
+.end

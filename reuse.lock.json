@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "adopted": [
+    {
+      "name": "gf180mcu PDK resolver",
+      "source_repo": "2AMLogic/gf180-sram",
+      "source_path": "sim/lib/pdk_env.sh",
+      "source_commit": "74ba8a621c9edab9b7a75ecb19ca7ea6771588da",
+      "blob_sha": "1ca629bc56b915c3db9d09dba607c24f8540fe9d",
+      "vendored_at": "sim/lib/pdk_env.sh",
+      "verify": "git hash-object sim/lib/pdk_env.sh  # must print the blob_sha",
+      "note": "Vendored byte-for-byte (pinned by commit and blob hash) so a fresh clone needs no network. sim/env.sh adds the revision check on top; the resolver itself is unmodified. gf180-gate-driver sim/env.sh was not adopted: it shells out to that repo's corner runner."
+    }
+  ],
+  "not_yet_adopted": [
+    "gf180-gate-driver (low-side switch, Ron*W baseline, EM budget), gf180-bandgap, gf180-opamp, gf180-comparator, gf180-rcosc: outside issue #4; adopt-or-record happens with the work that needs them."
+  ]
+}
