@@ -10,6 +10,8 @@
   variant), open_pdks `f6eeac7dad085ffcc829ccfd721f7b4ce39edcf7`; `klt`
   `0.7.1.dev1754+g81ac4d3915c1`, `gf180mcu` deck content hash
   `sha256:612a48b497a015b1e92d6eb93c98a4dc35e00c954dd7ba93a924d8ea6c49d1e7`.
+  Simulation pins `gf180mcuD` (identical models); see
+  [decision record 0002](decision-records/0002-pdk-variant-pins.md).
 - **Changing a number** here needs a new decision record. Agents do not relax a
   row to make a result pass (`CLAUDE.md`).
 
