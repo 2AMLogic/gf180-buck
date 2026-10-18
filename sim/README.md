@@ -10,6 +10,8 @@ Simulation environment and benches. Results are **simulated**, never measured.
   (nothing host-wide):
   `pip install volare` (in a venv) then
   `volare enable --pdk gf180mcu c6d73a35f524070e85faff4a6a9eef49553ebc2b`.
+  Why this is `gf180mcuD` while the spec's metal/EM/DRC facts are `gf180mcuA`:
+  [decision record 0002](../spec/decision-records/0002-pdk-variant-pins.md).
   `env.sh` finds it via `GF180_PDK_PATH`, `PDK_ROOT`+`PDK`, or `~/.volare` / `~/.ciel`.
 
 ## Cold start
