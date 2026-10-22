@@ -3,6 +3,10 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-10-21
+
+- **PR #12**: Bump Repo Skills 0.24.3 -> 0.24.7
+
 ### 2026-10-18
 
 - **PR #10**: docs(spec): record PDK variant pins (spec A vs sim D) and model-file hash check
