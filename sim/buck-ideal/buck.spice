@@ -1,0 +1,72 @@
+* gf180-buck ideal-switch behavioural buck bench (no PDK devices).
+* Open loop, fixed duty. External parts P-T (spec §0.2), package model §0.3
+* at typical values, 2 wires per power net. All numbers come from params.json
+* via the generated .param lines (@PARAMS_INC@, substituted by run.sh).
+* Toolchain/measurement-module bench, NOT a claim against any spec row.
+@PARAMS_INC@
+.param tper = 1/f_sw
+.param rnet = r_wire/wires
+.param lnet = l_wire/wires
+.param tmax = tper/200
+.param pwh = {duty*tper-t_edge}
+.param pwl = {duty*tper+2*t_dead-t_edge}
+
+* Board side: ideal source, ramped from 0
+Vsrc vsrc 0 PWL(0 0 {t_vin_ramp} {vin})
+* Package: VIN / SW / GND nets, N parallel wires each (series R, L).
+* Die-side input decoupling between the VIN and GND pads (c_die, esr_die) is a
+* bench assumption: spec §0.2/§0.3 name none, but without it the wire current
+* is interrupted into a floating die node every edge (tens of volts of spike).
+* The §0.3 0.5 pF pad capacitance is omitted: against 1 nH wires it is an
+* almost undamped ~7 GHz ring that forces ~35 M timepoints for no benefit here.
+Rwv vsrc nv1 {rnet}
+Lwv nv1 vin_d {lnet}
+Rws sw_d nsw1 {rnet}
+Lws nsw1 sw_p {lnet}
+Rwg gnd_d ng1 {rnet}
+Lwg ng1 0 {lnet}
+Cdie vin_d nd1 {c_die}
+Rdie nd1 gnd_d {esr_die}
+
+* Ideal half bridge: voltage-controlled conductances (continuous, so the
+* solver never sees an open inductor), break-before-make with t_dead on each
+* edge (R14 typical 3 ns). The inductor current commutates through ideal
+* body diodes (Dhs: SW->VIN, Dls: GND->SW) during the dead time. HS is on
+* [t_dead, t_dead + D*T], LS is off for D*T + 2*t_dead around it.
+.model dbody d(is=1e-12 n=1 rs=0.01)
+Vgh gh 0 PULSE(0 1 {t_dead} {t_edge} {t_edge} {pwh} {tper})
+Vgl gl 0 PULSE(1 0 0 {t_edge} {t_edge} {pwl} {tper})
+Bhs vin_d sw_d I = v(vin_d,sw_d)*(1e-9 + max(0,min(1,(v(gh)-0.45)/0.1))/{ron_hs})
+Bls sw_d gnd_d I = v(sw_d,gnd_d)*(1e-9 + max(0,min(1,(v(gl)-0.45)/0.1))/{ron_ls})
+Dhs sw_d vin_d dbody
+Dls gnd_d sw_d dbody
+
+* External inductor: L + DCR, parallel winding capacitance. r_wind in series
+* with c_wind is a bench assumption (spec §0.2 names none): without it the
+* 3 pF against the 1 nH wires and 0.5 nH ESL is an undamped ~2 GHz ring (volts
+* on Vout, ~7 M timepoints). At 2 MHz 3 pF is 26 kOhm, so 20 Ohm changes nothing
+* in the grades; it only stands in for the winding loss at the self-resonance.
+Lind sw_p nl {l_ind}
+Rdcr nl out {dcr}
+Cwind sw_p nw {c_wind}
+Rwind nw out {r_wind}
+* External capacitor: C + ESR + ESL; `out` is the capacitor terminal
+Cout out nc {c_out}
+Resr nc nd {esr}
+Lesl nd 0 {esl}
+* Load: ideal current sink, 0 until the supply is up, then i_load, then the step
+Iload out 0 PWL(0 0 {t_vin_ramp} 0 {t_vin_ramp+t_load_ramp} {i_load} {t_step} {i_load} {t_step+t_load_ramp} {i_load_step})
+
+.tran {tmax} {t_stop} 0 {tmax}
+
+.control
+set noaskquit
+run
+let il = i(Lind)
+let pin = -v(vsrc)*i(Vsrc)
+set wr_singlescale
+set numdgt=9
+wrdata @WRDATA@ v(out) il v(sw_d) pin
+quit
+.endc
+.end
