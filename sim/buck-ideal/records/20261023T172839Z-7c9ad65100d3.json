@@ -1,0 +1,138 @@
+{
+  "record": "simulated, not measured; open-loop ideal-switch bench, no claim against a spec row",
+  "environment": {
+    "simulator": "ngspice-46",
+    "deck": "sim/buck-ideal/buck.spice",
+    "deck_sha256": "0812fc17dcdbdee35ebc8d93e3285d1e8f2339c35c30c2a779624bdb2e72cd76",
+    "params": "sim/buck-ideal/params.json",
+    "params_sha256": "66aa31cc2f53ef293176f0d4f845bc2b752b4cc3d61aa54ad6d3f58b0292e4a0",
+    "repo_commit": "7c9ad65100d3",
+    "utc": "20261023T172839Z",
+    "command": "ngspice -b -o sim/build/buck-ideal/ngspice.log sim/build/buck-ideal/buck.run.spice"
+  },
+  "settled": true,
+  "run_stop_time_s": 0.00065,
+  "result": {
+    "R11_ripple": {
+      "available": true,
+      "cycles": 20.0,
+      "lowpass_hz": 20000000.0,
+      "lowpass_order": 1,
+      "lowpass_warmup_from_s": 0.00038,
+      "pp_v": 0.007823618536433763,
+      "t_end_s": 0.0004,
+      "t_start_s": 0.00039
+    },
+    "R12_load_step": {
+      "available": true,
+      "band_v": 0.018,
+      "cycles_after_step": 499.9999999999999,
+      "deviation_v": 0.12118284598501394,
+      "lowpass_hz": 20000000.0,
+      "lowpass_order": 1,
+      "overshoot_v": 0.08039545843852292,
+      "recovered": true,
+      "recovery_time_s": 0.00006818384885987565,
+      "run_long_enough": true,
+      "t_end_s": 0.00065,
+      "t_step_s": 0.0004,
+      "undershoot_v": 0.12118284598501394,
+      "v_ref_source": "mean Vout over the last 20 whole cycles of the run",
+      "v_ref_v": 1.705242618869085
+    },
+    "R4_vout_mean": {
+      "available": true,
+      "cycles": 20.0,
+      "d_vin_v": 1.7999999999999998,
+      "ideal_formula": "D*Vin - I*(DCR + Rnet + D*(Rnet+Ron_hs) + (1-D)*(Rnet+Ron_ls)), Rnet = r_wire/wires",
+      "ideal_v": 1.7474999999999998,
+      "mean_v": 1.7450889453968743,
+      "rel_err_vs_ideal": -0.0013797165110875638,
+      "t_end_s": 0.0004,
+      "t_start_s": 0.00039
+    },
+    "R7_f_sw": {
+      "available": true,
+      "cycles": 419,
+      "hz": 1999999.9895285242,
+      "min_cycles": 100,
+      "t_end_s": 0.0004,
+      "t_start_s": 0.00019
+    },
+    "R8_il_pp": {
+      "available": true,
+      "cycles": 20.0,
+      "pp_a": 0.1749612849,
+      "t_end_s": 0.0004,
+      "t_start_s": 0.00039
+    },
+    "R9_R10_efficiency": {
+      "available": true,
+      "cycles": 20.0,
+      "eta": 0.9668953780788481,
+      "i_load_a": 0.25,
+      "pin_w": 0.4512093513323647,
+      "pout_w": 0.4362722363492186,
+      "span_s": 0.000010000000000000026,
+      "t_end_s": 0.0004,
+      "t_start_s": 0.00039
+    },
+    "run": {
+      "analysis": "ngspice .tran (no periodic steady state), settled per spec §0.4",
+      "f_sw_commanded_hz": 2000000,
+      "n_points": 352495,
+      "period_s": 5E-7,
+      "run_cycles": 1300.0,
+      "run_length_s": 0.00065,
+      "step_max_observed_s": 2.500000000093573E-9,
+      "step_max_spec_s": 2.5E-9,
+      "step_ok": true,
+      "t_first_s": 0.0,
+      "t_last_s": 0.00065
+    },
+    "settle": {
+      "ipk_delta_rel": 0.000013446354425187505,
+      "ipk_tol": 0.01,
+      "mean_tol": 0.001,
+      "mean_vout_delta_rel": 0.0000014861565665007227,
+      "measure_window_s": [
+        0.00039,
+        0.0004
+      ],
+      "settled": true,
+      "settled_since_s": 0.00019,
+      "t_end_s": 0.0004,
+      "window_cycles": 20,
+      "window_start_s": 0.00038
+    },
+    "tier_params": {
+      "band_v": 0.018,
+      "c_die": 0.000001,
+      "c_out": 0.000006,
+      "c_wind": 3E-12,
+      "dcr": 0.1,
+      "duty": 0.36,
+      "esl": 5E-10,
+      "esr": 0.005,
+      "esr_die": 0.02,
+      "f_sw": 2000000,
+      "i_load": 0.25,
+      "i_load_step": 0.45,
+      "l_ind": 0.0000033,
+      "l_wire": 2E-9,
+      "r_wind": 20,
+      "r_wire": 0.1,
+      "ron_hs": 0.01,
+      "ron_ls": 0.01,
+      "t_dead": 3E-9,
+      "t_edge": 1E-9,
+      "t_load_ramp": 2E-7,
+      "t_step": 0.0004,
+      "t_stop": 0.00065,
+      "t_vin_ramp": 0.00002,
+      "tier": "P-T",
+      "vin": 5.0,
+      "wires": 2
+    }
+  }
+}
