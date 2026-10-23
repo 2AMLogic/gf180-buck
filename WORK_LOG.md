@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-10-23
+
+- **PR #6**: ci: grade T1 verdict with pinned klt signoff and compare against committed record
+- **Issue #3** (closed): Add the T1 signoff scaffolding: block manifest, vendored checklist and CI (item 10)
+
 ### 2026-10-21
 
 - **PR #12**: Bump Repo Skills 0.24.3 -> 0.24.7
