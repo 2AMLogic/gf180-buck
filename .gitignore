@@ -9,6 +9,7 @@ __pycache__/
 # (append-only record trail), so they escape the *.log rule.
 !sim/*/corners/**/*.log
 sim/build/
+design/averaged/build/
 # synthesis / P&R scratch
 flow/build/
 # local klt install, created by the setup script

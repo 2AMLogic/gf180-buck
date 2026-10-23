@@ -1,0 +1,54 @@
+* Averaged (CCM, forced-PWM) voltage-mode buck power stage + type-III
+* compensator + Middlebrook voltage-injection loop break. PDK-free.
+* Circuit body for `klt sim` (no .control/.end): see design/README.md.
+*
+* Sweep axes are the .param names the klt corners.params rows replace:
+*   vin lfac ceff esr iload   (the rest are fixed design-to values)
+
+* ---- swept parameters (defaults = P-T nominal) ----
+.param vin=5 lfac=1 ceff=6u esr=5m iload=0.25
+
+* ---- external parts, spec section 0.2 P-T and section 0.3 (typ) ----
+.param l0=3.3u dcr=0.1 cw=3p esl=0.5n
+* SW net: 2 bond wires in parallel, typ 0.10 ohm / 2.0 nH each
+.param rpk=0.05 lpk=1n
+
+* ---- modulator and reference: design-to values (design/compensator.md) ----
+.param vramp=1.0 vref=0.6 rtop=10k rbot=5k
+
+* ---- type-III compensator, ideal parts (design/compensator.md) ----
+.param p_r2=4.55k p_r3=204 p_c1=1.75n p_c2=35.7p p_c3=780p
+
+* ---- supply and averaged switch: Vsw = clamp(Vc/Vramp, 0, 1) * Vin ----
+Vsrc vinp 0 DC {vin}
+Bsw sw 0 V = min(max(v(vc)/{vramp}, 0), 1) * v(vinp)
+
+* ---- power stage: package, inductor (DCR, winding C), output cap (ESR, ESL) ----
+Rpk sw n1 {rpk}
+Lpk n1 n2 {lpk}
+Rdc n2 n3 {dcr}
+L1 n3 vo {l0*lfac}
+Cw n2 vo {cw}
+Cout vo m1 {ceff}
+Resr m1 m2 {esr}
+Lesl m2 0 {esl}
+* spec section 0.2: the load is an ideal current sink (infinite small-signal Z)
+Iload vo 0 DC {iload}
+
+* ---- loop break: series voltage injection between Vout (vo) and the
+* feedback network input (b). b = vo + vinj. With negative feedback
+* vo = -T*b, so T = -v(vo)/v(b); node t carries -v(vo) so the klt
+* `transfer` metrics (T = num/den) see the negative-feedback convention.
+Vinj b vo DC 0 AC 1
+Bt t 0 V = -v(vo)
+
+* ---- type-III compensator, ideal op-amp (flat gain 1e6, no GBW) ----
+Rtop b fbn {rtop}
+R3 b x {p_r3}
+C3 x fbn {p_c3}
+Rbot fbn 0 {rbot}
+Rz fbn z {p_r2}
+C1 z vc {p_c1}
+C2 fbn vc {p_c2}
+Vref vrefn 0 DC {vref}
+Eop vc 0 vrefn fbn 1e6
