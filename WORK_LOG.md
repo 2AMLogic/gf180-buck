@@ -5,7 +5,10 @@ Maintained by the Guide role.
 
 ### 2026-10-23
 
+- **PR #19**: feat(sim): add §0.4 buck measurement module and ideal-switch bench
+- **PR #18**: feat: averaged buck loop-gain bench, type-III compensator and fc/PM/GM extractor
 - **PR #6**: ci: grade T1 verdict with pinned klt signoff and compare against committed record
+- **Issue #16** (closed): sim: §0.4 steady-state and switching-measurement module with an ideal-switch buck bench (T1 items 5, 9 groundwork)
 - **Issue #3** (closed): Add the T1 signoff scaffolding: block manifest, vendored checklist and CI (item 10)
 
 ### 2026-10-21
