@@ -8,7 +8,7 @@ between the markers is machine-generated.
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-- **#6**: ci: grade T1 verdict with pinned klt signoff and compare against committed record
+_None._
 
 ## Very Important
 
@@ -32,7 +32,7 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#3**: Add the T1 signoff scaffolding: block manifest, vendored checklist and CI (item 10)
+_None._
 
 ## PRs Awaiting Review
 
@@ -44,13 +44,12 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#6**: ci: grade T1 verdict with pinned klt signoff and compare against committed record
+_None._
 
 ## Proposed
 
 Issues carrying `loom:curated`.
 
-- **#3**: Add the T1 signoff scaffolding: block manifest, vendored checklist and CI (item 10) *(curated)*
 - **#5**: Track the gap to T1 (klayout-tools design-evidence-tiers.md) *(curated)*
 
 ## Proposed (Architect / Hermit)
@@ -65,14 +64,14 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 1 |
+| Operator merge-risk holds | 0 |
 | Very important | 0 |
 | Important | 0 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 1 |
+| In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 1 |
-| Curated | 2 |
+| Approved PRs awaiting merge | 0 |
+| Curated | 1 |
 | Architect / Hermit proposals | 0 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
