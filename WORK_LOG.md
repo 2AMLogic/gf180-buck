@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-10-27
+
+- **PR #36**: feat: attest T1 item 10 repo hygiene with klt 0.8.0
+- **Issue #30** (closed): T1 item 10 (repo hygiene): hygiene inventory and klt signoff --attest 10 envelope
+
 ### 2026-10-23
 
 - **PR #19**: feat(sim): add §0.4 buck measurement module and ideal-switch bench
