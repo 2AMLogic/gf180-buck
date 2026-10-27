@@ -10,6 +10,10 @@ name: klt signoff
 # the record rot: whoever changes the manifest, cited evidence, or the
 # vendored checklist doc must regenerate the record in the same PR.
 #
+# T1 item 10 (repo hygiene) is attested, not asserted: the committed envelope
+# manifests/item10-attestation.json is re-attested from
+# manifests/item10-inventory.json and must still reproduce and pass.
+#
 # See manifests/README.md for the convention.
 
 on:
@@ -33,7 +37,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install pinned klt
-        run: pip install klayout-tools==0.7.0
+        run: pip install klayout-tools==0.8.0
 
       - name: Re-run klt signoff and compare against the committed record
         run: |
@@ -62,3 +66,16 @@ jobs:
           fi
           echo "Committed signoff record is fresh: it matches a fresh klt signoff run."
           python3 -c "import json; d=json.load(open('manifests/gf180-buck.signoff.json')); print('tier verdict of record:', d['tier'], '(T1 items met: %d/%d)' % (d['t1_met_count'], d['t1_item_count']))"
+
+      - name: Re-attest T1 item 10 and compare against the committed envelope
+        run: |
+          set -uo pipefail
+          # Exit 0 = the envelope still reproduces and passes; 3 = drift or a
+          # failing check; 1 = malformed inventory or envelope.
+          if ! klt signoff --attest 10 \
+                 --inventory manifests/item10-inventory.json \
+                 --check manifests/item10-attestation.json; then
+            echo "::error::T1 item 10 attestation drifted or fails - a hygiene file, the inventory, or a check changed."
+            echo "Regenerate and commit the envelope, then the verdict of record, in this same PR (see manifests/README.md)."
+            exit 1
+          fi

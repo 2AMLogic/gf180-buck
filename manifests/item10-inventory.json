@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "kind": "t1-attestation-inventory",
+  "t1_item": 10,
+  "description": "gf180-buck repo hygiene: README states the block, spec table and reproduce commands; LICENSE; CI keeps the signoff record and evidence formats valid.",
+  "hygiene": ["README.md","LICENSE",".github/workflows/signoff.yml","spec/target-spec.md","manifests/check_readme.py"],
+  "checks": [
+    {"name": "readme-structure-and-links", "argv": ["python3", "-I", "manifests/check_readme.py"]},
+    {"name": "signoff-record-fresh", "argv": ["klt", "signoff", "--manifest", "manifests/gf180-buck.json", "--tiers-doc", "manifests/design-evidence-tiers.md", "--check", "manifests/gf180-buck.signoff.json"]}
+  ]
+}
