@@ -1,1 +1,1 @@
-{"block":"gf180-buck","kind":"analog","evidence":{}}
+{"block":"gf180-buck","kind":"analog","evidence":{"10":{"file":"manifests/item10-attestation.json","content_hash":"sha256:a377f044a27ad332715d2606cf81b27f84383649fcda9ffd1b32f46c61974265"}}}

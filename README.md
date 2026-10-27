@@ -9,8 +9,8 @@ open-source xschem + ngspice flow.
 
 **Status: specification ratified on merge of issue #2; nothing is designed yet.**
 
-**T1 status:** tier verdict of record is `null` — 0 of 11 T1 evidence items
-met, graded by `klt signoff` from [`manifests/gf180-buck.json`](manifests/gf180-buck.json)
+**T1 status:** tier verdict of record is `null` — 1 of 11 T1 evidence items
+met (item 10, repo hygiene), graded by `klt signoff` from [`manifests/gf180-buck.json`](manifests/gf180-buck.json)
 and committed as [`manifests/gf180-buck.signoff.json`](manifests/gf180-buck.signoff.json);
 CI re-grades and fails on drift (see [`manifests/README.md`](manifests/README.md)).
 
@@ -86,6 +86,32 @@ Maturity ladder: spec ratified → power stage sized and EM budget recorded →
 controller and closed loop simulated across PVT → layout DRC/LVS-clean →
 post-layout re-verification → shuttle seat → measured silicon. **Current
 position: spec ratified.**
+
+## Reproduce
+
+Every result on `main` is simulated, never measured. Run from the repository
+root; prerequisites (ngspice, jq, the pinned gf180mcuD PDK install) are in
+[`sim/README.md`](sim/README.md). Each command appends a new record under its
+`records/` directory; records are append-only evidence.
+
+| Result | Cold-start command | Record |
+|---|---|---|
+| Toolchain smoke (one `.op` + short `.tran`, typical corner) | `sim/smoke/run.sh` | `sim/smoke/records/` |
+| Ideal-switch buck bench (open loop, not a spec claim) | `sim/buck-ideal/run.sh` | `sim/buck-ideal/records/` |
+| Averaged-model loop gain (162-point `klt sim` grid, batch fleet) | `design/averaged/run.sh` | `design/averaged/records/` |
+
+The averaged-model bench is committed but has no record on `main` yet, so its
+loop-gain numbers are not reproduced here. No post-layout, power-metal,
+efficiency, or silicon result exists yet: those rows of the spec table are not
+yet reproducible and nothing in this repository claims them.
+
+The tier verdict itself is re-graded, not hand-read:
+
+```
+uvx --from "klayout-tools==0.8.0" klt signoff \
+    --manifest manifests/gf180-buck.json \
+    --tiers-doc manifests/design-evidence-tiers.md --format json
+```
 
 ## Repo layout
 

@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "kind": "generic",
+  "status": "pass",
+  "t1_item": 10,
+  "summary": "T1 item 10 (Repo hygiene): 7/7 attestation checks passed (klt signoff --attest)",
+  "source": "manifests/item10-inventory.json",
+  "attestation": {
+    "producer": "klt signoff --attest",
+    "inventory_schema_version": 1,
+    "hash_algorithm": "sha256-raw-bytes",
+    "check_count": 7,
+    "passed_count": 7,
+    "checks": [
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": ".github/workflows/signoff.yml",
+        "passed": true,
+        "content_hash": "sha256:52c97ab38e30b723687ada3cab6e865200d4affbfdf3376f0cb08a484d86a0e4"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "LICENSE",
+        "passed": true,
+        "content_hash": "sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "README.md",
+        "passed": true,
+        "content_hash": "sha256:e16670593fd58e8c779bf81efee902268b2ee818ac94a3ce65d39a6e6579d0d6"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "manifests/check_readme.py",
+        "passed": true,
+        "content_hash": "sha256:3cbd88e86ffcf5f674680e8bb702395a6bcd61e05285c0e8a9e8cfe70b5901ec"
+      },
+      {
+        "check": "present",
+        "role": "hygiene",
+        "path": "spec/target-spec.md",
+        "passed": true,
+        "content_hash": "sha256:cf552cc4e9279e7cdae2b1ac2bb6d8f7b9e195841c0970f8b9280ecc1d338357"
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "readme-structure-and-links",
+        "argv": [
+          "python3",
+          "-I",
+          "manifests/check_readme.py"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "signoff-record-fresh",
+        "argv": [
+          "klt",
+          "signoff",
+          "--manifest",
+          "manifests/gf180-buck.json",
+          "--tiers-doc",
+          "manifests/design-evidence-tiers.md",
+          "--check",
+          "manifests/gf180-buck.signoff.json"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      }
+    ]
+  },
+  "provenance": {
+    "klt_version": "0.8.0",
+    "klayout_version": null,
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "path": {
+        "path": "manifests/item10-inventory.json",
+        "scope": "repo"
+      },
+      "content_hash": "sha256:a377f044a27ad332715d2606cf81b27f84383649fcda9ffd1b32f46c61974265"
+    }
+  }
+}
