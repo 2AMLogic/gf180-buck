@@ -33,7 +33,7 @@ block, not designed or sized here.
 | Item | Value | Source |
 |---|---|---|
 | Input | VIN pad, source side of the bond-wire model: 4.5 – 5.5 V (target), 2.97 – 3.63 V (fallback) | spec R1 (both tiers) |
-| Output, every corner | **2.97 – 3.63 V** at every sibling's supply pin, i.e. 3.3 V ±10 % | `gf180-bandgap` README, `gf180-opamp` / `gf180-comparator` scopes, `gf180-rcosc` README (record 0001 §7) |
+| Output, target tier (Vin 4.5 – 5.5 V) | **2.97 – 3.63 V** at every sibling's supply pin, i.e. 3.3 V ±10 %. **Not guaranteed in the fallback tier**, see §2.2 | `gf180-bandgap` README, `gf180-opamp` / `gf180-comparator` scopes, `gf180-rcosc` README (record 0001 §7) |
 | Output current | the sum of the adopted siblings' supply currents plus the buck's own digital and level-shifter control current. **Not yet known**: only `gf180-rcosc`'s Iq (< 500 µA, at 48 MHz, not adopted) was read, and that block is kept, not adopted | record 0001 §7 |
 | Source of the current | VIN only. A linear regulator draws its load current from VIN, so every mA on the rail is a mA at the VIN pad | linear-regulator topology |
 
@@ -59,10 +59,17 @@ adoption (§3).
 
 **Fallback tier (Vin 2.97 – 3.63 V).** The rail window is the VIN window, so
 the regulator has no headroom to regulate and the rail follows VIN with the
-pass device fully on. The siblings still see 2.97 – 3.63 V. The drop across the
-on-state pass device at the fallback control current must keep the rail
-≥ 2.97 V at Vin 2.97 V; that is a requirement on the regulator block, not
-shown here.
+pass device fully on. **The siblings' 2.97 V floor cannot be guaranteed in this
+tier.** At Vin 2.97 V the rail would need a 0 V drop across the pass device,
+and any series device (an on-state Ron times the control current, plus its own
+Iq path) drops a non-zero voltage at non-zero current, so the rail sits
+strictly below 2.97 V at the bottom of the fallback VIN window. No series
+regulator can meet that requirement, so this record does not pass it to the
+regulator block as one. The 2.97 – 3.63 V interface of §2.1 is therefore fixed
+for the target tier only; the fallback tier is **unresolved** and is carried as
+open item 5 of §6. No ratified row changes: R1's fallback window and the
+siblings' ranges are both as ratified, and the shortfall between them is named,
+not closed, here.
 
 ### 2.3 What is not on this rail
 
@@ -70,10 +77,11 @@ The high-side and low-side **power-gate drivers** (and the VIN-referenced level
 shifter's high side) run from VIN, not from the 3.3 V rail. Reasons, in
 numbers already in the repo:
 
-- Gate charge current is drawn at the rail voltage's cost: from a linear rail
-  each mA of gate-drive current costs Vin × 1 mA at the VIN pad whether or not
-  it is delivered at 3.3 V, so routing the gate current through the regulator
-  only adds the regulator's pass device as another series element.
+- A linear rail draws its current from VIN, so a mA of gate-drive current costs
+  the same Vin × 1 mA at the VIN pad whether it is taken from the rail or from
+  VIN directly. Routing it through the rail saves nothing at the pad; it adds
+  the pass device's drop as loss and loads the regulator with gate-charge
+  current pulses it would otherwise not have to supply.
 - The low-side `Ron·W` baseline is measured at |Vgs| 3.6 – 5.0 V
   (`reuse.lock.json`, `low_side_power_switch`); 2.97 – 3.6 V is listed as not
   measured. Driving the gates from a 3.3 V rail would leave the adopted
@@ -160,3 +168,8 @@ see §2.3) are not touched.
    at power-up. Not resolved here; it is a requirement on the regulator block.
 3. **Sibling supply currents** (§4), needed to close the quiescent accounting.
 4. **Gate-driver and level-shifter supply** (§2.3): issues #33, #34.
+5. **Fallback-tier control rail** (§2.2). A series regulator cannot hold the
+   siblings' 2.97 V floor at Vin 2.97 V. Resolving it needs one of: a sibling
+   derate or characterization below 2.97 V, or a product-owner call on the
+   fallback tier. If that forces a ratified-row change, it is routed per the
+   issue's AC4, not made here.
