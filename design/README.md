@@ -24,7 +24,7 @@ GM >= 10 dB. Failing points are reported as failures.
 |---|---|
 | `averaged/buck_avg.spice` | circuit body: averaged stage, compensator, loop break |
 | `averaged/gen_request.py` | writes `sweep_request.json` (the cross product, fixed order) |
-| `averaged/sweep_request.json` | the `klt sim` request for the grid |
+| `averaged/sweep_request.json` | the `klt sim` request for the grid; untracked, written by `gen_request.py` |
 | `averaged/extract.py` | fc / PM / GM from the complex loop gain, writes the record |
 | `averaged/test_extract.py` | closed-form synthetic-loop unit tests |
 | `averaged/run.sh` | the one command |
