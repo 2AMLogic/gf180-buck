@@ -20,7 +20,7 @@ _None._
 
 `loom:important`; taken before unlabelled work.
 
-_None._
+- **#17**: design: averaged power-stage model and type-III compensator with AC loop-gain sweep over P-T tolerances (R13a, T1 item 1)
 
 ## Ready
 
@@ -70,7 +70,7 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 1 |
 | Very important | 0 |
-| Important | 0 |
+| Important | 1 |
 | Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
