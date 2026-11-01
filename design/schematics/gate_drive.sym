@@ -1,0 +1,30 @@
+v {xschem version=3.4.7 file_version=1.2
+* gate_drive symbol: level-shifted gate driver (#33)
+* Pin order == the .subckt pin order of the netlisted block.
+}
+G {}
+K {type=subcircuit
+format="@name @pinlist gate_drive"
+template="name=x1"
+}
+V {}
+S {}
+E {}
+L 4 -80 -120 80 -120 {}
+L 4 -80 80 80 80 {}
+L 4 -80 -120 -80 80 {}
+L 4 80 -120 80 80 {}
+B 5 -82 -102 -78 -98 {name=PWM dir=in pinnumber=1}
+T {PWM} -72 -104 0 0 0.2 0.2 {}
+B 5 -82 -62 -78 -58 {name=VDD3 dir=inout pinnumber=2}
+T {VDD3} -72 -64 0 0 0.2 0.2 {}
+B 5 -82 -22 -78 -18 {name=VIN dir=inout pinnumber=3}
+T {VIN} -72 -24 0 0 0.2 0.2 {}
+B 5 -82 18 -78 22 {name=GND dir=inout pinnumber=4}
+T {GND} -72 16 0 0 0.2 0.2 {}
+B 5 78 -102 82 -98 {name=GH dir=out pinnumber=5}
+T {GH} 72 -104 0 1 0.2 0.2 {}
+B 5 78 -62 82 -58 {name=GL dir=out pinnumber=6}
+T {GL} 72 -64 0 1 0.2 0.2 {}
+T {@name} -80 -130 0 0 0.25 0.25 {}
+T {gate_drive} -80 90 0 0 0.25 0.25 {}

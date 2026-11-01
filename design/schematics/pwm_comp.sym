@@ -1,0 +1,34 @@
+v {xschem version=3.4.7 file_version=1.2
+* pwm_comp symbol: PWM comparator and latch
+* Pin order == the .subckt pin order of the netlisted block.
+}
+G {}
+K {type=subcircuit
+format="@name @pinlist pwm_comp"
+template="name=x1"
+}
+V {}
+S {}
+E {}
+L 4 -80 -120 80 -120 {}
+L 4 -80 200 80 200 {}
+L 4 -80 -120 -80 200 {}
+L 4 80 -120 80 200 {}
+B 5 -82 -102 -78 -98 {name=VC dir=in pinnumber=1}
+T {VC} -72 -104 0 0 0.2 0.2 {}
+B 5 -82 -62 -78 -58 {name=RAMP dir=in pinnumber=2}
+T {RAMP} -72 -64 0 0 0.2 0.2 {}
+B 5 -82 -22 -78 -18 {name=CLK dir=in pinnumber=3}
+T {CLK} -72 -24 0 0 0.2 0.2 {}
+B 5 -82 18 -78 22 {name=OCP_TRIP dir=in pinnumber=4}
+T {OCP_TRIP} -72 16 0 0 0.2 0.2 {}
+B 5 -82 58 -78 62 {name=IBIAS dir=in pinnumber=5}
+T {IBIAS} -72 56 0 0 0.2 0.2 {}
+B 5 78 -102 82 -98 {name=PWM dir=out pinnumber=6}
+T {PWM} 72 -104 0 1 0.2 0.2 {}
+B 5 -82 98 -78 102 {name=VDD33 dir=inout pinnumber=7}
+T {VDD33} -72 96 0 0 0.2 0.2 {}
+B 5 -82 138 -78 142 {name=VSS dir=inout pinnumber=8}
+T {VSS} -72 136 0 0 0.2 0.2 {}
+T {@name} -80 -130 0 0 0.25 0.25 {}
+T {pwm_comp} -80 210 0 0 0.25 0.25 {}

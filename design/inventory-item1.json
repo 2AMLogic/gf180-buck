@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "kind": "t1-attestation-inventory",
+  "t1_item": 1,
+  "description": "gf180-buck design sources: xschem schematics and symbols (power_stage, gate_drive, osc_ramp, pwm_comp, soft_start, ocp_sense, compensator, buck_top) with their generator and the compensator design-to values, plus the SPICE netlists derived from them by klt netlist. Each netlist is checked against its schematic with design/netlist.sh --check (needs xschem and the PDK, so local_only: carried from the committed outcome on CI).",
+  "sources": [
+    "design/compensator.md",
+    "design/netlist.sh",
+    "design/schematics/buck_top.sch",
+    "design/schematics/compensator.sch",
+    "design/schematics/compensator.sym",
+    "design/schematics/gate_drive.sch",
+    "design/schematics/gate_drive.sym",
+    "design/schematics/gen_schematics.py",
+    "design/schematics/ocp_sense.sch",
+    "design/schematics/ocp_sense.sym",
+    "design/schematics/opamp_two_stage.sym",
+    "design/schematics/osc_ramp.sch",
+    "design/schematics/osc_ramp.sym",
+    "design/schematics/power_stage.sch",
+    "design/schematics/power_stage.sym",
+    "design/schematics/pwm_comp.sch",
+    "design/schematics/pwm_comp.sym",
+    "design/schematics/soft_start.sch",
+    "design/schematics/soft_start.sym",
+    "design/schematics/xschemrc"
+  ],
+  "derived": [
+    {
+      "path": "design/netlists/power_stage.spice",
+      "generator": "klt netlist (design/netlist.sh)",
+      "check": {
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "power_stage"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/netlists/gate_drive.spice",
+      "generator": "klt netlist (design/netlist.sh)",
+      "check": {
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "gate_drive"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/netlists/osc_ramp.spice",
+      "generator": "klt netlist (design/netlist.sh)",
+      "check": {
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "osc_ramp"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/netlists/pwm_comp.spice",
+      "generator": "klt netlist (design/netlist.sh)",
+      "check": {
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "pwm_comp"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/netlists/soft_start.spice",
+      "generator": "klt netlist (design/netlist.sh)",
+      "check": {
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "soft_start"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/netlists/ocp_sense.spice",
+      "generator": "klt netlist (design/netlist.sh)",
+      "check": {
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "ocp_sense"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/netlists/compensator.spice",
+      "generator": "klt netlist (design/netlist.sh)",
+      "check": {
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "compensator"
+        ],
+        "local_only": true
+      }
+    },
+    {
+      "path": "design/netlists/buck_top.spice",
+      "generator": "klt netlist (design/netlist.sh)",
+      "check": {
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "buck_top"
+        ],
+        "local_only": true
+      }
+    }
+  ]
+}

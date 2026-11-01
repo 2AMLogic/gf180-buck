@@ -1,0 +1,30 @@
+v {xschem version=3.4.7 file_version=1.2
+* opamp_two_stage symbol: black box of the adopted error amplifier; no schematic in this repo
+* Pin order == the .subckt pin order of the netlisted block.
+}
+G {}
+K {type=primitive
+format="@name @pinlist opamp_two_stage"
+template="name=x1"
+}
+V {}
+S {}
+E {}
+L 4 -80 -120 80 -120 {}
+L 4 -80 120 80 120 {}
+L 4 -80 -120 -80 120 {}
+L 4 80 -120 80 120 {}
+B 5 -82 -102 -78 -98 {name=vdd dir=inout pinnumber=1}
+T {vdd} -72 -104 0 0 0.2 0.2 {}
+B 5 -82 -62 -78 -58 {name=vss dir=inout pinnumber=2}
+T {vss} -72 -64 0 0 0.2 0.2 {}
+B 5 -82 -22 -78 -18 {name=vinp dir=in pinnumber=3}
+T {vinp} -72 -24 0 0 0.2 0.2 {}
+B 5 -82 18 -78 22 {name=vinn dir=in pinnumber=4}
+T {vinn} -72 16 0 0 0.2 0.2 {}
+B 5 78 -102 82 -98 {name=vout dir=out pinnumber=5}
+T {vout} 72 -104 0 1 0.2 0.2 {}
+B 5 -82 58 -78 62 {name=ibias dir=in pinnumber=6}
+T {ibias} -72 56 0 0 0.2 0.2 {}
+T {@name} -80 -130 0 0 0.25 0.25 {}
+T {opamp_two_stage} -80 130 0 0 0.25 0.25 {}

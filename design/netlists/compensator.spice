@@ -1,0 +1,18 @@
+** sch_path: design/schematics/compensator.sch
+.subckt compensator VOUT VREF IBIAS VC VDD33 GND
+
+*.ipin VOUT
+*.ipin VREF
+*.ipin IBIAS
+*.opin VC
+*.iopin VDD33
+*.iopin GND
+Rtop VOUT FBN 10k m=1
+R3 VOUT X 204 m=1
+C3 X FBN 780p m=1
+Rbot FBN GND 5k m=1
+R2 FBN Z 4.55k m=1
+C1 Z VC 1.75n m=1
+C2 FBN VC 35.7p m=1
+XEA VDD33 GND VREF FBN VC IBIAS opamp_two_stage
+.ends

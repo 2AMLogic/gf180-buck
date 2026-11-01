@@ -4,7 +4,8 @@ Block manifest and tier verdict of record, graded by `klt signoff`.
 
 | File | What it is |
 |---|---|
-| `gf180-buck.json` | Block manifest: `kind: analog`; cites the item-10 attestation envelope (its `content_hash` is the sha256 of `item10-inventory.json`, the input the envelope is bound to). |
+| `gf180-buck.json` | Block manifest: `kind: analog`; cites the item-1 and item-10 attestation envelopes (its `content_hash` is the sha256 of `item10-inventory.json`, the input the envelope is bound to). |
+| `item1-attestation.json` | Envelope from `klt signoff --attest 1` over `design/inventory-item1.json` (every schematic, symbol, the generator, the compensator values and the netlists derived from them). Never hand-written. |
 | `item10-inventory.json` | T1 item 10 attestation inventory: hygiene files plus the audit commands whose exit status is attested. |
 | `item10-attestation.json` | Envelope from `klt signoff --attest 10`. Never hand-written. |
 | `check_readme.py` | The README structure and relative-link check the inventory runs. |
@@ -22,6 +23,27 @@ uvx --from "klayout-tools==0.8.0" klt signoff \
     --tiers-doc manifests/design-evidence-tiers.md \
     --format json > manifests/gf180-buck.signoff.json
 ```
+
+### Item 1 (design sources)
+
+Whenever a schematic, symbol, `gen_schematics.py`, `design/compensator.md` or a
+netlist changes: run `design/netlist.sh` (regenerates the netlists) and
+`design/netlist.sh --check` (all `match`), then re-attest with a `klt` that
+supports `klt netlist --ignore-comments` (newer than the pinned 0.8.0; the
+netlist freshness checks are `local_only` and run only here):
+
+```
+klt signoff --attest 1 --inventory design/inventory-item1.json \
+    -o manifests/item1-attestation.json
+```
+
+Set `evidence["1"].content_hash` in `gf180-buck.json` to
+`sha256:$(sha256sum design/inventory-item1.json)`, then do the item-10 steps
+below. CI re-runs `--attest 1 ... --check` (netlist checks skipped there). Note
+that `klt signoff --manifest` alone does not go stale when a listed member
+changes, only the `--check` does (klayout-tools#4764).
+
+### Item 10 (repo hygiene) and the verdict of record
 
 Regenerate the item-10 envelope first whenever the inventory, any file it
 lists, or a check's outcome changes. `klt` must be on `PATH` (the inventory

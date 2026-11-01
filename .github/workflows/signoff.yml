@@ -79,3 +79,19 @@ jobs:
             echo "Regenerate and commit the envelope, then the verdict of record, in this same PR (see manifests/README.md)."
             exit 1
           fi
+
+      - name: Re-attest T1 item 1 and compare against the committed envelope
+        run: |
+          set -uo pipefail
+          # The netlist freshness checks need xschem and the PDK, so the
+          # inventory marks them local_only: --check skips them here and
+          # carries the committed outcome. Source and netlist content hashes,
+          # the file set and the inventory itself are still re-verified, so
+          # editing any listed file without re-attesting fails this step.
+          if ! klt signoff --attest 1 \
+                 --inventory design/inventory-item1.json \
+                 --check manifests/item1-attestation.json; then
+            echo "::error::T1 item 1 attestation drifted or fails - a design source, a derived netlist or the inventory changed."
+            echo "Run design/netlist.sh, then re-attest item 1 locally, regenerate the item-10 envelope and the verdict of record in this same PR (see manifests/README.md)."
+            exit 1
+          fi

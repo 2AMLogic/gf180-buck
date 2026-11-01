@@ -1,0 +1,34 @@
+v {xschem version=3.4.7 file_version=1.2
+* osc_ramp symbol: PWM ramp oscillator
+* Pin order == the .subckt pin order of the netlisted block.
+}
+G {}
+K {type=subcircuit
+format="@name @pinlist osc_ramp"
+template="name=x1"
+}
+V {}
+S {}
+E {}
+L 4 -80 -120 80 -120 {}
+L 4 -80 160 80 160 {}
+L 4 -80 -120 -80 160 {}
+L 4 80 -120 80 160 {}
+B 5 -82 -102 -78 -98 {name=IBIAS dir=in pinnumber=1}
+T {IBIAS} -72 -104 0 0 0.2 0.2 {}
+B 5 -82 -62 -78 -58 {name=TRIM0 dir=in pinnumber=2}
+T {TRIM0} -72 -64 0 0 0.2 0.2 {}
+B 5 -82 -22 -78 -18 {name=TRIM1 dir=in pinnumber=3}
+T {TRIM1} -72 -24 0 0 0.2 0.2 {}
+B 5 -82 18 -78 22 {name=TRIM2 dir=in pinnumber=4}
+T {TRIM2} -72 16 0 0 0.2 0.2 {}
+B 5 78 -102 82 -98 {name=CLK dir=out pinnumber=5}
+T {CLK} 72 -104 0 1 0.2 0.2 {}
+B 5 78 -62 82 -58 {name=RAMP dir=out pinnumber=6}
+T {RAMP} 72 -64 0 1 0.2 0.2 {}
+B 5 -82 58 -78 62 {name=VDD33 dir=inout pinnumber=7}
+T {VDD33} -72 56 0 0 0.2 0.2 {}
+B 5 -82 98 -78 102 {name=VSS dir=inout pinnumber=8}
+T {VSS} -72 96 0 0 0.2 0.2 {}
+T {@name} -80 -130 0 0 0.25 0.25 {}
+T {osc_ramp} -80 170 0 0 0.25 0.25 {}

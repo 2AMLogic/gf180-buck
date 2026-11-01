@@ -1,0 +1,32 @@
+v {xschem version=3.4.7 file_version=1.2
+* soft_start symbol: analog soft start
+* Pin order == the .subckt pin order of the netlisted block.
+}
+G {}
+K {type=subcircuit
+format="@name @pinlist soft_start"
+template="name=x1"
+}
+V {}
+S {}
+E {}
+L 4 -80 -120 80 -120 {}
+L 4 -80 120 80 120 {}
+L 4 -80 -120 -80 120 {}
+L 4 80 -120 80 120 {}
+B 5 -82 -102 -78 -98 {name=IBIAS dir=in pinnumber=1}
+T {IBIAS} -72 -104 0 0 0.2 0.2 {}
+B 5 -82 -62 -78 -58 {name=VBG dir=in pinnumber=2}
+T {VBG} -72 -64 0 0 0.2 0.2 {}
+B 5 -82 -22 -78 -18 {name=EN dir=in pinnumber=3}
+T {EN} -72 -24 0 0 0.2 0.2 {}
+B 5 78 -102 82 -98 {name=VREF_SS dir=out pinnumber=4}
+T {VREF_SS} 72 -104 0 1 0.2 0.2 {}
+B 5 78 -62 82 -58 {name=CSS dir=out pinnumber=5}
+T {CSS} 72 -64 0 1 0.2 0.2 {}
+B 5 -82 18 -78 22 {name=VDD33 dir=inout pinnumber=6}
+T {VDD33} -72 16 0 0 0.2 0.2 {}
+B 5 -82 58 -78 62 {name=VSS dir=inout pinnumber=7}
+T {VSS} -72 56 0 0 0.2 0.2 {}
+T {@name} -80 -130 0 0 0.25 0.25 {}
+T {soft_start} -80 130 0 0 0.25 0.25 {}
