@@ -176,21 +176,20 @@ as before) and any layout/LVS (#22-#24).
 
 Everything here is simulated, never measured. xschem sources in
 `schematics/`, committed netlists in `netlists/`, symbol search path in
-[`xschemrc`](xschemrc) (it reads the PDK from `GF180_VARIANT_DIR`, so
-`source sim/env.sh` first).
+[`schematics/xschemrc`](schematics/xschemrc) (it reads the PDK from
+`GF180_VARIANT_DIR`; `netlist.sh` sources `sim/env.sh` itself).
 
 | Block | Schematic | Netlist | Ports |
 |---|---|---|---|
 | `power_stage` | `schematics/power_stage.sch` | `netlists/power_stage.spice` | `GH GL VIN SW GND` |
 | `gate_drive` | `schematics/gate_drive.sch` | `netlists/gate_drive.spice` | `PWM VDD3 VIN GND GH GL` |
 
-Regenerate and check (never raw `xschem`):
+Regenerate and check (never raw `xschem`; `netlist.sh` wraps `klt netlist`):
 
-    source sim/env.sh
-    klt netlist design/schematics/<block>.sch -o design/netlists/<block>.spice --rcfile design/xschemrc --block --pdk gf180mcuD
-    klt netlist design/schematics/<block>.sch -o design/netlists/<block>.spice --rcfile design/xschemrc --block --pdk gf180mcuD --check --ignore-comments   # status: match
+    design/netlist.sh [BLOCK...]           # write design/netlists/<block>.spice
+    design/netlist.sh --check [BLOCK...]   # status: match, or DRIFTED (exit 1)
 
-`--ignore-comments` is needed because xschem writes the absolute `** sch_path:`
+`netlist.sh --check` passes `--ignore-comments` because xschem writes the absolute `** sch_path:`
 of the checkout into the netlist; every non-comment line is still compared.
 
 ### `power_stage` — sizing (R3, R9, R18)
