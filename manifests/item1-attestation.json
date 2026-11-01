@@ -17,7 +17,7 @@
         "role": "source",
         "path": "design/compensator.md",
         "passed": true,
-        "content_hash": "sha256:783396e1b4429ed2d16775b94ebb9ab03ce2b5d926a32bedbdf0d69e6b1907d9"
+        "content_hash": "sha256:171fe69e02d3449a45b708934409b44a6ff81156e7b362c2350ea40862f47bb2"
       },
       {
         "check": "present",
@@ -31,7 +31,7 @@
         "role": "source",
         "path": "design/schematics/buck_top.sch",
         "passed": true,
-        "content_hash": "sha256:0ae30f3ca5f7ae6791f8d07e6dd6fae43a89d336dd35b41caebd8e3fb8c06e45"
+        "content_hash": "sha256:2b9bfc5c8964ed3d742e457f80e7e30245499b6520ef121c99779f532eec9d32"
       },
       {
         "check": "present",
@@ -66,7 +66,7 @@
         "role": "source",
         "path": "design/schematics/gen_schematics.py",
         "passed": true,
-        "content_hash": "sha256:f41cba83035688c6f2d259f16ac6af822c592c7c8cdadb5258a04e0d4cd726be"
+        "content_hash": "sha256:21911bbd3312bc3ecaaf6be0cb5cf15f0adddd72906a6b8ae80fdddb0385f9db"
       },
       {
         "check": "present",
@@ -157,7 +157,7 @@
         "role": "derived",
         "path": "design/netlists/buck_top.spice",
         "passed": true,
-        "content_hash": "sha256:c4ec22c9fa5fe108818ac933e31cff287e8a58adc36655732e31817f495e45a6"
+        "content_hash": "sha256:8600d7d34d8175ff5b7f979241fd8e5c873380c1bccdaf66b79309df652f28ff"
       },
       {
         "check": "present",
