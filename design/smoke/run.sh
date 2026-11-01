@@ -4,14 +4,14 @@
 # nominal rails. NOT a corner or Monte Carlo grid -- those go to `klt sim`
 # (issue #25). Prints the RESULT lines; with --record also writes a new
 # append-only record under design/smoke/records/.
-#   design/smoke/run.sh [--record] [bench ...]    (default: all five)
+#   design/smoke/run.sh [--record] [bench ...]    (default: all six)
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 root="$(cd "$here/../.." && pwd)"
 source "$root/sim/env.sh" >/dev/null
 command -v ngspice >/dev/null || { echo "run.sh: MISSING_TOOL: ngspice" >&2; exit 1; }
 record=0; [[ "${1:-}" == "--record" ]] && { record=1; shift; }
-benches=("$@"); [[ ${#benches[@]} -gt 0 ]] || benches=(osc_ramp pwm_comp soft_start ocp_fwd ocp_rev)
+benches=("$@"); [[ ${#benches[@]} -gt 0 ]] || benches=(osc_ramp pwm_comp soft_start ocp_fwd ocp_rev vref_div)
 build="$root/design/smoke/build"; mkdir -p "$build"
 out=""
 for b in "${benches[@]}"; do

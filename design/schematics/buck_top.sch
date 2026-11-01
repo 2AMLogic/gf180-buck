@@ -8,8 +8,8 @@ T {buck_top: gf180-buck top level -- power stage + gate drive + controller + com
 T {Joins the blocks of #33 (power_stage, gate_drive), #34 (osc_ramp, pwm_comp, soft_start, ocp_sense) and the compensator.} -600 -850 0 0 0.3 0.3 {}
 T {L and Cout are external: SW leaves the die, the LC filter returns on VOUT (sense input).  Bias generator, bandgap (VBG) and the} -600 -820 0 0 0.3 0.3 {}
 T {3.3 V regulator (VDD33) are not in this design's blocks yet: they are top-level ports.  All grounds are GND (blocks' VSS -> GND).} -600 -790 0 0 0.3 0.3 {}
-T {Integration choices: HS_ON = PWM (the high-side command; ocp_sense blanks ~50 ns).  VREF_SS -> compensator VREF as documented,} -600 -760 0 0 0.3 0.3 {}
-T {but soft_start ends at VBG = 1.2 V and the design-to Vref is 0.6 V: recorded open in design/README.md, not resolved here.} -600 -730 0 0 0.3 0.3 {}
+T {Integration choices: HS_ON = PWM (the high-side command; ocp_sense blanks ~50 ns).  soft_start ends at VBG = 1.2 V but the} -600 -760 0 0 0.3 0.3 {}
+T {design-to Vref is 0.6 V, so a 1:1 divider (RREF1/RREF2) scales VREF_SS to the compensator VREF (issue #53; compensator.md).} -600 -730 0 0 0.3 0.3 {}
 C {iopin.sym} -900 -800 0 0 {name=p_VIN lab=VIN}
 C {iopin.sym} -900 -760 0 0 {name=p_VDD33 lab=VDD33}
 C {iopin.sym} -900 -720 0 0 {name=p_GND lab=GND}
@@ -62,23 +62,29 @@ C {lab_pin.sym} -480 220 0 0 {name=l_XOCP_VIN lab=VIN}
 C {lab_pin.sym} -480 260 0 0 {name=l_XOCP_VDD33 lab=VDD33}
 C {lab_pin.sym} -480 300 0 0 {name=l_XOCP_VSS lab=GND}
 C {lab_pin.sym} -320 100 0 0 {name=l_XOCP_TRIP lab=TRIP}
-C {compensator.sym} 200 200 0 0 {name=XCOMP}
-C {lab_pin.sym} 120 100 0 0 {name=l_XCOMP_VOUT lab=VOUT}
-C {lab_pin.sym} 120 140 0 0 {name=l_XCOMP_VREF lab=VREF_SS}
-C {lab_pin.sym} 120 180 0 0 {name=l_XCOMP_IBIAS lab=IBIAS_EA}
-C {lab_pin.sym} 120 220 0 0 {name=l_XCOMP_VDD33 lab=VDD33}
-C {lab_pin.sym} 120 260 0 0 {name=l_XCOMP_GND lab=GND}
-C {lab_pin.sym} 280 100 0 0 {name=l_XCOMP_VC lab=VC}
-C {gate_drive.sym} 800 200 0 0 {name=XGD}
-C {lab_pin.sym} 720 100 0 0 {name=l_XGD_PWM lab=PWM}
-C {lab_pin.sym} 720 140 0 0 {name=l_XGD_VDD3 lab=VDD33}
-C {lab_pin.sym} 720 180 0 0 {name=l_XGD_VIN lab=VIN}
-C {lab_pin.sym} 720 220 0 0 {name=l_XGD_GND lab=GND}
-C {lab_pin.sym} 880 100 0 0 {name=l_XGD_GH lab=GH}
-C {lab_pin.sym} 880 140 0 0 {name=l_XGD_GL lab=GL}
-C {power_stage.sym} -400 700 0 0 {name=XPS}
-C {lab_pin.sym} -480 600 0 0 {name=l_XPS_GH lab=GH}
-C {lab_pin.sym} -480 640 0 0 {name=l_XPS_GL lab=GL}
-C {lab_pin.sym} -480 680 0 0 {name=l_XPS_VIN lab=VIN}
-C {lab_pin.sym} -480 720 0 0 {name=l_XPS_SW lab=SW}
-C {lab_pin.sym} -480 760 0 0 {name=l_XPS_GND lab=GND}
+C {res.sym} 800 -300 0 0 {name=RREF1 value=1Meg footprint=1206 device=resistor m=1}
+C {lab_pin.sym} 800 -330 0 0 {name=l_RREF1_P lab=VREF_SS}
+C {lab_pin.sym} 800 -270 0 0 {name=l_RREF1_M lab=VREF}
+C {res.sym} 1100 -300 0 0 {name=RREF2 value=1Meg footprint=1206 device=resistor m=1}
+C {lab_pin.sym} 1100 -330 0 0 {name=l_RREF2_P lab=VREF}
+C {lab_pin.sym} 1100 -270 0 0 {name=l_RREF2_M lab=GND}
+C {compensator.sym} -400 700 0 0 {name=XCOMP}
+C {lab_pin.sym} -480 600 0 0 {name=l_XCOMP_VOUT lab=VOUT}
+C {lab_pin.sym} -480 640 0 0 {name=l_XCOMP_VREF lab=VREF}
+C {lab_pin.sym} -480 680 0 0 {name=l_XCOMP_IBIAS lab=IBIAS_EA}
+C {lab_pin.sym} -480 720 0 0 {name=l_XCOMP_VDD33 lab=VDD33}
+C {lab_pin.sym} -480 760 0 0 {name=l_XCOMP_GND lab=GND}
+C {lab_pin.sym} -320 600 0 0 {name=l_XCOMP_VC lab=VC}
+C {gate_drive.sym} 200 700 0 0 {name=XGD}
+C {lab_pin.sym} 120 600 0 0 {name=l_XGD_PWM lab=PWM}
+C {lab_pin.sym} 120 640 0 0 {name=l_XGD_VDD3 lab=VDD33}
+C {lab_pin.sym} 120 680 0 0 {name=l_XGD_VIN lab=VIN}
+C {lab_pin.sym} 120 720 0 0 {name=l_XGD_GND lab=GND}
+C {lab_pin.sym} 280 600 0 0 {name=l_XGD_GH lab=GH}
+C {lab_pin.sym} 280 640 0 0 {name=l_XGD_GL lab=GL}
+C {power_stage.sym} 800 700 0 0 {name=XPS}
+C {lab_pin.sym} 720 600 0 0 {name=l_XPS_GH lab=GH}
+C {lab_pin.sym} 720 640 0 0 {name=l_XPS_GL lab=GL}
+C {lab_pin.sym} 720 680 0 0 {name=l_XPS_VIN lab=VIN}
+C {lab_pin.sym} 720 720 0 0 {name=l_XPS_SW lab=SW}
+C {lab_pin.sym} 720 760 0 0 {name=l_XPS_GND lab=GND}

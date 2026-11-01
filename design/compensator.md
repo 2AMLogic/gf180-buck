@@ -43,6 +43,17 @@ Placement:
 - **Reference and divider.** Vout = 1.8 V, Vref = 0.6 V, so Rtop/Rbot = 2.
   Rtop = 10 kOhm, Rbot = 5 kOhm. Rbot is DC bias only; the op-amp input is a
   virtual ground at AC.
+- **Reference scaling (decision record, issue #53).** `soft_start` ends at
+  `VBG` = 1.20 V, not 0.6 V. `buck_top` puts a 1:1 resistive divider on
+  `VREF_SS` (`RREF1` = `RREF2` = 1 MOhm, ideal design-to parts) and feeds the
+  midpoint to the error amplifier, so the reference runs 0 to 0.6 V. The
+  compensator R/C values, the averaged sweep and `soft_start` are unchanged.
+  Rejected: (a) Rtop = Rbot (Vref about 0.9 V) - forces a compensator
+  re-derivation and a re-run of the averaged sweep; (b) a 0.6 V clamp inside
+  `soft_start` - needs a second reference in a block whose interface is `VBG`.
+  This is a design choice, not a spec change: Vref and the divider are not
+  fixed by the spec. Simulated loading and accuracy: `design/README.md`,
+  `smoke/vref_div.spice`.
 - **Two zeros at fz1 = fz2 = 20 kHz**, below the lowest `f0` in the tolerance
   box (23 kHz at L +20 %, Ceff 12 uF) so the phase boost is already in place
   before the double pole.

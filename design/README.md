@@ -123,6 +123,7 @@ smoke, not corner or Monte Carlo evidence**; the PVT grid is issue #25. Record:
 | `soft_start` | 700 µs, 100 ns step | 0 → 90 % in 197 µs (R15 window 100–500 µs), final 1.198 V, no overshoot | load, `Vout` overshoot, peak inductor current (system level) |
 | `ocp_fwd` | 6 µs | trips at ~134 mV of `VIN − SW` (design target 100 mV; the pair/resistor offset is not yet characterised) | trip current in amps, PVT window, offset spread |
 | `ocp_rev` | 6 µs | `SW` 0.2 V above `VIN` while `HS_ON`: `TRIP` max 0.7 mV (R6 no-trip, one point) | light-load reverse current in a switched `.tran` |
+| `vref_div` | 700 µs, 100 ns step (three VBG values) + 100 µs EN-low run | `VREF` 0.591 V at `VBG` 1.20 V (`VREF_SS` 1.183 V, ratio 0.5000); 0 → 90 % in 200 µs; 0.542 / 0.641 V at `VBG` 1.10 / 1.30 V; EN low: `VREF` max 21 mV (startup transient, not settled-zero proof); 2 pF stands in for the EA input | real EA input, divider resistor matching, temperature and process corners, `Vout` itself |
 
 Known gaps for follow-up verification (#25/#26), not closed here: no
 simulated edge case of ramp amplitude against the 3.3 V rail at the
@@ -162,7 +163,7 @@ issue). Top-level choices, not decisions of record:
 - The bias generator, bandgap (`VBG`) and 3.3 V regulator (`VDD33`) are not blocks in this design yet; they are top-level ports, as are the five `IBIAS_*` currents.
 - Every block ground (`VSS`, `GND`) is the one net `GND`; `gate_drive`'s `VDD3` is `VDD33`.
 - `HS_ON` for `ocp_sense` is `PWM` (the high-side command); the block's ~50 ns blank covers driver delay. A tap on the actual high-side gate would be a refinement.
-- **Open mismatch, not resolved here:** `VREF_SS` is wired to the compensator `VREF` as the `soft_start` header says, but `soft_start` ends at `VBG` = 1.2 V while `compensator.md` fixes `Vref` = 0.6 V (Vout 1.8 V, Rtop/Rbot = 2). As drawn, the regulated `Vout` would be 3.6 V. A scaling stage or a changed divider is a design decision; tracked in #53.
+- **`VREF_SS` scaling (closed, issue #53):** `soft_start` ends at `VBG` = 1.2 V but the compensator's `Vref` is 0.6 V. `buck_top` now has a 1:1 divider (`RREF1`/`RREF2` = 1 MΩ each, ideal parts) between `VREF_SS` and an internal `VREF` net that feeds the compensator, so `VREF_SS` still ramps to `VBG` (port unchanged) and the error amp sees 0 → 0.6 V. Decision and rejected alternatives: [`compensator.md`](compensator.md). Simulated findings (bench `vref_div`, typical 27 °C): the divider ratio is exact (0.5000) and 1 MΩ loading is negligible, but `soft_start`'s OTA settles 17 mV below `VBG` (1.183 V), so `VREF` = 0.591 V and `Vout` = 1.773 V (−1.5 % of R4's ±4 %) before any `VBG` tolerance; at `VBG` 1.10 / 1.30 V (illustrative ±8 %, not a characterised bandgap spread) `VREF` = 0.542 / 0.641 V (`Vout` 1.63 / 1.92 V). **Finding, R4 not relaxed:** the OTA offset consumes part of the R4 reference budget and must be carried in the #25/#26 corner and Monte Carlo evidence; the ratio error of a real (resistor-matched) divider is not yet included.
 
 The item-1 attestation binds this whole set: [`inventory-item1.json`](inventory-item1.json)
 (sources, symbols, generator, `xschemrc`, `compensator.md`, and the eight derived
