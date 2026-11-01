@@ -6,6 +6,7 @@ Block manifest and tier verdict of record, graded by `klt signoff`.
 |---|---|
 | `gf180-buck.json` | Block manifest: `kind: analog`; cites the item-1 and item-10 attestation envelopes (its `content_hash` is the sha256 of `item10-inventory.json`, the input the envelope is bound to). |
 | `item1-attestation.json` | Envelope from `klt signoff --attest 1` over `design/inventory-item1.json` (every schematic, symbol, the generator, the compensator values and the netlists derived from them). Never hand-written. |
+| `item2-attestation.json` | Envelope from `klt signoff --attest 2 --input layout/buck.gds`; cited with the GDS sha256. Never hand-written. Needs a `klt` newer than the pinned 0.8.0 (klayout-tools#4767), so CI does not re-attest it; the manifest grade does re-hash the GDS. |
 | `item10-inventory.json` | T1 item 10 attestation inventory: hygiene files plus the audit commands whose exit status is attested. |
 | `item10-attestation.json` | Envelope from `klt signoff --attest 10`. Never hand-written. |
 | `check_readme.py` | The README structure and relative-link check the inventory runs. |
@@ -42,6 +43,10 @@ Set `evidence["1"].content_hash` in `gf180-buck.json` to
 below. CI re-runs `--attest 1 ... --check` (netlist checks skipped there). Note
 that `klt signoff --manifest` alone does not go stale when a listed member
 changes, only the `--check` does (klayout-tools#4764).
+
+### Item 2 (layout)
+
+After `python3 layout/gen_layout.py` (see `layout/README.md`), re-attest with a newer `klt` (command in `layout/README.md`), set `evidence["2"].content_hash` in `gf180-buck.json` to `sha256:$(sha256sum layout/buck.gds)`, then do the item-10 steps below.
 
 ### Item 10 (repo hygiene) and the verdict of record
 
