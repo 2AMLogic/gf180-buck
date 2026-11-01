@@ -1,0 +1,21 @@
+* ocp_sense smoke, reverse inductor current (R6): SW sits 0.2 V ABOVE VIN while HS_ON is high.
+* Typical corner, 27 C, VIN 5 V, IBIAS 10 uA. Expect TRIP never asserts. SIMULATED.
+.include @DESIGN_INC@
+.lib @MODEL_FILE@ typical
+.lib @MODEL_FILE@ mimcap_typical
+.lib @MODEL_FILE@ cap_mim
+.lib @MODEL_FILE@ res_typical
+.include @NETLIST_DIR@/ocp_sense.spice
+Vdd vdd33 0 3.3
+Vin vin 0 5
+Ib 0 ibias 10u
+Vh hs 0 PULSE(0 3.3 1u 1n 1n 3u 10u)
+Esw sw 0 VALUE={5 + 0.2*v(hs)/3.3}
+Xdut sw hs ibias trip vin vdd33 0 ocp_sense
+.control
+tran 1n 6u
+meas tran trip_max MAX v(trip) FROM=0 TO=6u
+echo "RESULT ocp_rev trip_max_V= $&trip_max"
+quit
+.endc
+.end

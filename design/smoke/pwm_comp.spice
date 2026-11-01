@@ -1,0 +1,35 @@
+* pwm_comp smoke (osc_ramp supplies CLK and RAMP): typical corner, 27 C. SIMULATED.
+* VC 1.5 V until 60 us, then 1.7 V.  From 70 us an OCP_TRIP pulse (20 ns, every 0.5 us,
+* 50 ns after the cycle start) exercises the cycle-by-cycle reset.
+.include @DESIGN_INC@
+.lib @MODEL_FILE@ typical
+.lib @MODEL_FILE@ mimcap_typical
+.lib @MODEL_FILE@ cap_mim
+.lib @MODEL_FILE@ res_typical
+.include @NETLIST_DIR@/osc_ramp.spice
+.include @NETLIST_DIR@/pwm_comp.spice
+Vdd vdd33 0 3.3
+Ib 0 ibias 12u
+Ib2 0 ibias2 10u
+Vt0 tr0 0 3.3
+Vt1 tr1 0 0
+Vt2 tr2 0 3.3
+Xosc ibias tr0 tr1 tr2 clk ramp vdd33 0 osc_ramp
+Vc vc 0 PWL(0 1.5 60u 1.5 60.01u 1.7)
+Vo ocp 0 PULSE(0 3.3 70.05u 1n 1n 20n 0.5u)
+Xdut vc ramp clk ocp ibias2 pwm vdd33 0 pwm_comp
+Cp pwm 0 20f
+.control
+tran 1n 80u
+meas tran vrhi MAX v(ramp) FROM=30u TO=58u
+meas tran vrlo MIN v(ramp) FROM=30u TO=58u
+meas tran duty_a AVG v(pwm) FROM=40u TO=58u
+meas tran duty_b AVG v(pwm) FROM=61u TO=69u
+meas tran duty_ocp AVG v(pwm) FROM=71u TO=79u
+let da = duty_a/3.3
+let db = duty_b/3.3
+let doc = duty_ocp/3.3
+echo "RESULT pwm duty_vc1.5= $&da duty_vc1.7= $&db duty_vc1.7_with_ocp= $&doc"
+quit
+.endc
+.end

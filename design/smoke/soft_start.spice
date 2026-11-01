@@ -1,0 +1,23 @@
+* soft_start smoke: typical corner, 27 C, IBIAS 10 uA, VBG 1.2 V, EN rises at 1 us. SIMULATED.
+.include @DESIGN_INC@
+.lib @MODEL_FILE@ typical
+.lib @MODEL_FILE@ mimcap_typical
+.lib @MODEL_FILE@ cap_mim
+.lib @MODEL_FILE@ res_typical
+.include @NETLIST_DIR@/soft_start.spice
+Vdd vdd33 0 3.3
+Ib 0 ibias 10u
+Vbg vbg 0 1.2
+Ven en 0 PULSE(0 3.3 1u 10n 10n 1 2)
+Xdut ibias vbg en vref css vdd33 0 soft_start
+.control
+tran 100n 700u
+meas tran t10 WHEN v(vref)=0.12 RISE=1
+meas tran t90 WHEN v(vref)=1.08 RISE=1
+meas tran vfinal FIND v(vref) AT=690u
+meas tran vmax MAX v(vref)
+let tss = (t90-t10)/0.8
+echo "RESULT ss t_0to90pct_s= $&tss vfinal= $&vfinal vmax= $&vmax"
+quit
+.endc
+.end
