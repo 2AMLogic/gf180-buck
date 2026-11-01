@@ -41,7 +41,7 @@
       "spec": "README.md",
       "status": "adopted_at_interface",
       "covers": "1.20 V reference, 2 percent untrimmed (3 sigma), 3.3 V +/-10 percent supply",
-      "delta": "supply domain: needs a 3.3 V control rail derived from VIN at the 5 V target; load row is TBD in the sibling"
+      "delta": "supply domain: rail decided in spec/decision-records/0003-control-rail.md (dedicated VIN-fed linear 3.3 V regulator, 2.97-3.63 V at the pin; regulator block and this part's supply current still open); load row is TBD in the sibling"
     },
     {
       "block": "error_amplifier",
@@ -50,7 +50,7 @@
       "spec": "spec/target-spec.md",
       "status": "adopted_at_interface",
       "covers": "ratified (partial) 3.3 V op-amp target rows",
-      "delta": "supply domain; GBW into the type-III compensation load not yet checked against the sibling's recorded value"
+      "delta": "supply domain: rail decided in spec/decision-records/0003-control-rail.md (dedicated VIN-fed linear 3.3 V regulator, 2.97-3.63 V at the pin; supply current not yet read); GBW into the type-III compensation load not yet checked against the sibling's recorded value"
     },
     {
       "block": "pwm_and_current_limit_comparator",
@@ -59,7 +59,7 @@
       "spec": "README.md",
       "status": "adopted_at_interface",
       "covers": "ratified offset, noise, decision-time, kickback rows at 3.3 V",
-      "delta": "supply domain; current-limit sense input is the switch node (up to 6.0 V) against a 3.3 V part"
+      "delta": "supply domain: rail decided in spec/decision-records/0003-control-rail.md (dedicated VIN-fed linear 3.3 V regulator, 2.97-3.63 V at the pin; supply current not yet read); current-limit sense input is the switch node (up to 6.0 V) against a 3.3 V part"
     },
     {
       "block": "oscillator",
