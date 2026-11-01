@@ -3,6 +3,10 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-01
+
+- **PR #43**: Bump Repo Skills 0.24.7 -> 0.25.1
+
 ### 2026-10-27
 
 - **PR #40**: chore: untrack generated sweep_request.json
