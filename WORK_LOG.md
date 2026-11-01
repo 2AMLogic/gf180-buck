@@ -5,6 +5,9 @@ Maintained by the Guide role.
 
 ### 2026-11-01
 
+- **PR #56**: feat: scale VREF_SS to 0.6 V with a 1:1 divider in buck_top and add reference smoke
+- **Issue #53** (closed): VREF_SS ceiling (1.2 V) vs compensator Vref (0.6 V) mismatch at the top level
+- **Issue #21** (closed): T1 item 1 (design sources): transistor-level buck schematics (power stage, gate drive with dead time, PWM, soft start, current limit) and derived netlists with item-1 attestation
 - **PR #54**: feat: add compensator and top-level schematics, attest T1 item 1
 - **Issue #35** (closed): T1 item 1d: type-III network, top-level schematic, netlists and item-1 attestation
 - **PR #49**: feat: controller schematics and netlists for oscillator, PWM, soft start and Ron-sense OCP
