@@ -1,0 +1,19 @@
+#### gf180-buck :: project-local xschem configuration for design/.
+#### Passed to `klt netlist --rcfile design/xschemrc`. The PDK symbol directory
+#### comes from the same resolver sim/env.sh uses: GF180_VARIANT_DIR (set by
+#### `source sim/env.sh`), else GF180_PDK_ROOT, else the pinned install under
+#### ~/.volare. A wrong or missing path makes xschem silently emit pin-less
+#### placeholders, so check the netlist for auto-named nets (net1, net2, ...).
+set XSCHEM_LIBRARY_PATH {}
+append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library
+append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library/devices
+if { [info exists env(GF180_VARIANT_DIR)] && $env(GF180_VARIANT_DIR) ne {} } {
+  set GF180_PDK_ROOT $env(GF180_VARIANT_DIR)
+} elseif { [info exists env(GF180_PDK_ROOT)] && $env(GF180_PDK_ROOT) ne {} } {
+  set GF180_PDK_ROOT $env(GF180_PDK_ROOT)
+} else {
+  set GF180_PDK_ROOT $env(HOME)/.volare/gf180mcuD
+}
+append XSCHEM_LIBRARY_PATH :${GF180_PDK_ROOT}/libs.tech/xschem
+append XSCHEM_LIBRARY_PATH :${GF180_PDK_ROOT}/libs.tech/xschem/symbols
+set netlist_type spice

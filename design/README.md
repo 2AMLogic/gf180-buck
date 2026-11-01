@@ -61,3 +61,71 @@ point (Vin 5 V, L 3.3 uH, C_eff 6 uF, ESR 5 mOhm, 250 mA; ngspice 42):
 fc 149.924 kHz, PM 62.41 deg, GM 30.00 dB from `extract.py`, against
 fc 149.9237 kHz, PM 62.4101 deg from klt's own `transfer` metrics on the same
 run. That is one point, not the sweep.
+
+## `schematics/` and `netlists/` — power stage and gate drive (issue #33)
+
+Everything here is simulated, never measured. xschem sources in
+`schematics/`, committed netlists in `netlists/`, symbol search path in
+[`xschemrc`](xschemrc) (it reads the PDK from `GF180_VARIANT_DIR`, so
+`source sim/env.sh` first).
+
+| Block | Schematic | Netlist | Ports |
+|---|---|---|---|
+| `power_stage` | `schematics/power_stage.sch` | `netlists/power_stage.spice` | `GH GL VIN SW GND` |
+| `gate_drive` | `schematics/gate_drive.sch` | `netlists/gate_drive.spice` | `PWM VDD3 VIN GND GH GL` |
+
+Regenerate and check (never raw `xschem`):
+
+    source sim/env.sh
+    klt netlist design/schematics/<block>.sch -o design/netlists/<block>.spice --rcfile design/xschemrc --block --pdk gf180mcuD
+    klt netlist design/schematics/<block>.sch -o design/netlists/<block>.spice --rcfile design/xschemrc --block --pdk gf180mcuD --check --ignore-comments   # status: match
+
+`--ignore-comments` is needed because xschem writes the absolute `** sch_path:`
+of the checkout into the netlist; every non-comment line is still compared.
+
+### `power_stage` — sizing (R3, R9, R18)
+
+HS `pfet_06v0` (source and body on VIN, no bootstrap) and LS `nfet_06v0`
+(synchronous), L = 0.55 µm / 0.70 µm, the geometry the sibling measured.
+`Ron·W` is taken from the pinned reference `low_side_power_switch`
+(`reuse.lock.json`, `gf180-gate-driver` `98ca4a8`, `spec/low-side-power-switch.md`
+§2.1), `tt`, 5.0 V gate drive:
+
+| | `Ron·W` 27 °C | W | Ron 27 °C | `Ron·W` 125 °C | Ron 125 °C |
+|---|---|---|---|---|---|
+| LS `nfet_06v0` | 2.2246 Ω·mm | 224 × 100 µm = 22.4 mm | 99.3 mΩ | 3.0903 Ω·mm | 138.0 mΩ |
+| HS `pfet_06v0` | 7.1427 Ω·mm | 300 × 100 µm = 30.0 mm | 238.1 mΩ | 9.2656 Ω·mm | 308.9 mΩ |
+
+Method: record 0001 §4.3 leaves ≈ 100 mW for the on-die path, of which a
+weighted on-die resistance of 0.15 Ω is the feasibility figure it uses
+(0.5² × 0.15 = 37.5 mW). With D = Vout/Vin = 0.36, conduction is
+I²·(D·R_hs + (1−D)·R_ls); for a fixed weighted resistance the total width is
+smallest at W_hs/W_ls = √(D·ρ_p / ((1−D)·ρ_n)) = 1.345, which gives
+W_ls = 22.2 mm and W_hs = 29.9 mm for 0.15 Ω; the instance counts round that to
+the table.
+
+- Weighted resistance, 27 °C: 0.36 × 0.2381 + 0.64 × 0.0993 = **0.1493 Ω** → 37.3 mW at 500 mA.
+- Weighted resistance, 125 °C (`tt`): 0.36 × 0.3089 + 0.64 × 0.1380 = **0.1995 Ω** → 49.9 mW. R9 is graded at C-typ; R10 has no floor (record 0001 §8 item 2).
+- **Not included**: metal and via resistance from pad to switch (post-layout, #22-#24), gate charge, the 2.4× full-grid `Ron·W` spread, `Ron·W` at the 5.5 V gate drive of Vin max.
+- **Deviation from the adopted reference, recorded**: the LS device, L and `Ron·W` are the sibling's; its gate drive here is the 0-VIN swing (4.5-5.5 V), so 5.5 V is beyond the sibling's measured 5.0 V (`reuse.lock.json` `delta`). The sibling's flyback diode is not used; dead-time body-diode conduction replaces it. No second LS design was sized.
+- The unit instance is W = 100 µm, nf = 10: the PDK model bin ends at W = 100.01 µm per instance, so a wider instance fails with "could not find a valid modelname".
+- Width is a drawn gate width; layout (fingers, strap widths against R18) is #22.
+
+### `gate_drive` — level shift, dead time, drivers
+
+Signal path (all `06v0` devices are in the VIN domain, all `03v3` devices in the VDD3 domain):
+
+1. `PWM` (3.3 V domain, 1 = HS on) → two `03v3` inverters → `PWMB`, `PWMT`.
+2. **VIN-referenced level shift**: two `nfet_06v0` pull-downs (gates `PWMT`, `PWMB`, 3.3 V swing) and a cross-coupled `pfet_06v0` pair to VIN. Output `Q` swings 0-VIN.
+3. **Non-overlap** by feedback from the actual power-gate nodes: `HD0 = NAND(A, LSOFFD)` where `LSOFFD` is `GL` through a low-threshold sense inverter and a delay pair; `LD0 = NOR(A, HSOND)` where `HSOND` is `GH` through a high-threshold sense inverter and a delay pair. The delay pairs (long-L `06v0` inverters, L = 3.5 µm) set the dead time; the turn-off paths contain no delay.
+4. Two 6-stage tapered inverter chains (n widths 3, 10, 34, 115, 390, 1400 µm, p = 3×n) drive `GH` and `GL`.
+
+The high-side gate swings 0-VIN, which is GND-referenced, so no bootstrap or boosted rail exists (R3). "VIN-referenced" means the up-shift of the control signal to the VIN domain.
+
+**§8.8 (3.3 V-class controller against 5 V gates), stated.** The controller-side `PWM` is a 0-3.3 V (2.97-3.63 V) signal and only ever drives (a) `03v3` gates and (b) two `06v0` NMOS gates, whose 6.0 V ceiling it is far below. No VIN-domain node (up to 5.5 V, 6.0 V peak) is connected to a `03v3` terminal: the sense inverters read `GH`/`GL` with `06v0` devices and their outputs stay in the VIN domain. The gate drivers and the level shifter's high side run from VIN, not from the 3.3 V rail (record 0003 §2.3). What this does **not** establish: the `nfet_06v0` pull-down strength at Vgs = 2.97 V in `ss` at -40 °C (corner run, #25), and dead-time tolerance of the controller (the window R14 asks for) across corners.
+
+### Dead-time smoke — `sim/dead-time/`
+
+`sim/dead-time/run.sh` runs the real `gate_drive` into the real `power_stage` (0.5 A DC sink on SW, Vin 5.0 V, VDD3 3.3 V, 500 ns period, D = 0.36) through `klt sim --backend local`: **one** operating point, typical process, 27 °C, 20 ps step, stop 2.6 µs. The overlap detector flags any time GL > 0.5 V and VIN − GH > 0.5 V; a negative control with simultaneous complementary gate commands must read 1. Record: `sim/dead-time/records/`.
+
+Result of the committed record (simulated, not measured): overlap 0 (control 1), dead time LS-off → HS-on 2.96 ns and HS-off → LS-on 3.17 ns at the 0.5 V thresholds. **Not established**: 0.5 V is a conservative stand-in, not the extracted minimum Vth over the corners (R14 asks for that), and 1-6 ns across C-full is untested. Observation, not a claim: SW undershoots to -0.885 V in this bench (no package model), past R2's -0.7 V floor; that row is graded in #25.
