@@ -20,7 +20,7 @@ _None._
 
 `loom:important`; taken before unlabelled work.
 
-- **#17**: design: averaged power-stage model and type-III compensator with AC loop-gain sweep over P-T tolerances (R13a, T1 item 1)
+_None._
 
 ## Ready
 
@@ -51,10 +51,11 @@ PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 Issues carrying `loom:curated`.
 
 - **#5**: Track the gap to T1 (klayout-tools design-evidence-tiers.md) *(curated)*
-- **#17**: design: averaged power-stage model and type-III compensator with AC loop-gain sweep over P-T tolerances (R13a, T1 item 1) *(curated)*
+- **#21**: T1 item 1 (design sources): transistor-level buck schematics (power stage, gate drive with dead time, PWM, soft start, current limit) and derived netlists with item-1 attestation *(curated)*
 - **#26**: T1 item 6 (Monte Carlo): classify the statistical rows and produce klt yield evidence for R4 (and any other matching-dependent row) *(curated)*
 - **#29**: T1 item 9 (testbenches shipped): testbench inventory and klt signoff --attest 9 envelope *(curated)*
 - **#45**: spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device *(curated)*
+- **#53**: VREF_SS ceiling (1.2 V) vs compensator Vref (0.6 V) mismatch at the top level *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -70,12 +71,12 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 1 |
 | Very important | 0 |
-| Important | 1 |
+| Important | 0 |
 | Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 5 |
+| Curated | 6 |
 | Architect / Hermit proposals | 0 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
