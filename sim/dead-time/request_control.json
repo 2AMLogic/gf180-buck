@@ -1,0 +1,38 @@
+{
+ "netlist": "control.spice",
+ "engine": "ngspice",
+ "models": {
+  "pdk": "gf180mcuD",
+  "lib": "libs.tech/ngspice/sm141064.ngspice"
+ },
+ "analysis": {
+  "kind": "tran",
+  "args": "20p 2.6u"
+ },
+ "corners": {
+  "process": [
+   "typical"
+  ]
+ },
+ "measurements": [
+  {
+   "name": "overlap_max",
+   "spice": ".meas tran overlap_max MAX v(ov) FROM=1u TO=2.6u",
+   "unit": "1"
+  },
+  {
+   "name": "sw_max",
+   "spice": ".meas tran sw_max MAX v(sw) FROM=1u TO=2.6u",
+   "unit": "V"
+  },
+  {
+   "name": "sw_min",
+   "spice": ".meas tran sw_min MIN v(sw) FROM=1u TO=2.6u",
+   "unit": "V"
+  }
+ ],
+ "options": {
+  "keep_artifacts": true,
+  "timeout_s": 300
+ }
+}

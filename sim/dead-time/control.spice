@@ -1,0 +1,31 @@
+* gf180-buck dead-time NEGATIVE CONTROL (issue #33): same power stage and overlap
+* detector as deadtime.spice, gates driven by ideal complementary sources with NO
+* dead time. The detector must report overlap_max = 1 here.
+* (control for) Body for `klt sim` (no .control).
+* Power stage + gate drive from design/netlists/, real switch gate capacitance,
+* a 0.5 A DC sink on SW standing in for the inductor (inductor current changes
+* by < 1 mA over the ns-scale dead-time window; no bond-wire or package model).
+* ONE operating point: typical process, 27 C, Vin 5.0 V, VDD3 3.3 V.
+* Not a corner run and not a claim against R14 (see sim/dead-time/README.md).
+* --- inlined from gf180mcuD/libs.tech/ngspice/design.ngspice (sha256 091cb530bf85160a1f07878fb81f789ca367d018991c8ab41a584cd1a85c6692) ---
+.param
++  sw_stat_global = 0
++  sw_stat_mismatch = 0
++ mc_skew = 3
++ res_mc_skew = 3
++ cap_mc_skew = 3
++  fnoicor = 0
+* --- end inline ---
+.options gmin=1e-13
+.include ../../design/netlists/power_stage.spice
+
+.param iload=0.5 vin=5 vdd3=3.3 per=500n pw=180n vtn=0.5 vtp=0.5
+Vvin vin 0 DC {vin}
+Xps gh gl vin sw 0 power_stage
+Vgh ghs 0 PULSE({vin} 0 20n 1n 1n {pw} {per})
+Vgl gls 0 PULSE(0 {vin} {pw+22n} 1n 1n {per-pw-2n} {per})
+Rgh ghs gh 20
+Rgl gls gl 20
+Iload sw 0 DC {iload}
+Cpad sw 0 0.5p
+Bov ov 0 V = (v(gl) > {vtn} && (v(vin) - v(gh)) > {vtp}) ? 1 : 0

@@ -71,3 +71,14 @@ commented in `buck.spice`.
   `klt sim` requests so they go to the batch fleet.
 - `lib/pdk_env.sh` is adopted from `2AMLogic/gf180-sram` by pinned reference;
   see [`../reuse.lock.json`](../reuse.lock.json).
+
+## Dead-time smoke
+
+```
+sim/dead-time/run.sh     # one operating point via `klt sim --backend local` + a no-dead-time negative control
+```
+
+Real `gate_drive` into the real `power_stage` (netlists from `design/netlists/`),
+typical process, 27 °C, Vin 5.0 V, 0.5 A DC sink on SW. Writes a new append-only
+`sim/dead-time/records/<UTC>-<sha>.json`. Simulated, not measured; not a corner
+run. See `design/README.md`.
