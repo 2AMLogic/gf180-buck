@@ -5,6 +5,10 @@ Maintained by the Guide role.
 
 ### 2026-11-01
 
+- **PR #50**: docs: record 162-point averaged loop-gain sweep run on the batch fleet
+- **Issue #17** (closed): design: averaged power-stage model and type-III compensator with AC loop-gain sweep over P-T tolerances (R13a, T1 item 1)
+- **PR #48**: feat: power-stage and gate-drive schematics with dead-time smoke
+- **Issue #33** (closed): T1 item 1b: power-stage and gate-drive schematics with dead time (HS/LS, level shift)
 - **PR #37**: docs(spec): record the 3.3 V control-rail decision
 - **Issue #32** (closed): T1 item 1a: record the 3.3 V control-rail choice (residual 3)
 - **PR #43**: Bump Repo Skills 0.24.7 -> 0.25.1
