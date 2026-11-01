@@ -1,0 +1,32 @@
+v {xschem version=3.4.7 file_version=1.2
+* ocp_sense symbol: high-side Ron-sense current limit
+* Pin order == the .subckt pin order of the netlisted block.
+}
+G {}
+K {type=subcircuit
+format="@name @pinlist ocp_sense"
+template="name=x1"
+}
+V {}
+S {}
+E {}
+L 4 -80 -120 80 -120 {}
+L 4 -80 160 80 160 {}
+L 4 -80 -120 -80 160 {}
+L 4 80 -120 80 160 {}
+B 5 -82 -102 -78 -98 {name=SW dir=in pinnumber=1}
+T {SW} -72 -104 0 0 0.2 0.2 {}
+B 5 -82 -62 -78 -58 {name=HS_ON dir=in pinnumber=2}
+T {HS_ON} -72 -64 0 0 0.2 0.2 {}
+B 5 -82 -22 -78 -18 {name=IBIAS dir=in pinnumber=3}
+T {IBIAS} -72 -24 0 0 0.2 0.2 {}
+B 5 78 -102 82 -98 {name=TRIP dir=out pinnumber=4}
+T {TRIP} 72 -104 0 1 0.2 0.2 {}
+B 5 -82 18 -78 22 {name=VIN dir=inout pinnumber=5}
+T {VIN} -72 16 0 0 0.2 0.2 {}
+B 5 -82 58 -78 62 {name=VDD33 dir=inout pinnumber=6}
+T {VDD33} -72 56 0 0 0.2 0.2 {}
+B 5 -82 98 -78 102 {name=VSS dir=inout pinnumber=7}
+T {VSS} -72 96 0 0 0.2 0.2 {}
+T {@name} -80 -130 0 0 0.25 0.25 {}
+T {ocp_sense} -80 170 0 0 0.25 0.25 {}

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # design/netlist.sh -- (re)generate or check the controller netlists.
 #
-#   design/netlist.sh           # export design/schematics/*.sch -> design/netlists/*.spice
-#   design/netlist.sh --check   # klt netlist --check per schematic; exit 0 only if all 'match'
+#   design/netlist.sh                       # export design/schematics/*.sch -> design/netlists/*.spice
+#   design/netlist.sh --check               # klt netlist --check per schematic; exit 0 only if all 'match'
+#   design/netlist.sh [--check] BLOCK...    # only the named blocks (the item-1 inventory checks one each)
 #
 # Netlisting goes through `klt netlist` (never raw xschem: it forces headless
 # flags and kills a hung run). xschem stamps an absolute `** sch_path:` comment
@@ -11,8 +12,10 @@
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$root/sim/env.sh" >/dev/null
-blocks=(osc_ramp pwm_comp soft_start ocp_sense)
-mode="${1:-write}"
+blocks=(power_stage gate_drive osc_ramp pwm_comp soft_start ocp_sense compensator buck_top)
+mode=write
+if [[ "${1:-}" == "--check" ]]; then mode=--check; shift; fi
+if [[ $# -gt 0 ]]; then blocks=("$@"); fi
 rc=0
 for b in "${blocks[@]}"; do
   sch="$root/design/schematics/$b.sch"
@@ -25,7 +28,8 @@ for b in "${blocks[@]}"; do
   else
     mkdir -p "$root/design/netlists"
     klt netlist "${common[@]}" -o "$out" "$sch" >/dev/null
-    sed -i "s|^\*\* sch_path: .*|** sch_path: design/schematics/$b.sch|" "$out"
+    # every descended block carries its own sch_path line: rewrite each to its repo-relative path
+    sed -i -E 's|^\*\* sch_path: .*/design/schematics/([^/]+\.sch)$|** sch_path: design/schematics/\1|' "$out"
     echo "wrote design/netlists/$b.spice"
   fi
 done

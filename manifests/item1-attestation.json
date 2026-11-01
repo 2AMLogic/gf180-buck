@@ -1,0 +1,354 @@
+{
+  "schema_version": 1,
+  "kind": "generic",
+  "status": "pass",
+  "t1_item": 1,
+  "summary": "T1 item 1 (Design sources): 36/36 attestation checks passed (klt signoff --attest)",
+  "source": "design/inventory-item1.json",
+  "attestation": {
+    "producer": "klt signoff --attest",
+    "inventory_schema_version": 1,
+    "hash_algorithm": "sha256-raw-bytes",
+    "check_count": 36,
+    "passed_count": 36,
+    "checks": [
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/compensator.md",
+        "passed": true,
+        "content_hash": "sha256:783396e1b4429ed2d16775b94ebb9ab03ce2b5d926a32bedbdf0d69e6b1907d9"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/netlist.sh",
+        "passed": true,
+        "content_hash": "sha256:a2677fecac97496ade3bf795e130abfb135ccfe4e7398c36c4898c0fc9ea2503"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/buck_top.sch",
+        "passed": true,
+        "content_hash": "sha256:0ae30f3ca5f7ae6791f8d07e6dd6fae43a89d336dd35b41caebd8e3fb8c06e45"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/compensator.sch",
+        "passed": true,
+        "content_hash": "sha256:80935d1feacc948629ad98cb06c77bf194dc17fbf6382e8f6e607431c1712bcc"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/compensator.sym",
+        "passed": true,
+        "content_hash": "sha256:a4196725674e25a9b8cab78bd97413fec83f37c13f26e680114e8b6a81f7d9a1"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/gate_drive.sch",
+        "passed": true,
+        "content_hash": "sha256:3f786d08b3cb9da33e19d57ccf0b51359e2bde6e92a2e72b973ce97e1a6ad181"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/gate_drive.sym",
+        "passed": true,
+        "content_hash": "sha256:e9861a2408733a7ed65244f9a381cb71e6b706967f3fefa64994b715ce3a6b18"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/gen_schematics.py",
+        "passed": true,
+        "content_hash": "sha256:f41cba83035688c6f2d259f16ac6af822c592c7c8cdadb5258a04e0d4cd726be"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/ocp_sense.sch",
+        "passed": true,
+        "content_hash": "sha256:da78d72ad490d1ef73da66d3261102937a1f3deb2faa0d32febdb8b30607cff0"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/ocp_sense.sym",
+        "passed": true,
+        "content_hash": "sha256:d874325166f2cba91abc0e35270b48ef6ee9ea18a2dfcd45f03af21b86e895d5"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/opamp_two_stage.sym",
+        "passed": true,
+        "content_hash": "sha256:1592c12dfd7c6a8a9b4b5fe5a1d8d812fa4c14c577939570952caa9d4a5e4841"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/osc_ramp.sch",
+        "passed": true,
+        "content_hash": "sha256:e70da1996ef242707d48eec85d9804ddf6d90d9edf165c33d357f6ca82478a14"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/osc_ramp.sym",
+        "passed": true,
+        "content_hash": "sha256:f62f3f244943063460b456641f2b557bbb1c8753d646eedcc43d337004b2dc05"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/power_stage.sch",
+        "passed": true,
+        "content_hash": "sha256:21a4935573fbc591dcd1b79320e582281a2fbb36c105057745b697623861c041"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/power_stage.sym",
+        "passed": true,
+        "content_hash": "sha256:4bb1cd0fb92893a37c51ceb9b07f9fc308a5ece0c5dcc77dcb7784d4e5318f71"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/pwm_comp.sch",
+        "passed": true,
+        "content_hash": "sha256:34d188b7aa6b1c2ae6097347f2fd5220855b46d7a69a16152dfe6d90fae4c3a0"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/pwm_comp.sym",
+        "passed": true,
+        "content_hash": "sha256:6d2db948256c04c494379cc5018ad9fb90e04e0eda1b6b6a0c863d3e15af5192"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/soft_start.sch",
+        "passed": true,
+        "content_hash": "sha256:24e68b81171af9d9d13611f06a2df965caca9b13deb2dcb5d0f2fff2e24fdb4f"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/soft_start.sym",
+        "passed": true,
+        "content_hash": "sha256:a83374ba544ab1b052dec7b9a05b2453d531327c240b27f0a5b1ef0ad2b5e044"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/schematics/xschemrc",
+        "passed": true,
+        "content_hash": "sha256:520d92a265a073327edd6f9e08961f2df8bac9b063620583602d4ccb2ae7f23b"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/netlists/buck_top.spice",
+        "passed": true,
+        "content_hash": "sha256:c4ec22c9fa5fe108818ac933e31cff287e8a58adc36655732e31817f495e45a6"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/netlists/compensator.spice",
+        "passed": true,
+        "content_hash": "sha256:9f789035ea6aba254990ff25bd72a4ae2f5f54cbd125a2943bdd8aa2edf88eda"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/netlists/gate_drive.spice",
+        "passed": true,
+        "content_hash": "sha256:ec35b95f34914e5a0a7f5e3d69dbb78acc62fd234950e2c860d6d6627b95cf60"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/netlists/ocp_sense.spice",
+        "passed": true,
+        "content_hash": "sha256:7ede53932af462e0a75b61d4aeaeb205a4486d3a1bc5cca25b547dd9b5e51d9d"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/netlists/osc_ramp.spice",
+        "passed": true,
+        "content_hash": "sha256:cf1a39d7796ddc9487ef91511449ac9c772c0678e959336faa6ffbbdae79fd1a"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/netlists/power_stage.spice",
+        "passed": true,
+        "content_hash": "sha256:120f80b747d6632e243b4545d6acee601148372e2c1e064a374c898578385fb1"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/netlists/pwm_comp.spice",
+        "passed": true,
+        "content_hash": "sha256:cb2750051d6476d1b698d128ae9e0059a1676e5159906c5f42d8ac01fb57c62f"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/netlists/soft_start.spice",
+        "passed": true,
+        "content_hash": "sha256:2516c15cac704a1a05b3001dd9635050b53a07fc6c2c9040e91fd3dd20a57480"
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/netlists/buck_top.spice",
+        "generator": "klt netlist (design/netlist.sh)",
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "buck_top"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/netlists/compensator.spice",
+        "generator": "klt netlist (design/netlist.sh)",
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "compensator"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/netlists/gate_drive.spice",
+        "generator": "klt netlist (design/netlist.sh)",
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "gate_drive"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/netlists/ocp_sense.spice",
+        "generator": "klt netlist (design/netlist.sh)",
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "ocp_sense"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/netlists/osc_ramp.spice",
+        "generator": "klt netlist (design/netlist.sh)",
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "osc_ramp"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/netlists/power_stage.spice",
+        "generator": "klt netlist (design/netlist.sh)",
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "power_stage"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/netlists/pwm_comp.spice",
+        "generator": "klt netlist (design/netlist.sh)",
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "pwm_comp"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/netlists/soft_start.spice",
+        "generator": "klt netlist (design/netlist.sh)",
+        "argv": [
+          "bash",
+          "design/netlist.sh",
+          "--check",
+          "soft_start"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      }
+    ]
+  },
+  "provenance": {
+    "klt_version": "0.8.1.dev1012+g31b24f439f3f",
+    "klayout_version": null,
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "path": {
+        "path": "design/inventory-item1.json",
+        "scope": "repo"
+      },
+      "content_hash": "sha256:eac20f738125c4d337c6355c61ec0f590ecdd70227b2fa271ac866ec4cdb97c4"
+    }
+  }
+}
