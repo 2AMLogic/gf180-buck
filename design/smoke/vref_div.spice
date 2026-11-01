@@ -1,0 +1,44 @@
+* vref_div smoke (issue #53): soft_start + 1:1 divider (RREF1/RREF2 = 1 Meg each, as in buck_top) -> EA reference input.
+* Typical corner, 27 C, IBIAS 10 uA. EA input modelled as 2 pF (MOS gate, no DC load). SIMULATED.
+* Run 1: VBG 1.20 V nominal, EN rises at 1 us. Runs 2/3: VBG 1.10 / 1.30 V extremes. Run 4: EN held low.
+.include @DESIGN_INC@
+.lib @MODEL_FILE@ typical
+.lib @MODEL_FILE@ mimcap_typical
+.lib @MODEL_FILE@ cap_mim
+.lib @MODEL_FILE@ res_typical
+.include @NETLIST_DIR@/soft_start.spice
+Vdd vdd33 0 3.3
+Ib 0 ibias 10u
+Vbg vbg 0 1.2
+Ven en 0 PULSE(0 3.3 1u 10n 10n 1 2)
+Xdut ibias vbg en vss_o css vdd33 0 soft_start
+RREF1 vss_o vref 1Meg
+RREF2 vref 0 1Meg
+Cea vref 0 2p
+.control
+tran 100n 700u
+meas tran t10 WHEN v(vref)=0.06 RISE=1
+meas tran t90 WHEN v(vref)=0.54 RISE=1
+meas tran vref_nom FIND v(vref) AT=690u
+meas tran vss_nom FIND v(vss_o) AT=690u
+let tss = (t90-t10)/0.8
+set s_tss = $&tss
+set s_nom = $&vref_nom
+set s_ss = $&vss_nom
+alter vbg = 1.1
+tran 100n 700u
+meas tran vref_lo FIND v(vref) AT=690u
+set s_lo = $&vref_lo
+alter vbg = 1.3
+tran 100n 700u
+meas tran vref_hi FIND v(vref) AT=690u
+set s_hi = $&vref_hi
+alter vbg = 1.2
+alter ven pulse = [ 0 0 1u 10n 10n 1 2 ]
+tran 100n 100u
+meas tran vref_en0 MAX v(vref)
+set s_en0 = $&vref_en0
+echo "RESULT vref_div vref_nom= $s_nom vss_nom= $s_ss tss_0to90pct_s= $s_tss vref_vbg1p1= $s_lo vref_vbg1p3= $s_hi vref_en_low_max= $s_en0"
+quit
+.endc
+.end

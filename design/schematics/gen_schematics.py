@@ -375,8 +375,8 @@ def buck_top():
         "Joins the blocks of #33 (power_stage, gate_drive), #34 (osc_ramp, pwm_comp, soft_start, ocp_sense) and the compensator.",
         "L and Cout are external: SW leaves the die, the LC filter returns on VOUT (sense input).  Bias generator, bandgap (VBG) and the",
         "3.3 V regulator (VDD33) are not in this design's blocks yet: they are top-level ports.  All grounds are GND (blocks' VSS -> GND).",
-        "Integration choices: HS_ON = PWM (the high-side command; ocp_sense blanks ~50 ns).  VREF_SS -> compensator VREF as documented,",
-        "but soft_start ends at VBG = 1.2 V and the design-to Vref is 0.6 V: recorded open in design/README.md, not resolved here.",
+        "Integration choices: HS_ON = PWM (the high-side command; ocp_sense blanks ~50 ns).  soft_start ends at VBG = 1.2 V but the",
+        "design-to Vref is 0.6 V, so a 1:1 divider (RREF1/RREF2) scales VREF_SS to the compensator VREF (issue #53; compensator.md).",
     ])
     for k, n in (("iopin", "VIN"), ("iopin", "VDD33"), ("iopin", "GND"), ("iopin", "SW"),
                  ("ipin", "VOUT"), ("ipin", "EN"), ("ipin", "VBG"),
@@ -393,7 +393,9 @@ def buck_top():
                                    "CSS": "CSS", "VDD33": "VDD33", "VSS": "GND"})
     s.block("XOCP", "ocp_sense", {"SW": "SW", "HS_ON": "PWM", "IBIAS": "IBIAS_OCP", "TRIP": "TRIP",
                                    "VIN": "VIN", "VDD33": "VDD33", "VSS": "GND"})
-    s.block("XCOMP", "compensator", {"VOUT": "VOUT", "VREF": "VREF_SS", "IBIAS": "IBIAS_EA", "VC": "VC",
+    s.ires("RREF1", "VREF_SS", "VREF", "1Meg")
+    s.ires("RREF2", "VREF", "GND", "1Meg")
+    s.block("XCOMP", "compensator", {"VOUT": "VOUT", "VREF": "VREF", "IBIAS": "IBIAS_EA", "VC": "VC",
                                       "VDD33": "VDD33", "GND": "GND"})
     s.block("XGD", "gate_drive", {"PWM": "PWM", "VDD3": "VDD33", "VIN": "VIN", "GND": "GND",
                                    "GH": "GH", "GL": "GL"})
