@@ -5,6 +5,8 @@ Maintained by the Guide role.
 
 ### 2026-11-01
 
+- **PR #37**: docs(spec): record the 3.3 V control-rail decision
+- **Issue #32** (closed): T1 item 1a: record the 3.3 V control-rail choice (residual 3)
 - **PR #43**: Bump Repo Skills 0.24.7 -> 0.25.1
 
 ### 2026-10-27

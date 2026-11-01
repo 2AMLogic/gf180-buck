@@ -8,7 +8,7 @@ between the markers is machine-generated.
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-- **#37**: docs(spec): record the 3.3 V control-rail decision
+- **#46**: docs: add errata to control-rail record for rcosc cite, pass device, sibling Iq
 
 ## Very Important
 
@@ -32,7 +32,7 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#32**: T1 item 1a: record the 3.3 V control-rail choice (residual 3)
+- **#45**: spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device
 
 ## PRs Awaiting Review
 
@@ -44,7 +44,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#37**: docs(spec): record the 3.3 V control-rail decision
+- **#46**: docs: add errata to control-rail record for rcosc cite, pass device, sibling Iq
 
 ## Proposed
 
@@ -54,7 +54,7 @@ Issues carrying `loom:curated`.
 - **#17**: design: averaged power-stage model and type-III compensator with AC loop-gain sweep over P-T tolerances (R13a, T1 item 1) *(curated)*
 - **#26**: T1 item 6 (Monte Carlo): classify the statistical rows and produce klt yield evidence for R4 (and any other matching-dependent row) *(curated)*
 - **#29**: T1 item 9 (testbenches shipped): testbench inventory and klt signoff --attest 9 envelope *(curated)*
-- **#32**: T1 item 1a: record the 3.3 V control-rail choice (residual 3) *(curated)*
+- **#45**: spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device *(curated)*
 
 ## Proposed (Architect / Hermit)
 
