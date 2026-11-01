@@ -5,6 +5,10 @@ Maintained by the Guide role.
 
 ### 2026-11-01
 
+- **PR #54**: feat: add compensator and top-level schematics, attest T1 item 1
+- **Issue #35** (closed): T1 item 1d: type-III network, top-level schematic, netlists and item-1 attestation
+- **PR #49**: feat: controller schematics and netlists for oscillator, PWM, soft start and Ron-sense OCP
+- **Issue #34** (closed): T1 item 1c: controller schematics (oscillator/ramp, PWM comparator, soft start, Ron-sense current limit)
 - **PR #50**: docs: record 162-point averaged loop-gain sweep run on the batch fleet
 - **Issue #17** (closed): design: averaged power-stage model and type-III compensator with AC loop-gain sweep over P-T tolerances (R13a, T1 item 1)
 - **PR #48**: feat: power-stage and gate-drive schematics with dead-time smoke
