@@ -1,0 +1,23 @@
+* ocp_sense smoke, forward overcurrent: typical corner, 27 C, VIN 5 V, IBIAS 10 uA.
+* HS_ON high 1 us..4 us. SW = VIN - Vdrop, Vdrop ramps 0 -> 0.4 V from 1.2 us over 3 us. SIMULATED.
+.include @DESIGN_INC@
+.lib @MODEL_FILE@ typical
+.lib @MODEL_FILE@ mimcap_typical
+.lib @MODEL_FILE@ cap_mim
+.lib @MODEL_FILE@ res_typical
+.include @NETLIST_DIR@/ocp_sense.spice
+Vdd vdd33 0 3.3
+Vin vin 0 5
+Ib 0 ibias 10u
+Vh hs 0 PULSE(0 3.3 1u 1n 1n 3u 10u)
+Esw sw 0 VALUE={5 - 0.4*min(max((time-1.2u)/3u,0),1)*v(hs)/3.3}
+Xdut sw hs ibias trip vin vdd33 0 ocp_sense
+.control
+tran 1n 6u
+meas tran trip_max MAX v(trip) FROM=1u TO=4.2u
+meas tran t_trip WHEN v(trip)=1.65 RISE=1
+let vd_at_trip = 0.4*(t_trip-1.2e-6)/3e-6
+echo "RESULT ocp_fwd trip_max_V= $&trip_max t_trip_s= $&t_trip vdrop_at_trip_V= $&vd_at_trip"
+quit
+.endc
+.end

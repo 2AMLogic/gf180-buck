@@ -1,0 +1,18 @@
+#### gf180-buck :: project-local xschem configuration for design/schematics/.
+####
+#### Used by `klt netlist --rcfile design/schematics/xschemrc`.  Symbol search
+#### path = xschem's own device library (ipin/opin/iopin/lab_pin) plus the
+#### gf180mcu PDK symbols.  The PDK directory is the one sim/env.sh resolves
+#### (GF180_VARIANT_DIR); without it, the pinned simulation variant D under
+#### ~/.volare.  Netlisting needs symbols only, not models, so any gf180mcu
+#### variant works; the pin is for simulation (sim/pdk.json), not for symbols.
+set XSCHEM_LIBRARY_PATH {}
+append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library/devices
+if { [info exists env(GF180_VARIANT_DIR)] && $env(GF180_VARIANT_DIR) ne {} } {
+  set GF180_ROOT $env(GF180_VARIANT_DIR)
+} else {
+  set GF180_ROOT $env(HOME)/.volare/gf180mcuD
+}
+append XSCHEM_LIBRARY_PATH :${GF180_ROOT}/libs.tech/xschem/symbols
+append XSCHEM_LIBRARY_PATH :[file dirname [info script]]
+set netlist_type spice
