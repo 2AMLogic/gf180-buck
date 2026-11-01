@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "kind": "generic",
+  "status": "pass",
+  "t1_item": 2,
+  "summary": "T1 item 2 (Layout): 3/3 attestation checks passed (klt signoff --attest)",
+  "source": "layout/buck.gds",
+  "attestation": {
+    "producer": "klt signoff --attest",
+    "hash_algorithm": "sha256-raw-bytes",
+    "check_count": 3,
+    "passed_count": 3,
+    "checks": [
+      {
+        "check": "stream_readable",
+        "role": "layout",
+        "passed": true,
+        "content_hash": "sha256:0d3d4c3a09391cab7198eea829b0649636eacff7cf2ac148386594d8da566c0c"
+      },
+      {
+        "check": "top_cell_non_empty",
+        "role": "layout",
+        "passed": true,
+        "top_cells": [
+          "BUCK_POWER"
+        ]
+      },
+      {
+        "check": "dbu_on_grid",
+        "role": "layout",
+        "passed": true,
+        "dbu": 0.001
+      }
+    ]
+  },
+  "provenance": {
+    "klt_version": "0.8.1.dev1016+gbfe2862d8457",
+    "klayout_version": "0.30.12",
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "path": {
+        "path": "layout/buck.gds",
+        "scope": "repo"
+      },
+      "content_hash": "sha256:0d3d4c3a09391cab7198eea829b0649636eacff7cf2ac148386594d8da566c0c"
+    },
+    "regeneration": {
+      "generator": "python3 layout/gen_layout.py",
+      "regenerated_hash": "sha256:0d3d4c3a09391cab7198eea829b0649636eacff7cf2ac148386594d8da566c0c"
+    }
+  }
+}
