@@ -52,15 +52,30 @@ reaches -180 inside 100 Hz - 20 MHz.
 
 ### Status of the sweep record
 
-**No 162-point record is committed yet.** The batch fleet runner image runs
-`klt 0.7.0`, which lacks `corners.params`, `measurements[].transfer` and
-`options.complex_vectors` (job `klt-sim-6014a677233b` exited 87,
-`batch_runner_feature_unsupported`; tracked at 2AMLogic/klayout-tools#3676).
-The grid was not run locally. Local single-point debug probe at the nominal
-point (Vin 5 V, L 3.3 uH, C_eff 6 uF, ESR 5 mOhm, 250 mA; ngspice 42):
-fc 149.924 kHz, PM 62.41 deg, GM 30.00 dB from `extract.py`, against
-fc 149.9237 kHz, PM 62.4101 deg from klt's own `transfer` metrics on the same
-run. That is one point, not the sweep.
+Two 162-point records are committed in `averaged/records/` (simulated, not
+measured). Both ran on the Spot batch fleet (jobs `klt-sim-a298dda7effa` and
+`klt-sim-361f1a84fa74`, runner klt 0.8.0, ngspice 46, deck sha256 `1b953b6413df...`,
+request sha256 `41eea10aa550...`) and carry the same `results_sha256`
+`781e1a29003df405`, so a re-run reproduced the numbers to the printed precision.
+The earlier batch blocker (runner image on klt 0.7.0, klayout-tools#3676) is
+resolved: the runner now reports every required feature supported.
+
+Result: 114 of 162 points pass all three bounds; **48 fail**, all on fc.
+PM min 56.27 deg and GM min 22.30 dB, so PM and GM hold everywhere; fc spans
+65.858..245.042 kHz. Every failing point is C_eff = 12 uF with fc below the
+100 kHz floor (lowest 65.858 kHz); the failures are spread evenly over Vin, L,
+ESR and load (the load axis only moves the operating point, per section 0.2).
+The compensator was not retuned to hide them: the fixed design-to values put
+fc near 150 kHz at C_eff = 6 uF and the 4.7-12 uF range is wider than one
+fixed crossover covers. Whether R13 tolerates this, or the compensator or the
+C_eff range should change, is a spec/design decision for the tracker (#5),
+not made here. R13 stays open until the switched step (b) and cross-check (c).
+
+Not included: the finite GBW of the adopted `error_amplifier`, switch Ron and
+loop delay (see `compensator.md`). The batch submit warned that the serial job
+bound (19560 s) exceeds the fleet ceiling of 3600 s; the job finished in 11-12 s
+of compute, so no shard split was needed, but `request.remote.hosts` is the
+lever if the grid grows.
 
 ## `schematics/` and `netlists/` — power stage and gate drive (issue #33)
 
