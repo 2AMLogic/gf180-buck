@@ -12,7 +12,7 @@ times), and writes
 Verdict rules (nothing is relaxed): a limit exceeded anywhere in the saved window FAILS the unit, settled
 or not, resolved or not (a coarser step can only under-read a peak, and R2 takes no transient credit); a
 PASS needs a settled run, edge windows <= 100 ps, and every value inside its limit; a row is `pass` only
-when every unit of the stated corner set is a pass, and `not_demonstrated` otherwise. A unit that timed
+when the full 135-unit PVT grid is present and every unit is a pass (a subset such as C-typ never passes), and `not_demonstrated` otherwise. A unit that timed
 out or errored contributes no value. Simulated, never measured.
 """
 import argparse
@@ -147,9 +147,11 @@ def judge(units, name, margin_fn, expected, what, extra):
     novalue = [x for x in marks if x[2] == "no_value"]
     valued = [x for x in marks if x[1] is not None]
     bind = min(valued, key=lambda x: x[1]) if valued else None
-    complete = len(units) == expected
+    # Completeness is measured against the full PVT grid, never against the subset the request named:
+    # `expected` only labels the request (n_expected); a clean C-typ subset cannot pass.
+    complete = len(units) == EXPECTED["grid"]
     verdict = "fail" if fails else ("pass" if complete and len(passes) == len(units) else "not_demonstrated")
-    return {"what": what, "n_units": len(units), "n_expected": expected, "corner_set_complete": complete,
+    return {"what": what, "n_units": len(units), "n_expected": expected, "n_grid": EXPECTED["grid"], "corner_set_complete": complete,
             "verdict": verdict, "n_pass": len(passes), "n_fail": len(fails), "n_no_value": len(novalue),
             "binding": None if bind is None else {"id": bind[0]["id"], "margin": bind[1], "status": bind[2]},
             "failing_units": [x[0]["id"] for x in fails], "no_value_units": [x[0]["id"] for x in novalue],
