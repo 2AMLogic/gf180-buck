@@ -5,6 +5,9 @@ Maintained by the Guide role.
 
 ### 2026-11-02
 
+- **PR #80**: docs: record single-corner R15 start-up probe and partial diagnosis
+- **PR #79**: refactor: share sim record and request-generator plumbing in sim/lib
+- **Issue #74** (closed): Dedupe sim collector and request-generator plumbing into sim/lib
 - **PR #68**: sim: add load-step bench, step-pair grading and R13(c) cross-check
 - **PR #76**: sim: add soft-start and current-limit benches with partial R15/R16 records
 - **Issue #58** (closed): T1 item 5b: device-stress and dead-time benches (R2, R14) as klt sim envelopes
