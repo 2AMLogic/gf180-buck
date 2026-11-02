@@ -1,0 +1,27 @@
+{
+ "record": "issue-77 single-corner diagnosis probe 5: what terminates the on-time at the 3.6 ohm load (simulated, pre-layout; NOT measured)",
+ "repo_commit": "75d5fae",
+ "klt": "klt 0.8.1.dev1124+g83a6073ff32a sim --backend local, 1 unit per run",
+ "corner": "typical / Vin 5.0 V / 27 C / 3.6 ohm on out from t=0; EN at 20 us; bench_ss77_load.spice unchanged",
+ "supersedes": "none; extends records/20261102-issue77-probe4-load-3p6.json",
+ "files_sha256": {
+  "sim/soft-start/probe_ss77_trip.json": "6d00d27a32383c1b55f1300a9f51590acaebc440c7a2f6d01dca7be44f63124c",
+  "sim/soft-start/probe_ss77_cmp.json": "84354a954fa0b766547cb3dfb2d80d6dba9ae4e99eb33e20810b090e39fe1f09",
+  "sim/soft-start/bench_ss77_load.spice": "0bea52cdd6f83f9c5ff9d7a2a56c1178040135387ec3ba8aa684ce216ed75342"
+ },
+ "run": {
+  "trip_run": "tran 2.5n 300u saved from 15u, step_max 2.5 ns, runtime 244 s",
+  "cmp_run": "tran 2.5n 250u saved from 200u, runtime 201 s",
+  "steady_state": "not established; start-up transient"
+ },
+ "observations": {
+  "ipk": "0.565 A every cycle from ~100 us; PWM falls at I(L)=0.562-0.564 A",
+  "duty": "260-300 us: PWM-high fraction 0.531, SW-high 0.361; vc-gnd_d 1.75 V vs ramp 1.43 V at the PWM fall",
+  "pwm_comp": "cmp 3.3 V, rst 0 V, ocpb 3.3 V at the PWM fall: comparator/reset/OCP input not asserting",
+  "trip": "max 0.41 V over 0-300 us; never above 1.65 V",
+  "ocp_sense": "v2 exceeds v1 from ~240.23 us (I(L) ~0.51 A); path to PWM pin untraced",
+  "drawdown": "17.8 mV (clock-cycle means) / 18.9 mV (buckmeas) at 139.5-140 us, Vout ~1.09 V: one cycle ipk 0.223 A between 0.41/0.51 A cycles; first 0.570 A peak at 140.55 us"
+ },
+ "diagnosis": "PARTIAL, narrowed. A fixed ~0.563 A peak termination not visible on trip/ocpb is consistent with the 6 percent Vout shortfall, the vc windup and the early R16 trips; if it is the current-limit path, R16 minimum (0.70 A; no trip at 0.635 A) is violated. Mechanism untraced, so no decision record. No spec row, design netlist or earlier record changed.",
+ "not_done": "nets between latch q and pwm; ocp_sense raw/trn; second failing corner; R16 ramped-load trip test; grid (#60)"
+}
