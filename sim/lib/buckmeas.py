@@ -8,6 +8,11 @@ V(sw), input power) and returns, for the last settled 20 cycles:
   R7   switching frequency (>= 100)   R11     ripple after a 20 MHz 1st-order LP
   R8   inductor ripple p-p            R12     load-step deviation and recovery
 
+and, on a start-up / over-current run, `soft_start` (R15: 0 -> 90 % time,
+monotonicity, overshoot, peak I(L)) and `trip_event` (R16: the inductor
+current at which the cycle-by-cycle limit first asserts; no assertion means
+no trip value, never a pass).
+
 Each result restates the run length, the step and the window it was measured
 on, as §0.4 requires. Results are simulated, never measured; nothing here
 compares a number against a spec row.
@@ -32,6 +37,7 @@ LOAD_STEP_MIN_CYCLES = 100  # §0.4: run >= 100 cycles after the step ...
 BAND_CYCLES = 20  # ... or 20 consecutive in-band cycles, whichever is longer
 RIPPLE_LP_HZ = 20e6  # R11
 STEP_DIVISOR = 200  # §0.4: max step T/200
+MONO_EPS_V = 1e-3  # R15: a per-cycle mean may sag this far (1 mV) before "monotonic" fails
 _EPS_CYCLES = 1e-6  # a time this close to a cycle boundary is on it
 
 
@@ -247,6 +253,77 @@ def load_step(t, vout, t_step, v_ref, band, f_sw):
         "recovery_time_s": (t_exit - t_step) if recovered else None,
         "run_long_enough": recovered and cycles_after >= LOAD_STEP_MIN_CYCLES,
     }
+
+
+def rising_crossings(t, v, level, t_from=None):
+    """Linearly interpolated rising crossings of `level` at or after t_from."""
+    out = []
+    for i in range(1, len(t)):
+        if v[i - 1] < level <= v[i] and (t_from is None or t[i] >= t_from):
+            out.append(t[i - 1] + (level - v[i - 1]) / (v[i] - v[i - 1]) * (t[i] - t[i - 1]))
+    return out
+
+
+def cycle_means(t, y, edges):
+    """Mean of y over each cycle between consecutive `edges`: [(t_mid, mean)]."""
+    out = []
+    for a, b in zip(edges, edges[1:]):
+        tt, (yy,) = window(t, [y], a, b)
+        out.append(((a + b) / 2.0, _integral(tt, yy) / (b - a)))
+    return out
+
+
+def soft_start(t, vout, il, edges, *, t_en, v_target, v_reg_max, frac=0.9,
+               mono_eps=MONO_EPS_V, fc_over=RIPPLE_LP_HZ):
+    """R15 on a start-up .tran. `edges` are the switching-cycle boundaries.
+
+    t_90: time from t_en until the per-cycle mean of Vout first reaches
+    frac * v_target (interpolated). monotonic: no cycle mean below its running
+    maximum by more than `mono_eps`, up to that crossing (`max_drawdown_v`
+    reported). overshoot: peak of Vout after the same 20 MHz first-order
+    low-pass as R11, above `v_reg_max` (R4 max). peak_il: max I(L) from t_en.
+    A run that never reaches the fraction has no t_90 and no monotonic verdict.
+    """
+    thr = frac * v_target
+    res = {"available": False, "t_en_s": t_en, "v_target_v": v_target, "frac": frac,
+           "threshold_v": thr, "t_start_s": t[0], "t_end_s": t[-1], "mono_eps_v": mono_eps,
+           "cycles_seen": max(len(edges) - 1, 0)}
+    cm = [(tm, m) for tm, m in cycle_means(t, vout, edges) if tm >= t_en]
+    hit = next((i for i, (_, m) in enumerate(cm) if m >= thr), None)
+    if hit is None:
+        res["reason"] = "Vout never reached %.0f %% of target in the run" % (100 * frac)
+        return res
+    if hit == 0:
+        t90 = cm[0][0]
+    else:
+        (ta, ma), (tb, mb) = cm[hit - 1], cm[hit]
+        t90 = ta + (thr - ma) / (mb - ma) * (tb - ta)
+    peak, draw = -math.inf, 0.0
+    for _, m in cm[:hit + 1]:
+        peak = max(peak, m)
+        draw = max(draw, peak - m)
+    tt, (vv, ii) = window(t, [vout, il], t_en, t[-1])
+    over = max(lowpass(tt, vv, fc_over))
+    res.update(available=True, t_90_s=t90 - t_en, t_90_abs_s=t90, monotonic=draw <= mono_eps,
+               max_drawdown_v=draw, vout_peak_lp_v=over, overshoot_v=max(over - v_reg_max, 0.0),
+               v_reg_max_v=v_reg_max, peak_il_a=max(ii), lowpass_hz=fc_over)
+    return res
+
+
+def trip_event(t, trip, il, level, *, t_from=None):
+    """R16: inductor current at the first rising crossing of `level` on the
+    trip net. Not asserted -> engaged False and no trip value."""
+    xs = rising_crossings(t, trip, level, t_from)
+    res = {"engaged": False, "trip_il_a": None, "t_start_s": t[0], "t_end_s": t[-1],
+           "t_from_s": t_from, "level_v": level, "n_assertions": len(xs),
+           "il_max_a": max(il)}
+    if not xs:
+        res["reason"] = "TRIP never asserted in the window: no trip value"
+        return res
+    t0 = xs[0]
+    tt, (ii,) = window(t, [il], t0, t[-1])
+    res.update(engaged=True, t_trip_s=t0, trip_il_a=_interp(t, il, t0), il_peak_after_a=max(ii))
+    return res
 
 
 def ideal_vout(vin, duty, i_load, *, dcr, r_wire, wires, ron_hs, ron_ls):

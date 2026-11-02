@@ -1,0 +1,1573 @@
+{
+ "record": "simulated, not measured; pre-layout; spec R16",
+ "environment": {
+  "utc": "20261102T090631Z",
+  "repo_commit": "c8af5c655ffb",
+  "klt": "klt 0.8.1.dev1058+g4a63282279df",
+  "reports": [
+   {
+    "report": "request_ramp.json",
+    "status": "error",
+    "remote": {
+     "provider": null,
+     "job_id": null,
+     "instance_type": null,
+     "state": null
+    }
+   },
+   {
+    "report": "report.json",
+    "status": "pass",
+    "remote": {
+     "provider": null,
+     "job_id": null,
+     "instance_type": null,
+     "state": null
+    }
+   }
+  ],
+  "files_sha256": {
+   "bench.spice": "36dd87bc1511b1bfd5eed6fe17be7f512cd545954074751b741d3f3e16c1d6c5",
+   "request_ramp.json": "6483a37abb9707c60eaf981ecfbe8fa736d733511b667a3391966a06f68eff60",
+   "request_min.json": "0b0aabdb7bd03bbd36aa65d00a2e7f8309c174036cfeaae56276055fcfdaa0ca",
+   "gen_requests.py": "d0166458755a376e47be3bf92b647a73e74ced222cbab6013353a696657bb1b8",
+   "design/netlists/buck_top.spice": "8600d7d34d8175ff5b7f979241fd8e5c873380c1bccdaf66b79309df652f28ff",
+   "sim/lib/buckmeas.py": "d2f2909c47691f4aaf5337305f39678a3db059302d265ba9f5b9ad92a69ccc86",
+   "sim/lib/rawgrade.py": "1c7a46c9b32d43bd234cebc86185ed0f1b4ce8f367ff105bd866f5635d4eb458"
+  }
+ },
+ "method": {
+  "analysis_ramp": ".tran 2.5n 920u, saved from 600 us; max step 2.5 ns = T/200 at 2 MHz; soft start done by 520 us (R15 max), load 0 -> 3 A linear over 300 us from 600 us (10 mA/us, ~5 mA per cycle)",
+  "analysis_min": ".tran 2.5n 760u, saved from 600 us; 500 mA reached in 1 us at 600 us and held 160 us (~320 cycles); peak I(L) and f are read from 610 us (10 us after the step)",
+  "trip": "I(L) interpolated at the first rising crossing of 1.65 V (VDD33 / 2) on xtop.trip after 600 us; the digital delay between the sense crossing and TRIP is included in the value",
+  "steady_state": "the ramp is quasi-static against the loop (fc 100 - 250 kHz); no steady-state claim is made on the ramp run. The min case holds 500 mA for ~320 cycles (> the 100-cycle step rule of 0.4)",
+  "corner_counts": {
+   "ramp": 45,
+   "min": 15
+  }
+ },
+ "rows": {
+  "R16_trip_window": {
+   "what": "cycle-by-cycle limit: I(L) at first TRIP assertion while the load ramps 0 -> 3 A over 300 us, C-full; bounds 0.70 - 2.1 A (a die-protection threshold, not a precision limit)",
+   "bounds_a": [
+    0.7,
+    2.1
+   ],
+   "n_units": 45,
+   "n_valued": 6,
+   "n_no_trip_or_no_value": 39,
+   "n_out_of_bounds": 4,
+   "n_not_in_regulation_at_ramp_start": 4,
+   "not_in_regulation_units": [
+    "typical/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "typical/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "typical/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "typical/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003"
+   ],
+   "regulation_note": "a unit whose Vout is below 90 % of 1.8 V when the ramp starts never finished soft start (R15 fails there); its trip value is recorded but the ramp did not start from a regulating converter",
+   "verdict": "fail",
+   "binding_min": {
+    "id": "typical/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "trip_il_a": 0.07582011355708998,
+    "margin_a": -0.62417988644291
+   },
+   "binding_max": {
+    "id": "typical/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "trip_il_a": 0.9956572240831231,
+    "margin_a": 1.104342775916877
+   },
+   "failing_units": [
+    "typical/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "typical/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "typical/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "typical/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003"
+   ],
+   "no_trip_or_no_value_units": [
+    "typical/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "typical/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "typical/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ff/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "ss/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "fs/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "sf/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003"
+   ]
+  },
+  "R16_min_bound_no_trip": {
+   "what": "no trip at 500 mA, L -20 %, Vin 5.5 V, all process x T, at f min (<= 1.7 MHz measured per unit); peak I(L) < 0.70 A. Judged only on units whose Vout was in regulation (>= 90 % of 1.8 V) when the 500 mA was applied",
+   "n_units": 15,
+   "n_no_waveform": 0,
+   "n_not_in_regulation_at_load_start": 11,
+   "n_valued": 4,
+   "n_tripped_or_peak_over_min": 4,
+   "n_f_not_at_min": 2,
+   "verdict": "fail",
+   "binding": {
+    "id": "ff/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "peak_il_a": 0.8927852104354218,
+    "f_sw_hz": 1180780.8752739204,
+    "margin_a": -0.19278521043542185
+   },
+   "failing_units": [
+    "typical/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "ff/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "ff/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "fs/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06"
+   ],
+   "no_value_units": [],
+   "not_in_regulation_units": [
+    "typical/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "typical/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "ff/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "ss/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "ss/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "ss/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "fs/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "fs/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "sf/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "sf/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "sf/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06"
+   ],
+   "units_not_at_f_min": [
+    "typical/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "fs/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06"
+   ],
+   "note": "the oscillator free-runs; a unit with f_sw above 1.7 MHz shows no trip but does not exercise the f-min condition"
+  }
+ },
+ "units": {
+  "ramp": [
+   {
+    "id": "typical/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.0006000002499999998,
+     0.0009199999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.6469566094152467,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0009199999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 27,
+     "il_max_a": 3.042473792649964,
+     "t_trip_s": 0.0006744832429920192,
+     "il_peak_after_a": 3.042473792649964
+    },
+    "vout_at_load_start_v": -0.3130124000659175,
+    "in_regulation_at_load_start": false,
+    "load_at_trip_a": 0.7448324299201928,
+    "trip_il_a": 0.6469566094152467
+   },
+   {
+    "id": "typical/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.0006000002499999998,
+     0.0009199999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.9956572240831231,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0009199999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 193,
+     "il_max_a": 3.03432205519122,
+     "t_trip_s": 0.0006974585794899726,
+     "il_peak_after_a": 3.03432205519122
+    },
+    "vout_at_load_start_v": 1.436078673496277,
+    "in_regulation_at_load_start": false,
+    "load_at_trip_a": 0.9745857948997264,
+    "trip_il_a": 0.9956572240831231
+   },
+   {
+    "id": "typical/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.0006000002499999998,
+     0.0009199999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.07582011355708998,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0009199999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 335,
+     "il_max_a": 3.062788337433205,
+     "t_trip_s": 0.000614085838108222,
+     "il_peak_after_a": 3.062788337433205
+    },
+    "vout_at_load_start_v": 1.739096644340343,
+    "in_regulation_at_load_start": true,
+    "load_at_trip_a": 0.1408583810822209,
+    "trip_il_a": 0.07582011355708998
+   },
+   {
+    "id": "typical/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.0006000002499999998,
+     0.0009199999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.8984190532300197,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0009199999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 22,
+     "il_max_a": 3.027865908779745,
+     "t_trip_s": 0.0006236548625228448,
+     "il_peak_after_a": 3.027865908779745
+    },
+    "vout_at_load_start_v": 0.1126188798955043,
+    "in_regulation_at_load_start": false,
+    "load_at_trip_a": 0.2365486252284483,
+    "trip_il_a": 0.8984190532300197
+   },
+   {
+    "id": "typical/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.0006000002499999998,
+     0.0009199999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.5653954398867251,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0009199999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 233,
+     "il_max_a": 3.046078038472332,
+     "t_trip_s": 0.0006406893503322858,
+     "il_peak_after_a": 3.046078038472332
+    },
+    "vout_at_load_start_v": 0.5984006250378477,
+    "in_regulation_at_load_start": false,
+    "load_at_trip_a": 0.4068935033228587,
+    "trip_il_a": 0.5653954398867251
+   },
+   {
+    "id": "typical/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.0006000002499999998,
+     0.0009199999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.414923538023866,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0009199999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 290,
+     "il_max_a": 3.078003612410771,
+     "t_trip_s": 0.0006129799036814947,
+     "il_peak_after_a": 3.078003612410771
+    },
+    "vout_at_load_start_v": 1.74609976302164,
+    "in_regulation_at_load_start": true,
+    "load_at_trip_a": 0.12979903681494748,
+    "trip_il_a": 0.414923538023866
+   },
+   {
+    "id": "typical/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', ' after 5 launch attempt(s)) [remote job klt-sim-11b5b071823e: unknown] [batch_no_capacity]')]"
+   },
+   {
+    "id": "typical/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', ' after 5 launch attempt(s)) [remote job klt-sim-f26655cb9fd0: unknown] [batch_no_capacity]')]"
+   },
+   {
+    "id": "typical/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', ' after 4 launch attempt(s)) [remote job klt-sim-6c7871403bca: unknown] [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', ' after 4 launch attempt(s)) [remote job klt-sim-e044f23bf254: unknown] [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', ' after 5 launch attempt(s)) [remote job klt-sim-1a6b728289c2: unknown] [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', ' after 4 launch attempt(s)) [remote job klt-sim-3fec44eb1eb8: unknown] [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'c713e1c048: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'a063852bad: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'c45ceb47fa: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '4946aefef1: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'cd9a0a33b5: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ff/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'b03fe75d3b: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '6bd0502c87: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'c1a0f76c2e: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'ed43d3867d: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '271385c7b9: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '2e96abe1bd: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '7380cdec9d: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '8fe384510f: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '9e35ecb807: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "ss/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '98a828e236: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '1683d14ba2: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'd156bf7132: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '312e4d59ef: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '4499a9f0c6: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '16ddb819be: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'ac9ede2ccd: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '30a89f2da4: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'c793c1334d: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "fs/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '65a5ca59ac: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/4.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '9d96b9794d: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/4.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '3e6edf8e43: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/4.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '4b93e70f31: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/5.000V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '2b39147bcc: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/5.000V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '94be5ce5a3: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/5.000V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', 'a205ee2d5d: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/5.500V/-40C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '5d84149243: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/5.500V/27C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '3122bd8ba9: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   },
+   {
+    "id": "sf/5.500V/125C/params:i_end=3,lfac=1,osc_k=1,t_ramp=0.0003",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 3.0,
+     "lfac": 1.0,
+     "osc_k": 1.0,
+     "t_ramp": 0.0003
+    },
+    "klt_status": "error",
+    "graded": false,
+    "reason": "no waveform: klt status error [('lost_shard', '7c3715ef6e: unknown] (run-wide capacity wait budget of 480s exhausted) [batch_no_capacity]')]"
+   }
+  ],
+  "min": [
+   {
+    "id": "typical/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 0.1259612962394313,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.836018108052462,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 2,
+     "il_max_a": 0.9591449362198271,
+     "t_trip_s": 0.0006283577088682305,
+     "il_peak_after_a": 0.9591449362198271
+    },
+    "n_trip_assertions": 2,
+    "peak_il_a": 0.9591449362198271,
+    "f_sw_hz": 497564.3936186395,
+    "f_cycles": 74,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "typical/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 1.438964499430656,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.6469794992283011,
+     "t_start_s": 0.0006000000454232412,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 8,
+     "il_max_a": 0.6517610937222958,
+     "t_trip_s": 0.0006466213345812912,
+     "il_peak_after_a": 0.6502576141991268
+    },
+    "n_trip_assertions": 8,
+    "peak_il_a": 0.6508608728684929,
+    "f_sw_hz": 2223475.5368054826,
+    "f_cycles": 332,
+    "f_min_condition": false,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "typical/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 1.763894350771922,
+    "in_regulation_at_load_start": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.48161267947608427,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 5,
+     "il_max_a": 0.528516291119517,
+     "t_trip_s": 0.0006293147841693598,
+     "il_peak_after_a": 0.528516291119517
+    },
+    "n_trip_assertions": 5,
+    "peak_il_a": 0.528516291119517,
+    "f_sw_hz": 3164882.8120436673,
+    "f_cycles": 474,
+    "f_min_condition": false,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "ff/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 0.3576080326552737,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.7956001482675077,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 4,
+     "il_max_a": 1.001986008037467,
+     "t_trip_s": 0.0007139169565999608,
+     "il_peak_after_a": 1.001986008037467
+    },
+    "n_trip_assertions": 4,
+    "peak_il_a": 1.001986008037467,
+    "f_sw_hz": 1038378.6587087713,
+    "f_cycles": 70,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "ff/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 1.650325190488031,
+    "in_regulation_at_load_start": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.6856781230785688,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 50,
+     "il_max_a": 0.6963786416987298,
+     "t_trip_s": 0.0006178911044146757,
+     "il_peak_after_a": 0.6963786416987298
+    },
+    "n_trip_assertions": 50,
+    "peak_il_a": 0.6963786416987298,
+    "f_sw_hz": 1679281.0943355511,
+    "f_cycles": 251,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "ff/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 1.79380593891621,
+    "in_regulation_at_load_start": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.633223742615984,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 13,
+     "il_max_a": 0.8927852104354218,
+     "t_trip_s": 0.0006277612454951768,
+     "il_peak_after_a": 0.8927852104354218
+    },
+    "n_trip_assertions": 13,
+    "peak_il_a": 0.8927852104354218,
+    "f_sw_hz": 1180780.8752739204,
+    "f_cycles": 176,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "ss/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": -0.0001981409332441689,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": false,
+     "trip_il_a": null,
+     "t_start_s": 0.0006000000343683909,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 0,
+     "il_max_a": 0.8305008002007567,
+     "reason": "TRIP never asserted in the window: no trip value"
+    },
+    "n_trip_assertions": 0,
+    "peak_il_a": 0.8305008002007567,
+    "f_sw_hz": 23184.031953706526,
+    "f_cycles": 3,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "ss/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": -0.3677058886253788,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 1.1406451314902257,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 11,
+     "il_max_a": 1.264577035256433,
+     "t_trip_s": 0.0006078057118394918,
+     "il_peak_after_a": 1.264577035256433
+    },
+    "n_trip_assertions": 11,
+    "peak_il_a": 1.259719623027558,
+    "f_sw_hz": 1063146.8780602834,
+    "f_cycles": 159,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "ss/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 1.439972636401442,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": false,
+     "trip_il_a": null,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 0,
+     "il_max_a": 0.5793113257595452,
+     "reason": "TRIP never asserted in the window: no trip value"
+    },
+    "n_trip_assertions": 0,
+    "peak_il_a": 0.5793113257595452,
+    "f_sw_hz": 2517102.201247343,
+    "f_cycles": 377,
+    "f_min_condition": false,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "fs/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": -0.03744563929236108,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.7483030373931588,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 5,
+     "il_max_a": 0.7919632638306944,
+     "t_trip_s": 0.0007110725641927006,
+     "il_peak_after_a": 0.7511725794453517
+    },
+    "n_trip_assertions": 5,
+    "peak_il_a": 0.7919632638306944,
+    "f_sw_hz": 1683716.7647302763,
+    "f_cycles": 165,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "fs/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 1.619682551344002,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.5839913511590096,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 1,
+     "il_max_a": 0.5871582904493565,
+     "t_trip_s": 0.0006957819828974695,
+     "il_peak_after_a": 0.5871582904493565
+    },
+    "n_trip_assertions": 1,
+    "peak_il_a": 0.5871582904493565,
+    "f_sw_hz": 2762944.8951217667,
+    "f_cycles": 412,
+    "f_min_condition": false,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "fs/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 1.729977597819722,
+    "in_regulation_at_load_start": true,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 0.46944370332032814,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 3,
+     "il_max_a": 0.5958423061280891,
+     "t_trip_s": 0.0006224945595048656,
+     "il_peak_after_a": 0.5958423061280891
+    },
+    "n_trip_assertions": 3,
+    "peak_il_a": 0.5958423061280891,
+    "f_sw_hz": 2944352.9600563403,
+    "f_cycles": 440,
+    "f_min_condition": false,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "sf/5.500V/-40C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": -0.04887087260596813,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": false,
+     "trip_il_a": null,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 0,
+     "il_max_a": 0.9577461196327319,
+     "reason": "TRIP never asserted in the window: no trip value"
+    },
+    "n_trip_assertions": 0,
+    "peak_il_a": 0.9577461196327319,
+    "f_sw_hz": 69882.0725455313,
+    "f_cycles": 4,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "sf/5.500V/27C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": -0.1763975751317369,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 1.1009345594354698,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 8,
+     "il_max_a": 1.516108866369531,
+     "t_trip_s": 0.0006061245404483385,
+     "il_peak_after_a": 1.516108866369531
+    },
+    "n_trip_assertions": 8,
+    "peak_il_a": 1.502475827201429,
+    "f_sw_hz": 1085955.189114626,
+    "f_cycles": 161,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   },
+   {
+    "id": "sf/5.500V/125C/params:i_end=0.5,lfac=0.8,osc_k=1,t_ramp=1e-06",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "params": {
+     "i_end": 0.5,
+     "lfac": 0.8,
+     "osc_k": 1.0,
+     "t_ramp": 1e-06
+    },
+    "klt_status": "pass",
+    "graded": true,
+    "window_s": [
+     0.00061,
+     0.0007599999999999999
+    ],
+    "step_max_s": 2.499999999985153e-09,
+    "step_ok": true,
+    "vout_at_load_start_v": 0.3722985858696979,
+    "in_regulation_at_load_start": false,
+    "trip": {
+     "engaged": true,
+     "trip_il_a": 1.1098846828934805,
+     "t_start_s": 0.0006000002499999998,
+     "t_end_s": 0.0007599999999999999,
+     "t_from_s": 0.0006,
+     "level_v": 1.65,
+     "n_assertions": 141,
+     "il_max_a": 1.114587294378767,
+     "t_trip_s": 0.0006002431285730035,
+     "il_peak_after_a": 1.114587294378767
+    },
+    "n_trip_assertions": 141,
+    "peak_il_a": 1.090457628509752,
+    "f_sw_hz": 1335186.5742556516,
+    "f_cycles": 198,
+    "f_min_condition": true,
+    "hold_s": 0.00015999999999999999
+   }
+  ]
+ }
+}
