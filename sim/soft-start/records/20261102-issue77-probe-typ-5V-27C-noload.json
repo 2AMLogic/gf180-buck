@@ -1,0 +1,38 @@
+{
+ "record": "issue-77 single-corner diagnosis probe (simulated, pre-layout; NOT measured)",
+ "repo_commit": "39d581bb538c",
+ "klt": "klt 0.8.1.dev1058+g4a63282279df (local backend, 1 unit each)",
+ "engine": "ngspice 46",
+ "corner": "typical / Vin 5.0 V / 27 C / no load (rload=1e9)",
+ "files_sha256": {
+  "sim/soft-start/bench.spice": "cb6571b30f79b4efaa490db8d80f68273a3cae59e46b7c2511b14070b8884078",
+  "sim/soft-start/probe_single.json": "0df70f24d88a33b5c1e05c694cb2b4e54f48a2f2f80a9820c154a2888f1769f6",
+  "sim/soft-start/probe_single2.json": "f969e411ffb763583589bf4c14d1acf4e49cc0cb626ca56aa0a4363303171f33",
+  "design/netlists/buck_top.spice": "8600d7d34d8175ff5b7f979241fd8e5c873380c1bccdaf66b79309df652f28ff"
+ },
+ "runs": [
+  {
+   "request": "sim/soft-start/probe_single.json",
+   "tran": "2.5n 700u (saved from 20u), step_max 2.5 ns",
+   "vout_699us_V": 1.557,
+   "runtime_s": 485
+  },
+  {
+   "request": "sim/soft-start/probe_single2.json",
+   "tran": "2.5n 450u (saved from 20u), step_max 2.5 ns",
+   "vout_449us_V": 1.583,
+   "runtime_s": 297
+  }
+ ],
+ "steady_state": "not established: start-up transient only; Vout is still ~1.4-1.55 V (median over 50 us windows) at 700 us and the loop has not settled",
+ "observations": {
+  "oscillator": "clk 1.94 MHz at 300-400 us (194 rising edges in 100 us); ramp 0.98-1.81 V. In band; free-run spread of 0.02-3.2 MHz across units NOT reproduced or explained here (one corner only)",
+  "soft_start_ref": "vref_ss rises from 20 us and saturates near 1.18 V by ~250 us (css tops at ~1.29 V; clamped by VBG=1.2 ideal). Loop target = 3 x vref_ss/2 = ~1.77 V (divider 1:1 at RREF, 10k/5k at FB)",
+  "pwm_start": "pwm duty 0.00-0.04 until ~160 us although vref_ss ramps from 20 us; first full-rate pwm at ~180 us (vref 0.51 V, vref_ss ~1.0 V). vc sits at 1.30-1.44 V inside the ramp window 1.17-1.80 V while pwm stays low: not traced",
+  "regulation": "after ~180 us duty 0.31-0.36, Vout median 1.39-1.52 V, fbn 0.42-0.50 V vs vref 0.53-0.56 V: loop does not close to target within 450 us (n=1 corner)",
+  "vc_out_of_rail": "vc reaches -0.92 V and +5.5 V with a 3.3 V control rail from ~180 us onward, coincident with ~ +/-2 V single-sample spikes on v(out) at SW edges (2.6% of samples outside -0.5..2.2 V in 300-700 us). Whether these spikes are physical or a bench-model artifact (out is the cap-side terminal; Cwind 3 pF/20 ohm, ESL 0.5 nH) is NOT traced",
+  "pulse_skipping": "SW rising edges 60 per 50 us vs 99 clock edges (400-450 us) in run 1; R6 forces fixed-frequency PWM"
+ },
+ "diagnosis": "PARTIAL. At this corner the first block to depart from R15 intent is the PWM/compensator path (pwm held low ~140 us after the reference starts rising; vc driven far outside the 0-3.3 V rail by edge-synchronous coupling from v(out)), not the oscillator or the soft-start reference. The ideal-bias ports are not implicated at this corner. Design defect vs bench artifact for the out-node spikes is undecided; no spec row changed.",
+ "not_done": "other failing corners, the 3.6 ohm load, and R16 were not probed; the grid is not rerun (#60)"
+}
