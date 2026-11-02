@@ -5,6 +5,7 @@ Maintained by the Guide role.
 
 ### 2026-11-02
 
+- **PR #70**: sim: add R2 device-stress and top-level R14 benches with a C-typ fleet record
 - **PR #66**: sim: add steady-state bench on buck_top with first C-full record
 - **Issue #57** (closed): T1 item 5a: steady-state switched bench (R4, R6, R7, R8, R11, pre-layout R9/R10) as klt sim envelopes
 
