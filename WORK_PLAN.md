@@ -30,14 +30,13 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 Human-approved issues ready for implementation (`loom:issue`).
 
 - **#22**: T1 item 2 (layout): buck GDS with power-path widths and via counts per the R18 electromigration budget
+- **#77**: Diagnose R15/R16 failures at many corners seen in the partial soft-start and current-limit benches
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
 - **#45**: spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device
-- **#77**: Diagnose R15/R16 failures at many corners seen in the partial soft-start and current-limit benches
-- **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading)
 
 ## PRs Awaiting Review
 
@@ -80,8 +79,8 @@ _None._
 | Operator merge-risk holds | 1 |
 | Very important | 1 |
 | Important | 4 |
-| Ready (`loom:issue`) | 1 |
-| In Progress (`loom:building`) | 3 |
+| Ready (`loom:issue`) | 2 |
+| In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
 | Curated | 9 |
