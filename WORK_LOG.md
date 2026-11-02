@@ -5,6 +5,11 @@ Maintained by the Guide role.
 
 ### 2026-11-02
 
+- **PR #68**: sim: add load-step bench, step-pair grading and R13(c) cross-check
+- **PR #76**: sim: add soft-start and current-limit benches with partial R15/R16 records
+- **Issue #58** (closed): T1 item 5b: device-stress and dead-time benches (R2, R14) as klt sim envelopes
+- **PR #72**: sim: grade device-stress completeness against the full 135-unit grid
+- **Issue #71** (closed): device-stress collect.py: ctyp (3-unit) set can read R2/R14 'pass', contradicting README
 - **PR #70**: sim: add R2 device-stress and top-level R14 benches with a C-typ fleet record
 - **PR #66**: sim: add steady-state bench on buck_top with first C-full record
 - **Issue #57** (closed): T1 item 5a: steady-state switched bench (R4, R6, R7, R8, R11, pre-layout R9/R10) as klt sim envelopes
