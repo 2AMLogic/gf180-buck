@@ -1,0 +1,124 @@
+{
+ "netlist": "bench.spice",
+ "engine": "ngspice",
+ "models": {
+  "pdk": "gf180mcuD",
+  "lib": "libs.tech/ngspice/sm141064.ngspice"
+ },
+ "analysis": {
+  "kind": "tran",
+  "args": "2.5n 600u 480u 2.5n"
+ },
+ "corners": {
+  "process": [
+   {
+    "name": "typical",
+    "sections": [
+     "typical",
+     "mimcap_typical",
+     "cap_mim",
+     "res_typical"
+    ]
+   }
+  ],
+  "supply_v": {
+   "vsrc": [
+    4.5,
+    5.0,
+    5.5
+   ]
+  },
+  "supply_waveforms": [
+   "vsrc"
+  ],
+  "temperature_c": [
+   27
+  ],
+  "params": {
+   "iload": [
+    0.25,
+    0.25,
+    0.25
+   ],
+   "lfac": [
+    0.8,
+    1.0,
+    1.2
+   ]
+  }
+ },
+ "measurements": [
+  {
+   "name": "vout_last",
+   "spice": ".meas tran vout_last FIND v(out) AT=599u",
+   "unit": "V"
+  }
+ ],
+ "batch": {
+  "max_units_per_job": 1,
+  "max_concurrent_jobs": 12
+ },
+ "options": {
+  "keep_artifacts": true,
+  "waveforms": true,
+  "timeout_s": 900,
+  "threads_per_worker": 1,
+  "save_vectors": [
+   "v(out)",
+   "i(lind)",
+   "v(sw_d)",
+   "v(vsrc)",
+   "i(vsrc)"
+  ]
+ },
+ "exclude": [
+  {
+   "supply_v": {
+    "vsrc": 4.5
+   },
+   "params": {
+    "lfac": 0.8
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 4.5
+   },
+   "params": {
+    "lfac": 1.0
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 5.0
+   },
+   "params": {
+    "lfac": 0.8
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 5.0
+   },
+   "params": {
+    "lfac": 1.2
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 5.5
+   },
+   "params": {
+    "lfac": 1.0
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 5.5
+   },
+   "params": {
+    "lfac": 1.2
+   }
+  }
+ ]
+}

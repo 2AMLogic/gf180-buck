@@ -82,3 +82,19 @@ Real `gate_drive` into the real `power_stage` (netlists from `design/netlists/`)
 typical process, 27 °C, Vin 5.0 V, 0.5 A DC sink on SW. Writes a new append-only
 `sim/dead-time/records/<UTC>-<sha>.json`. Simulated, not measured; not a corner
 run. See `design/README.md`.
+
+## Steady-state bench (rows R4, R6, R7, R8, R9/R10 pre-layout, R11)
+
+```
+python3 -I sim/steady-state/gen_requests.py     # rewrites request_grid.json, request_r8.json, matrix_*.json
+klt sim --batch-set sim/steady-state/request_grid.json sim/steady-state/request_r8.json --report-out ...
+python3 -I sim/steady-state/collect.py --report GRID.json --report R8.json    # grade + write records/<UTC>-<sha>.json
+```
+
+`bench.spice` wraps `buck_top.spice`: C-full (45) x load {0, 50, 250, 500 mA} = 180 units
+(`request_grid.json`) plus the three R8 Vin / L combinations (`request_r8.json`), `.tran` to
+600 us with the last 120 us saved. Grid parameters are the request axes (`iload`, `lfac`);
+there is no separate params file. `sim/lib/rawgrade.py` reads each `waveform.raw` and applies
+`buckmeas` (spec §0.4). A unit that did not settle, timed out or was lost carries no value and
+the row reports `not_demonstrated`; nothing is relaxed. The committed record is simulated, pre-layout
+evidence; R9/R10 are not the graded post-layout value. See the record for per-unit settling windows.
