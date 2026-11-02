@@ -1,0 +1,47 @@
+{
+ "record": "issue-77 single-corner diagnosis probe 2: die-ground reference (simulated, pre-layout; NOT measured)",
+ "repo_commit": "b6500a6",
+ "klt": "klt 0.8.1.dev1065+g854bde0aad94 (local backend, 1 unit each)",
+ "engine": "ngspice 46",
+ "corner": "typical / Vin 5.0 V / 27 C / no load (rload=1e9)",
+ "supersedes": "none; extends records/20261102-issue77-probe-typ-5V-27C-noload.json (that record is untouched)",
+ "files_sha256": {
+  "sim/soft-start/bench.spice": "cb6571b30f79b4efaa490db8d80f68273a3cae59e46b7c2511b14070b8884078",
+  "design/netlists/buck_top.spice": "8600d7d34d8175ff5b7f979241fd8e5c873380c1bccdaf66b79309df652f28ff",
+  "sim/soft-start/probe_single3.json": "08ff800f975e1be9f8213a10c9892889af5dfef124d60145c1f2dfc7831169ff",
+  "sim/soft-start/probe_single4.json": "58e3cc32949a20e035680afcdf4d5cefd4c6c1de930ee8c72cec722ebaf5ccde",
+  "sim/soft-start/probe_single5.json": "e63d8376e8da72c9c77ae51f430958f2683cb647459fa020a3ede01f6b2f1142"
+ },
+ "runs": [
+  {
+   "request": "probe_single3.json",
+   "tran": "2.5n 260u (saved from 20u), step_max 2.5 ns",
+   "change": "c_wind=0.05 pF (default 3 pF)",
+   "runtime_s": 129,
+   "result": "v(out) -2.11..4.63 V and v(vc) -0.92..4.49 V over 180-260 us: the excursions persist with the winding capacitance removed, so Cwind is not their path"
+  },
+  {
+   "request": "probe_single4.json",
+   "tran": "2.5n 260u (saved from 20u), step_max 2.5 ns",
+   "change": "saves v(gnd_d); default c_wind",
+   "runtime_s": 130,
+   "result": "v(gnd_d) -3.08..+3.18 V over 180-260 us (a second run of the same request gave -3.10..+3.40). The in-request par() differential .meas entries failed ('no such vector v(pa_00)'); the differentials below were computed offline from waveform.raw"
+  },
+  {
+   "request": "probe_single5.json",
+   "tran": "2.5n 700u (saved from 400u), step_max 2.5 ns",
+   "change": "saves v(out), v(gnd_d), v(vc), v(pwm), i(lind)",
+   "runtime_s": 394,
+   "result": "v(out) at 699 us = 1.672 V absolute (the 700 us run in the earlier record gave 1.557 V for the same corner: run-to-run spread of 0.1 V, cause not traced)"
+  }
+ ],
+ "observations": {
+  "die_ground_bounce": "v(gnd_d) swings about -3 V..+3 V (180-260 us) and -2.9 V..+2.0 V (400-700 us). gnd_d returns to node 0 through the bench package model (Rwg 0.10 ohm / Lwg 2 nH, 2 wires = 0.05 ohm / 1 nH). The power-stage ground current slews through it at every SW edge",
+  "vc_referenced_to_gnd_d": "v(vc)-v(gnd_d) = 0.74..2.16 V (180-260 us) and 0.73..2.06 V (400-700 us): inside the 0-3.3 V control rail. The earlier 'vc leaves the rail (-0.92..+5.5 V)' is the absolute probe v(vc) against a bouncing local ground",
+  "out_referenced_to_gnd_d": "v(out)-v(gnd_d) = 0.06..1.91 V (180-260 us); absolute v(out) -1.91..4.45 V. The earlier '+/-2 V spikes on v(out)' are the same ground bounce: the bench returns Cout/ESL and Rload to gnd_d, not to the board ground (node 0)",
+  "vout_shortfall_remains": "Referenced to gnd_d, 40 us window averages of v(out) over 400-700 us are 1.52-1.62 V (mean ~1.55 V), against the 1.62 V (90 %) threshold and the 1.8 V target. The shortfall is not explained by the ground reference",
+  "steady_state": "not established: start-up transient only, 700 us; Vout flat at ~1.55 V from 400 to 700 us but not shown to be a settled operating point"
+ },
+ "diagnosis": "PARTIAL (2 of 3 findings). (1) BENCH ARTIFACT, supported by the waveforms: the 'vc out of rail' and 'out spikes' of the first probe are the absolute probes against a bouncing die ground; referenced to gnd_d, vc and out are inside their ranges. (2) UNEXPLAINED: Vout settles ~12 % below the 1.8 V target (~1.55 V) at this corner, with the loop reference chain (vref_ss ~1.18 V) and oscillator in band; the cause is not traced. (3) The +/-3 V bounce on gnd_d is itself a finding about the bench package/return topology (Cout and the load returned to gnd_d); whether a real board return plus the die ground inductance would bounce this much is not decided. No spec row changed; no decision record written, because a design defect is not established.",
+ "not_done": "the Vout shortfall, the 0.02-3.2 MHz oscillator spread, other failing corners, the 3.6 ohm load, R16, and a bench variant with Cout/Rload returned to node 0 were not run. The grid is not rerun (#60)"
+}
