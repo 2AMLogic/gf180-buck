@@ -21,7 +21,7 @@ import buckmeas  # noqa: E402
 NEEDED = ("time", "i(lind)", "v(out)", "v(sw_d)", "v(vsrc)", "i(vsrc)")
 
 
-def read_ascii_raw(path):
+def read_ascii_raw(path, needed=NEEDED):
     """ngspice ASCII rawfile (real, one plot) -> {name: [floats]}."""
     with open(path) as fh:
         text = fh.read()
@@ -42,7 +42,7 @@ def read_ascii_raw(path):
     for k in range(0, len(toks), n + 1):  # token 0 of each point is its index
         for j, name in enumerate(names):
             cols[name].append(float(toks[k + 1 + j]))
-    missing = [v for v in NEEDED if v not in cols]
+    missing = [v for v in needed if v not in cols]
     if missing:
         raise ValueError("rawfile lacks vectors %s" % missing)
     return cols
