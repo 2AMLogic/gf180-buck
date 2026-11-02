@@ -20,7 +20,6 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 `loom:important`; taken before unlabelled work.
 
-- **#58**: T1 item 5b: device-stress and dead-time benches (R2, R14) as klt sim envelopes
 - **#59**: T1 item 5c: load-step bench and averaged-model cross-check (R12, R13b/c) as klt sim envelopes
 - **#60**: T1 item 5d: soft-start and current-limit benches (R15, R16) as klt sim envelopes
 - **#62**: Draw device-level layout for the control blocks (gate_drive, osc_ramp, pwm_comp, soft_start, ocp_sense, compensator)
@@ -37,15 +36,14 @@ Human-approved issues ready for implementation (`loom:issue`).
 Issues currently being built (`loom:building`).
 
 - **#45**: spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device
-- **#59**: T1 item 5c: load-step bench and averaged-model cross-check (R12, R13b/c) as klt sim envelopes
-- **#60**: T1 item 5d: soft-start and current-limit benches (R15, R16) as klt sim envelopes
-- **#69**: T1 item 5b remainder: run the R2 / R14 C-full grid (135 units at 100 ps) on the fleet
+- **#77**: Diagnose R15/R16 failures at many corners seen in the partial soft-start and current-limit benches
+- **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading)
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#68**: sim: add load-step bench, step-pair grading and R13(c) cross-check
+_None._
 
 ## Approved (Awaiting Merge)
 
@@ -62,14 +60,14 @@ Issues carrying `loom:curated`.
 - **#26**: T1 item 6 (Monte Carlo): classify the statistical rows and produce klt yield evidence for R4 (and any other matching-dependent row) *(curated)*
 - **#29**: T1 item 9 (testbenches shipped): testbench inventory and klt signoff --attest 9 envelope *(curated)*
 - **#45**: spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device *(curated)*
-- **#58**: T1 item 5b: device-stress and dead-time benches (R2, R14) as klt sim envelopes *(curated)*
-- **#59**: T1 item 5c: load-step bench and averaged-model cross-check (R12, R13b/c) as klt sim envelopes *(curated)*
 - **#60**: T1 item 5d: soft-start and current-limit benches (R15, R16) as klt sim envelopes *(curated)*
 - **#69**: T1 item 5b remainder: run the R2 / R14 C-full grid (135 units at 100 ps) on the fleet *(curated)*
+- **#77**: Diagnose R15/R16 failures at many corners seen in the partial soft-start and current-limit benches *(curated)*
+- **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)*
 
 ## Proposed (Architect / Hermit)
 
-- **#74**: Dedupe sim collector and request-generator plumbing into sim/lib *(hermit)*
+- **#81**: Finish #74 dedupe: move sim/load-step collector and generator onto sim/lib recordkit/genkit *(hermit)*
 
 ## Epics
 
@@ -81,10 +79,10 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 1 |
 | Very important | 1 |
-| Important | 5 |
+| Important | 4 |
 | Ready (`loom:issue`) | 1 |
-| In Progress (`loom:building`) | 4 |
-| PRs awaiting review | 1 |
+| In Progress (`loom:building`) | 3 |
+| PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
 | Curated | 9 |
 | Architect / Hermit proposals | 1 |
