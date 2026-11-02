@@ -125,3 +125,15 @@ has no trip value, and the row is `not_demonstrated`, never a pass.
   every unit ran at or below 1.7 MHz.
 
 Records are append-only under `records/`, simulated and pre-layout.
+
+## Device stress and top-level dead time (rows R2, R14)
+
+```
+python3 -I sim/device-stress/gen_requests.py     # rewrites request_grid.json (135), request_ctyp.json (3), matrix_*.json
+klt sim sim/device-stress/request_ctyp.json --backend batch -o OUT --report-out ctyp.json   # or request_grid.json
+python3 -I sim/device-stress/collect.py --report ctyp.json --set ctyp   # writes the R2 and the R14 record
+```
+
+One closed-loop `buck_top` run per (corner, load) serves both rows; `collect.py` writes
+`sim/device-stress/records/<UTC>-<sha>.json` (R2) and `sim/dead-time/records/<UTC>-<sha>-top.json` (R14).
+Details, the 100 ps step, the Vth definition and what has and has not run: [`device-stress/README.md`](device-stress/README.md).

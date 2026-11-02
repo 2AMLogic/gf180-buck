@@ -1,0 +1,81 @@
+* gf180-buck device-stress / top-level dead-time bench (issue #58). Body = sim/steady-state/bench.spice
+* (issue #57) line for line (test_device_stress.py checks it), plus the Vth replicas at the end.
+* Original header: steady-state bench (issue #57): the real buck_top, closed loop, with the
+* external P-T parts (spec 0.2) and the 0.3 typical package at 2 wires per net.
+* Body for `klt sim` (no .control). Corner axes (process, Vin = source Vsrc, temperature)
+* and the load are request axes; everything else is fixed here and stated in README.md.
+* --- inlined from gf180mcuD/libs.tech/ngspice/design.ngspice (sha256 091cb530bf85160a1f07878fb81f789ca367d018991c8ab41a584cd1a85c6692) ---
+.param
++  sw_stat_global = 0
++  sw_stat_mismatch = 0
++ mc_skew = 3
++ res_mc_skew = 3
++ cap_mc_skew = 3
++  fnoicor = 0
+* --- end inline ---
+.options gmin=1e-13
+.include ../../design/netlists/buck_top.spice
+.include ../steady-state/opamp_two_stage.spice
+
+* ---- request axes (klt corners.params overrides these defaults) ----
+.param iload=0.25 lfac=1 vdd3=3.3 vbg=1.2
+* ---- fixed bench assumptions ----
+.param l_ind={3.3u*lfac} dcr=0.1 c_wind=3p r_wind=20
+.param c_out=6u esr=5m esl=0.5n
+.param r_wire=0.10 l_wire=2n wires=2
+.param c_die=1u esr_die=20m
+.param t_en=20u t_load=260u t_load_ramp=0.5u
+
+* Board side: ideal source (Vin), ramped from 0; klt rescales this PWL per corner
+Vsrc vsrc 0 PWL(0 0 10u 5)
+* Package: VIN / SW / GND nets, N parallel wires each. 0.5 pF pad capacitance omitted
+* (same reason as sim/buck-ideal/buck.spice); die-side Vin decoupling is a bench assumption.
+Rwv vsrc nv1 {r_wire/wires}
+Lwv nv1 vin_d {l_wire/wires}
+Rws sw_d nsw1 {r_wire/wires}
+Lws nsw1 sw_p {l_wire/wires}
+Rwg gnd_d ng1 {r_wire/wires}
+Lwg ng1 0 {l_wire/wires}
+Cdie vin_d nd1 {c_die}
+Rdie nd1 gnd_d {esr_die}
+
+* Control-domain ports (no bandgap / regulator / bias block in this design yet: ideal
+* sources, fixed over corners; see README.md "Bench assumptions"). All up before EN.
+Vdd33 vdd33 gnd_d PWL(0 0 5u {vdd3})
+Vbg vbg gnd_d PWL(0 0 5u {vbg})
+Iosc gnd_d ib_osc PWL(0 0 5u 12u)
+Ipwm gnd_d ib_pwm PWL(0 0 5u 10u)
+Iss gnd_d ib_ss PWL(0 0 5u 10u)
+Iocp gnd_d ib_ocp PWL(0 0 5u 10u)
+Iea gnd_d ib_ea PWL(0 0 5u 10u)
+Vt0 tr0 gnd_d {vdd3}
+Vt1 tr1 gnd_d 0
+Vt2 tr2 gnd_d {vdd3}
+Ven en gnd_d PWL(0 0 {t_en} 0 {t_en+10n} {vdd3})
+
+Xtop vin_d vdd33 gnd_d sw_d out en vbg ib_osc ib_pwm ib_ss ib_ocp ib_ea tr0 tr1 tr2 vc pwm vref_ss buck_top
+
+* External inductor L + DCR, parallel winding capacitance (r_wind in series, as in buck-ideal)
+Lind sw_p nl {l_ind}
+Rdcr nl out {dcr}
+Cwind sw_p nw {c_wind}
+Rwind nw out {r_wind}
+* External capacitor C + ESR + ESL; `out` is the capacitor terminal
+Cout out nc {c_out}
+Resr nc nd {esr}
+Lesl nd gnd_d {esl}
+* Load: ideal current sink, 0 until soft start is done, then iload
+Iload out gnd_d PWL(0 0 {t_load} 0 {t_load+t_load_ramp} {iload})
+
+* ---- Vth replicas (R14: "|Vgs| = the device's minimum Vth over the corner") ----
+* One diode-connected copy of each power device at its drawn L, biased at 100 nA * W/L
+* (constant-current Vth, see README "Threshold"): the node voltage is that corner's Vth, a DC
+* level read late in the run. Same models, corner and temperature as the bench.
+.param w_rep=10u
+.param ith_n={100n*w_rep/0.7u} ith_p={100n*w_rep/0.55u}
+Xvthn vthn vthn 0 0 nfet_06v0 L=0.7u W={w_rep} nf=1 m=1
+Ithn 0 vthn {ith_n}
+Xvthp vthp_g vthp_g vthp_s vthp_s pfet_06v0 L=0.55u W={w_rep} nf=1 m=1
+Vthp_s vthp_s 0 DC 3
+Ithp vthp_g 0 {ith_p}
+Bvthp vthp 0 V=v(vthp_s)-v(vthp_g)

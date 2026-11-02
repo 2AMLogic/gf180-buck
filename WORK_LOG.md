@@ -3,8 +3,17 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-02
+
+- **PR #70**: sim: add R2 device-stress and top-level R14 benches with a C-typ fleet record
+- **PR #66**: sim: add steady-state bench on buck_top with first C-full record
+- **Issue #57** (closed): T1 item 5a: steady-state switched bench (R4, R6, R7, R8, R11, pre-layout R9/R10) as klt sim envelopes
+
 ### 2026-11-01
 
+- **PR #64**: chore: remove duplicate design/xschemrc and document netlist.sh
+- **PR #63**: feat: generate power-stage GDS with EM-budgeted slotted Metal3 trunks
+- **Issue #52** (closed): Consolidate duplicate xschemrc files and netlisting recipes under design/
 - **PR #56**: feat: scale VREF_SS to 0.6 V with a 1:1 divider in buck_top and add reference smoke
 - **Issue #53** (closed): VREF_SS ceiling (1.2 V) vs compensator Vref (0.6 V) mismatch at the top level
 - **Issue #21** (closed): T1 item 1 (design sources): transistor-level buck schematics (power stage, gate drive with dead time, PWM, soft start, current limit) and derived netlists with item-1 attestation

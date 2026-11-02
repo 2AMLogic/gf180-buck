@@ -14,19 +14,19 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-_None._
+- **#22**: T1 item 2 (layout): buck GDS with power-path widths and via counts per the R18 electromigration budget
 
 ## Important
 
 `loom:important`; taken before unlabelled work.
 
-_None._
+- **#62**: Draw device-level layout for the control blocks (gate_drive, osc_ramp, pwm_comp, soft_start, ocp_sense, compensator)
 
 ## Ready
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-_None._
+- **#22**: T1 item 2 (layout): buck GDS with power-path widths and via counts per the R18 electromigration budget
 
 ## In Progress
 
@@ -51,11 +51,10 @@ PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 Issues carrying `loom:curated`.
 
 - **#5**: Track the gap to T1 (klayout-tools design-evidence-tiers.md) *(curated)*
-- **#21**: T1 item 1 (design sources): transistor-level buck schematics (power stage, gate drive with dead time, PWM, soft start, current limit) and derived netlists with item-1 attestation *(curated)*
+- **#22**: T1 item 2 (layout): buck GDS with power-path widths and via counts per the R18 electromigration budget *(curated)*
 - **#26**: T1 item 6 (Monte Carlo): classify the statistical rows and produce klt yield evidence for R4 (and any other matching-dependent row) *(curated)*
 - **#29**: T1 item 9 (testbenches shipped): testbench inventory and klt signoff --attest 9 envelope *(curated)*
 - **#45**: spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device *(curated)*
-- **#53**: VREF_SS ceiling (1.2 V) vs compensator Vref (0.6 V) mismatch at the top level *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -70,13 +69,13 @@ _None._
 | Bucket | Count |
 |------|-------|
 | Operator merge-risk holds | 1 |
-| Very important | 0 |
-| Important | 0 |
-| Ready (`loom:issue`) | 0 |
+| Very important | 1 |
+| Important | 1 |
+| Ready (`loom:issue`) | 1 |
 | In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 6 |
+| Curated | 5 |
 | Architect / Hermit proposals | 0 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
