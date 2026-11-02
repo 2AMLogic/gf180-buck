@@ -1,0 +1,85 @@
+{
+ "process": [
+  {
+   "name": "typical",
+   "sections": [
+    "typical",
+    "mimcap_typical",
+    "cap_mim",
+    "res_typical"
+   ]
+  }
+ ],
+ "supply_v": {
+  "vsrc": [
+   4.5,
+   5.0,
+   5.5
+  ]
+ },
+ "temperature_c": [
+  27
+ ],
+ "params": {
+  "iload": [
+   0.25,
+   0.25,
+   0.25
+  ],
+  "lfac": [
+   0.8,
+   1.0,
+   1.2
+  ]
+ },
+ "exclude": [
+  {
+   "supply_v": {
+    "vsrc": 4.5
+   },
+   "params": {
+    "lfac": 0.8
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 4.5
+   },
+   "params": {
+    "lfac": 1.0
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 5.0
+   },
+   "params": {
+    "lfac": 0.8
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 5.0
+   },
+   "params": {
+    "lfac": 1.2
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 5.5
+   },
+   "params": {
+    "lfac": 1.0
+   }
+  },
+  {
+   "supply_v": {
+    "vsrc": 5.5
+   },
+   "params": {
+    "lfac": 1.2
+   }
+  }
+ ]
+}
