@@ -301,6 +301,7 @@ def crosscheck(switched, predicted, tol=0.30):
     return {"switched": switched, "predicted": predicted, "rel_err": rel, "tol": tol,
             "verdict": "pass" if abs(rel) <= tol else "fail"}
 
+
 def rising_crossings(t, v, level, t_from=None):
     """Linearly interpolated rising crossings of `level` at or after t_from."""
     out = []
