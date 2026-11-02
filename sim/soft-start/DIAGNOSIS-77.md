@@ -72,3 +72,38 @@ transient only; the spec 0.4 settled test was not run.
   while `vc` climbs to the 3.3 V rail by ~580 us and stays there. Cause not traced; a possible
   design defect (control authority) is untested, so no decision record.
 - Not done: monotonic drawdown trace, a second failing corner, R16 trip probe. Issue stays open.
+
+## Update 5 — what ends the on-time at the 3.6 ohm load (simulated, pre-layout; not measured)
+Evidence: `records/20261102-issue77-probe5-ontime-termination.json`. Same bench and corner as Update 4
+(`bench_ss77_load.spice`: typical, 5.0 V, 27 C, 3.6 ohm from t=0, kelvin return, 100 MHz EA stand-in), local
+backend, 1 unit per run, step_max 2.5 ns. Two new short runs (`probe_ss77_trip.json`: 0-300 us, saves `xtop.trip`;
+`probe_ss77_cmp.json`: 0-250 us saved from 200 us, saves the `pwm_comp` and `ocp_sense` internals), plus
+re-analysis of the Update 4 waveform. Start-up transient only; spec 0.4 settled test not run.
+
+- **The PWM on-time ends at a fixed inductor current.** From ~100 us every cycle's I(L) peak is 0.565 A
+  (0.562-0.564 A at the PWM falling edge, 280 us and 240 us windows), while the PWM-high fraction (0.49-0.53) is
+  well above the SW-high fraction (0.34-0.37) over 260-300 us. The loop is not setting the duty: `vc` is 1.75 V
+  against a ramp that is still at 1.43 V when PWM falls.
+- **It is not the `pwm_comp` comparator, reset or OCP-trip net.** At the falling edge `xpwm.cmp` stays 3.3 V,
+  `xpwm.rst` 0 V, `xpwm.ocpb` 3.3 V, and `xtop.trip` never exceeds 0.41 V (never above 1.65 V, 0-300 us).
+  `ocp_sense` internals do move: `v2` exceeds `v1` from ~240.23 us (I(L) ~0.51 A) and both jump at the PWM edge.
+  The path from there to the PWM pin is **not traced** (no nets saved between the latch and the PWM output).
+- **So the 6 % Vout shortfall and the `vc` windup are consistent with a peak-current termination below the R16
+  minimum.** Average I(L) is 0.455-0.461 A at 1.692 V into 3.6 ohm; with the peak pinned at 0.565 A the on-time
+  cannot grow, and the integrator walks `vc` to the 3.3 V rail (Update 4). This is an inference from timing and
+  current, not a traced mechanism.
+- **R16 consequence.** Spec R16 (target) requires no trip at 500 mA load up to a peak of 0.635 A and a trip
+  minimum of 0.70 A. A termination at 0.563 A, with the load at 0.47 A average, is below both. If it is the
+  current-limit path, R16's minimum is violated at this corner; the unit at no load never reaches the current.
+- **Drawdown (R15 `monotonic`, 18.9 mV by `buckmeas`, 17.8 mV by per-clock-cycle means).** It sits at 139.5-140.0 us,
+  Vout ~1.09 V on the ramp: one cycle has peak 0.223 A (valley 0.045 A) between cycles of 0.41/0.51 A, then the
+  first 0.570 A peak follows at 140.55 us. A short or skipped on-time cycle as the loop hands over to the 0.565 A
+  termination. Not a bench-ground effect (kelvin variant); node cause of the skipped cycle not traced.
+
+Verdict: still partial, but narrowed. The unit starts in range; the remaining R15 failures (monotonic, 6 % low)
+and the R16 early trips share one unexplained mechanism: a fixed ~0.563 A peak termination not visible on
+`trip`/`ocpb`. No decision record is written because the mechanism is untraced; no spec row, design netlist or
+earlier record changed. #82 (EA/loop) is not the cause of this: the loop asks for more duty and is overridden.
+Next: save `pwm_comp` nets between the latch (`q`) and `pwm`, and the `ocp_sense` output stage (`raw`, `trn`), at
+one cycle near 240 us (a 30 us window is enough), then either file the decision record (R16 minimum violated)
+or mark it a bench artifact. Not done: a second failing corner, the R16 ramped-load trip test, the grid (#60).
