@@ -1,0 +1,69 @@
+* gf180-buck load-step bench (issue #59; spec R12, R13(b)): the steady-state bench deck (sim/steady-state/bench.spice)
+* with the load replaced by a 50 -> 450 -> 50 mA step pair at 1 A/us. Body for `klt sim` (no .control).
+* Request axes: process, Vin (source Vsrc), temperature and the P-T tolerances lfac / c_out / esr (spec 0.2);
+* everything else is fixed here. collect.py reads t_up / t_dn / i_lo / i_hi / t_edge from the .param line below.
+* and the load are request axes; everything else is fixed here and stated in README.md.
+* --- inlined from gf180mcuD/libs.tech/ngspice/design.ngspice (sha256 091cb530bf85160a1f07878fb81f789ca367d018991c8ab41a584cd1a85c6692) ---
+.param
++  sw_stat_global = 0
++  sw_stat_mismatch = 0
++ mc_skew = 3
++ res_mc_skew = 3
++ cap_mc_skew = 3
++  fnoicor = 0
+* --- end inline ---
+.options gmin=1e-13
+.include ../../design/netlists/buck_top.spice
+.include ../steady-state/opamp_two_stage.spice
+
+* ---- request axes (klt corners.params overrides these defaults) ----
+.param lfac=1 vdd3=3.3 vbg=1.2
+* ---- fixed bench assumptions ----
+.param l_ind={3.3u*lfac} dcr=0.1 c_wind=3p r_wind=20
+.param c_out=6u esr=5m esl=0.5n
+.param r_wire=0.10 l_wire=2n wires=2
+.param c_die=1u esr_die=20m
+.param t_en=20u t_load=260u t_load_ramp=0.5u
+* Load step (spec R12): 0.4 A at 1 A/us = 0.4 us edge. Applied only after the 0.4 settled test passes (graded in collect.py).
+.param i_lo=0.05 i_hi=0.45 t_up=600u t_dn=680u t_edge=0.4u
+
+* Board side: ideal source (Vin), ramped from 0; klt rescales this PWL per corner
+Vsrc vsrc 0 PWL(0 0 10u 5)
+* Package: VIN / SW / GND nets, N parallel wires each. 0.5 pF pad capacitance omitted
+* (same reason as sim/buck-ideal/buck.spice); die-side Vin decoupling is a bench assumption.
+Rwv vsrc nv1 {r_wire/wires}
+Lwv nv1 vin_d {l_wire/wires}
+Rws sw_d nsw1 {r_wire/wires}
+Lws nsw1 sw_p {l_wire/wires}
+Rwg gnd_d ng1 {r_wire/wires}
+Lwg ng1 0 {l_wire/wires}
+Cdie vin_d nd1 {c_die}
+Rdie nd1 gnd_d {esr_die}
+
+* Control-domain ports (no bandgap / regulator / bias block in this design yet: ideal
+* sources, fixed over corners; see README.md "Bench assumptions"). All up before EN.
+Vdd33 vdd33 gnd_d PWL(0 0 5u {vdd3})
+Vbg vbg gnd_d PWL(0 0 5u {vbg})
+Iosc gnd_d ib_osc PWL(0 0 5u 12u)
+Ipwm gnd_d ib_pwm PWL(0 0 5u 10u)
+Iss gnd_d ib_ss PWL(0 0 5u 10u)
+Iocp gnd_d ib_ocp PWL(0 0 5u 10u)
+Iea gnd_d ib_ea PWL(0 0 5u 10u)
+Vt0 tr0 gnd_d {vdd3}
+Vt1 tr1 gnd_d 0
+Vt2 tr2 gnd_d {vdd3}
+Ven en gnd_d PWL(0 0 {t_en} 0 {t_en+10n} {vdd3})
+
+Xtop vin_d vdd33 gnd_d sw_d out en vbg ib_osc ib_pwm ib_ss ib_ocp ib_ea tr0 tr1 tr2 vc pwm vref_ss buck_top
+
+* External inductor L + DCR, parallel winding capacitance (r_wind in series, as in buck-ideal)
+Lind sw_p nl {l_ind}
+Rdcr nl out {dcr}
+Cwind sw_p nw {c_wind}
+Rwind nw out {r_wind}
+* External capacitor C + ESR + ESL; `out` is the capacitor terminal
+Cout out nc {c_out}
+Resr nc nd {esr}
+Lesl nd gnd_d {esl}
+* Load: ideal current sink, 0 until soft start is done, then i_lo, then the step pair
+Iload out gnd_d PWL(0 0 {t_load} 0 {t_load+t_load_ramp} {i_lo} {t_up} {i_lo} {t_up+t_edge} {i_hi} {t_dn} {i_hi} {t_dn+t_edge} {i_lo})

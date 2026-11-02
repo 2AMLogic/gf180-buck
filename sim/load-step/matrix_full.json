@@ -1,0 +1,75 @@
+{
+ "process": [
+  {
+   "name": "typical",
+   "sections": [
+    "typical",
+    "mimcap_typical",
+    "cap_mim",
+    "res_typical"
+   ]
+  },
+  {
+   "name": "ff",
+   "sections": [
+    "ff",
+    "mimcap_ff",
+    "cap_mim",
+    "res_ff"
+   ]
+  },
+  {
+   "name": "ss",
+   "sections": [
+    "ss",
+    "mimcap_ss",
+    "cap_mim",
+    "res_ss"
+   ]
+  },
+  {
+   "name": "fs",
+   "sections": [
+    "fs",
+    "mimcap_typical",
+    "cap_mim",
+    "res_typical"
+   ]
+  },
+  {
+   "name": "sf",
+   "sections": [
+    "sf",
+    "mimcap_typical",
+    "cap_mim",
+    "res_typical"
+   ]
+  }
+ ],
+ "supply_v": {
+  "vsrc": [
+   4.5,
+   5.0,
+   5.5
+  ]
+ },
+ "temperature_c": [
+  -40,
+  27,
+  125
+ ],
+ "params": {
+  "lfac": [
+   0.8,
+   1.2
+  ],
+  "c_out": [
+   4.7e-06,
+   4.7e-06
+  ],
+  "esr": [
+   0.01,
+   0.01
+  ]
+ }
+}

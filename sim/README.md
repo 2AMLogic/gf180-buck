@@ -63,7 +63,7 @@ commented in `buck.spice`.
 
 ## Rules
 
-- `sim/smoke/records/` and `sim/buck-ideal/records/` are append-only evidence: add files, never edit them.
+- `sim/smoke/records/`, `sim/buck-ideal/records/`, `sim/steady-state/records/` and `sim/load-step/records/` are append-only evidence: add files, never edit them.
   A record carries the commit the run started from; the run may be from an
   uncommitted tree if the record's deck sha256 does not match the committed deck.
 - The smoke bench is a toolchain check, not a device choice.
@@ -98,3 +98,22 @@ there is no separate params file. `sim/lib/rawgrade.py` reads each `waveform.raw
 `buckmeas` (spec §0.4). A unit that did not settle, timed out or was lost carries no value and
 the row reports `not_demonstrated`; nothing is relaxed. The committed record is simulated, pre-layout
 evidence; R9/R10 are not the graded post-layout value. See the record for per-unit settling windows.
+
+## Load-step bench (rows R12, R13(b), R13(c))
+
+```
+python3 -I sim/load-step/gen_requests.py      # rewrites request_{tol,full,avg}.json, matrix_*.json
+klt sim --batch-set sim/load-step/request_tol.json sim/load-step/request_full.json sim/load-step/request_avg.json --report-out ...
+python3 -I sim/load-step/collect.py --tol TOL.json --full FULL.json --avg AVG.json    # grade + write records/<UTC>-<sha>.json
+```
+
+`bench.spice` is the steady-state deck with the load replaced by 50 -> 450 -> 50 mA at 1 A/us
+(steps at 600 / 680 us, `.tran` to 760 us, last 280 us saved). Each edge is graded by
+`buckmeas.load_step_pair` only if the spec §0.4 settled test passes on the cycles just before it;
+otherwise that step has no value. Requests: `request_tol` = C-typ x all 18 P-T tolerance
+combinations (18 units); `request_full` = C-full (45) x the two deviation-binding tolerance corners
+(Ceff 4.7 uF, ESR 10 mohm, L x0.8 / x1.2; 90 units); `request_avg` = the averaged model
+(`avg_step.spice`: `design/averaged/buck_avg.spice` unchanged plus the same step) at Vin x 18
+tolerance combinations (54 units). `design/averaged/records/` hold loop-gain metrics only, so the R13(c)
+prediction is a transient run of the averaged model, stated as such in the record. C-full x the full
+tolerance cube (810 units) is not run; the record states the argument and its limit. Simulated, never measured.

@@ -1,0 +1,7 @@
+* gf180-buck load step on the AVERAGED model (issue #59; spec R13(c)): design/averaged/buck_avg.spice, unchanged,
+* with a 0.4 A step pair added on its output node on top of its DC load (`iload`, set to the 50 mA low level).
+* The loop is closed (Vinj is DC 0 in a .tran). This is a run of the model, not a change to it.
+* Request axes: vin lfac ceff esr (the model's own .param names). Timeline identical to bench.spice.
+.include ../../design/averaged/buck_avg.spice
+.param t_up=600u t_dn=680u t_edge=0.4u di=0.4
+Istep vo 0 PWL(0 0 {t_up} 0 {t_up+t_edge} {di} {t_dn} {di} {t_dn+t_edge} 0)

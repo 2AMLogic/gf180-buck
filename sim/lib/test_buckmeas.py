@@ -160,6 +160,66 @@ class LoadStepTest(unittest.TestCase):
         self.assertFalse(r["recovered"])
 
 
+class LoadStepPairTest(unittest.TestCase):
+    TAU = 3e-6
+    N_UP, N_DN, N_END = 60, 210, 360  # cycles: up step, step back, end of run
+
+    def wave(self, drift=0.0):
+        t = grid(self.N_END)
+        t_up, t_dn = self.N_UP * T, self.N_DN * T
+
+        def v(x):
+            r = 1.8 + 0.002 * math.sin(2 * math.pi * F * x) + drift * x
+            if x >= t_dn:
+                r += 0.04 * math.exp(-(x - t_dn) / self.TAU)
+            elif x >= t_up:
+                r -= 0.05 * math.exp(-(x - t_up) / self.TAU)
+            return r
+        return t, [v(x) for x in t], [0.25 + triangle(x) for x in t], t_up, t_dn
+
+    def test_known_deviation_and_recovery_both_edges(self):
+        t, vout, il, t_up, t_dn = self.wave()
+        r = bm.load_step_pair(t, vout, il, F, t_up, t_dn, 0.018)
+        up, back = r["up"], r["back"]
+        self.assertTrue(up["available"] and back["available"], r)
+        self.assertAlmostEqual(up["deviation_v"], 0.05, delta=2e-3)
+        self.assertAlmostEqual(up["undershoot_v"], up["deviation_v"], places=9)
+        self.assertAlmostEqual(back["overshoot_v"], back["deviation_v"], places=9)
+        self.assertAlmostEqual(back["deviation_v"], 0.04, delta=2e-3)
+        # last exit from +-18 mV: the 2 mV ripple peak keeps Vout out until the decay is under band - ripple,
+        # i.e. tau * ln(dev / (band - ripple))
+        self.assertAlmostEqual(up["recovery_time_s"], self.TAU * math.log(0.05 / 0.016), delta=0.15e-6)
+        self.assertAlmostEqual(back["recovery_time_s"], self.TAU * math.log(0.04 / 0.016), delta=0.15e-6)
+        self.assertTrue(up["run_long_enough"] and back["run_long_enough"])
+        self.assertAlmostEqual(up["v_ref_v"], 1.8, delta=1e-3)
+
+    def test_up_step_graded_before_second_edge_cuts_in(self):
+        t, vout, il, t_up, t_dn = self.wave()
+        up = bm.load_step_pair(t, vout, il, F, t_up, t_dn, 0.018)["up"]
+        self.assertLess(up["t_end_s"], t_dn + 1e-12)  # the step back is not part of the up step's window
+
+    def test_unsettled_before_step_reports_no_value(self):
+        t, vout, il, t_up, t_dn = self.wave(drift=2000.0)  # 1.8 V drifting 0.1 % per ~0.5 us: not settled
+        r = bm.load_step_pair(t, vout, il, F, t_up, t_dn, 0.018)
+        self.assertFalse(r["up"]["available"])
+        self.assertNotIn("deviation_v", r["up"])
+        self.assertIn("not settled", r["up"]["reason"])
+
+
+class CrosscheckTest(unittest.TestCase):
+    def test_within_and_outside_30_percent(self):
+        self.assertEqual(bm.crosscheck(0.060, 0.050)["verdict"], "pass")     # +20 %
+        self.assertEqual(bm.crosscheck(0.0655, 0.050)["verdict"], "fail")    # +31 %
+        self.assertAlmostEqual(bm.crosscheck(0.035, 0.050)["rel_err"], -0.3)  # edge: -30 % passes
+        self.assertEqual(bm.crosscheck(0.035, 0.050)["verdict"], "pass")
+
+    def test_zero_prediction_and_missing_values(self):
+        self.assertEqual(bm.crosscheck(0.0, 0.0)["verdict"], "pass")
+        self.assertEqual(bm.crosscheck(1e-6, 0.0)["verdict"], "fail")
+        self.assertEqual(bm.crosscheck(None, 0.05)["verdict"], "no_value")
+        self.assertEqual(bm.crosscheck(0.05, None)["verdict"], "no_value")
+
+
 class IdealVoutTest(unittest.TestCase):
     def test_formula(self):
         v = bm.ideal_vout(5.0, 0.36, 0.25, dcr=0.1, r_wire=0.1, wires=2, ron_hs=0.01, ron_ls=0.01)

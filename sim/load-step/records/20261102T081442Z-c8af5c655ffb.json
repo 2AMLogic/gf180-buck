@@ -1,0 +1,6527 @@
+{
+ "record": "simulated, not measured; pre-layout; target tier (5 V -> 1.8 V, 50 -> 450 -> 50 mA); rows R12, R13(b), R13(c)",
+ "environment": {
+  "utc": "20261102T081442Z",
+  "repo_commit": "c8af5c655ffb",
+  "klt": "klt 0.8.1.dev1045+g5a0786e13b63",
+  "local_grader_python": "3.12.3",
+  "reports": [
+   {
+    "request": "request_tol.json",
+    "report": "report.json",
+    "status": "error",
+    "remote": {
+     "provider": null,
+     "job_id": null,
+     "instance_type": null,
+     "lifecycle": null,
+     "elapsed_seconds": null,
+     "state": null
+    }
+   },
+   {
+    "request": "request_full.json",
+    "report": "report.json",
+    "status": "error",
+    "remote": {
+     "provider": null,
+     "job_id": null,
+     "instance_type": null,
+     "lifecycle": null,
+     "elapsed_seconds": null,
+     "state": null
+    }
+   },
+   {
+    "request": "request_avg.json",
+    "report": "report.json",
+    "status": "pass",
+    "remote": {
+     "provider": "aws-batch-fleet",
+     "job_id": "klt-sim-1c09d170c20e",
+     "instance_type": "m7i.4xlarge",
+     "lifecycle": "spot",
+     "elapsed_seconds": 44,
+     "state": "done"
+    }
+   }
+  ],
+  "files_sha256": {
+   "bench.spice": "063f1a8c12d16bed90ddeb51228f8787946e52e4204a8161520e71e55fc01ce3",
+   "avg_step.spice": "fcf57135cab64aa295110ac22cdc0f1876ac4acc91bdc368855ed97aa530fe35",
+   "request_tol.json": "d8f7ed82e960e700277ebb91dcfec516a2d07c83b5a5ce3d0214185bbffb38ea",
+   "request_full.json": "105b461367633f0582f57d2a7ae708f2dad0174c19acc56e72ea3cce7cc47260",
+   "request_avg.json": "4c003520abd03a678ab6d287c58a1afb4055eec0c7039a0149e55364ec1e8df0",
+   "gen_requests.py": "c21107ae9a363a4dee3ca81bd6703c29eb6156849f3b38dcfc19621c90c88f65",
+   "design/netlists/buck_top.spice": "8600d7d34d8175ff5b7f979241fd8e5c873380c1bccdaf66b79309df652f28ff",
+   "design/averaged/buck_avg.spice": "1b953b6413df6078408022472a9ba1b7443e9ed64d7c130465b283d5d4ba1eed",
+   "sim/steady-state/opamp_two_stage.spice": "16f64fa3d9929fbb25630b49adb8f2bf53ccede94785ed5286efdb3d3f0a7097",
+   "sim/lib/buckmeas.py": "c1965f209a1ac9d24831b4547a53b0de5b7376aa4d87d54f70712d227e4174fc",
+   "sim/lib/rawgrade.py": "fe481f94a9ca1a263f9ef937980df5ab6f978619d5b7ac54fdecccae54ed59fc"
+  }
+ },
+ "method": {
+  "analysis": ".tran 2.5n 760u, waveforms saved from 480u; max step 2.5 ns = T/200 at 2 MHz",
+  "startup": "Vin ramps 0 -> Vin over 10 us, rails/bias over 5 us, EN at 20 us (soft start ~200 us), load 0 -> 50 mA at 260 us",
+  "load_step": {
+   "t_up_s": 0.0006,
+   "t_dn_s": 0.0006799999999999999,
+   "i_lo_a": 0.05,
+   "i_hi_a": 0.45,
+   "edge_s": 4e-07,
+   "slew": "1 A/us",
+   "hold_after_up_s": 7.999999999999999e-05,
+   "hold_after_back_s": 8.00000000000001e-05,
+   "cycles_after_each_step": "~160 at 2 MHz (spec 0.4 needs >= 100 or 20 in-band cycles, whichever is longer)"
+  },
+  "steady_state": "spec 0.4 settled test (two consecutive 20-cycle windows, < 0.1 % mean Vout, < 1 % peak I(L)) on the cycles just before each edge; a step that fails it reports no value (units[].up / .back .settled)",
+  "measurement": "deviation = larger of under/overshoot about the Vout the run settles to after the step (mean of the last 20 whole cycles of the hold), on Vout after the 20 MHz first-order low-pass (as R11); recovery = last exit from +-18 mV, from the start of the load edge",
+  "clock": "switched: cycle period/phase from rising crossings of Vin/2 on V(sw) over the saved tail; averaged: commanded 2 MHz",
+  "averaged_prediction": "design/averaged/records/ hold loop-gain metrics only (fc, PM, GM); no deviation/recovery prediction exists there. It is derived here by a transient run of design/averaged/buck_avg.spice, unchanged, with the same 0.4 A step pair added at the output (avg_step.spice); the averaged model has no process/T axes",
+  "tolerance_coverage": "C-typ (typical, 27 C, 5.0 V) x all 18 tolerance combinations (request_tol); C-full (45) x the two corners with Ceff 4.7 uF, ESR 10 mohm and L x0.8 / x1.2 (request_full). C-full x the full 18-combination cube (810 units) was NOT run; deviation ~ dI/(2 pi fc Ceff) + dI ESR is worst at 4.7 uF / 10 mohm for any L, but this is an argument, not a run, for the other process/T/Vin corners",
+  "corner_counts": {
+   "tol": 18,
+   "full": 90,
+   "avg": 54,
+   "expected": {
+    "tol": 18,
+    "full": 90,
+    "avg": 54
+   },
+   "c_full": 45,
+   "switched_unique": 106
+  }
+ },
+ "rows": {
+  "R12": {
+   "what": "load-step transient 50 -> 450 -> 50 mA at 1 A/us, switched: deviation <= 0.09 V and recovery to +-0.018 V within 2.5e-05 s, each step graded only after the 0.4 settled test; >= 100 cycles after each step",
+   "bounds": {
+    "deviation_v_max": 0.09,
+    "band_v": 0.018,
+    "recovery_s_max": 2.5e-05
+   },
+   "n_units": 106,
+   "n_steps_valued": 0,
+   "n_steps_failing": 0,
+   "n_steps_no_value": 212,
+   "verdict": "not_demonstrated",
+   "binding_deviation": null,
+   "binding_recovery": null,
+   "failing_steps": [],
+   "no_value_steps": [
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=0.8 [up]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=0.8 [back]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=0.8 [up]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=0.8 [back]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=0.8 [up]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=0.8 [back]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=0.8 [up]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=0.8 [back]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=1 [up]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=1 [back]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1 [up]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1 [back]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=1 [up]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=1 [back]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=1 [up]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=1 [back]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=1 [up]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=1 [back]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=1 [up]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=1 [back]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=1.2 [up]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=1.2 [back]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=1.2 [up]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=1.2 [back]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=1.2 [up]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=1.2 [back]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=1.2 [up]",
+    "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=1.2 [back]",
+    "typical/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "typical/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "typical/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "typical/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "typical/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ff/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ff/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ff/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ff/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "ss/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "ss/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "ss/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "ss/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "fs/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "fs/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "fs/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "fs/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]",
+    "sf/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [up]",
+    "sf/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8 [back]",
+    "sf/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [up]",
+    "sf/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2 [back]"
+   ]
+  },
+  "R13b": {
+   "what": "R13(b): the switched step per P-T tolerance corner (same grading as R12)",
+   "per_tolerance_corner": {
+    "L x0.8, Ceff 4.7 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x0.8, Ceff 4.7 uF, ESR 10 mohm": {
+     "n_steps": 90,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 90,
+     "verdict": "not_demonstrated"
+    },
+    "L x0.8, Ceff 6 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x0.8, Ceff 6 uF, ESR 10 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x0.8, Ceff 12 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x0.8, Ceff 12 uF, ESR 10 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1, Ceff 4.7 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1, Ceff 4.7 uF, ESR 10 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1, Ceff 6 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1, Ceff 6 uF, ESR 10 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1, Ceff 12 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1, Ceff 12 uF, ESR 10 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1.2, Ceff 4.7 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1.2, Ceff 4.7 uF, ESR 10 mohm": {
+     "n_steps": 90,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 90,
+     "verdict": "not_demonstrated"
+    },
+    "L x1.2, Ceff 6 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1.2, Ceff 6 uF, ESR 10 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1.2, Ceff 12 uF, ESR 5 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    },
+    "L x1.2, Ceff 12 uF, ESR 10 mohm": {
+     "n_steps": 2,
+     "pass": 0,
+     "fail": 0,
+     "no_value": 2,
+     "verdict": "not_demonstrated"
+    }
+   },
+   "verdict": "not_demonstrated"
+  },
+  "R13c": {
+   "what": "R13(c): switched step vs averaged-model step, peak deviation and recovery time of both edges, +-30 %",
+   "n_units": 13,
+   "n_pass": 0,
+   "n_fail": 0,
+   "n_no_value": 13,
+   "verdict": "not_demonstrated",
+   "worst": null,
+   "table": [
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=0.8,vin=5",
+     "tolerance_corner": "L x0.8, Ceff 4.7 uF, ESR 5 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.055009869741524886,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.18220714887602e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.05502344839578277,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.184090390461592e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=0.8,vin=5",
+     "tolerance_corner": "L x0.8, Ceff 4.7 uF, ESR 10 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.0539546449630961,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.1957200298411365e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.05396871600071451,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.1975910726367695e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=0.8,vin=5",
+     "tolerance_corner": "L x0.8, Ceff 6 uF, ESR 5 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.05095655574410807,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.439685653818322e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.05097021029059157,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.441346437847069e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=0.8,vin=5",
+     "tolerance_corner": "L x0.8, Ceff 6 uF, ESR 10 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.05000950880470523,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.463951032378322e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.05002315707604188,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.46561437917586e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=0.8,vin=5",
+     "tolerance_corner": "L x0.8, Ceff 12 uF, ESR 5 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.04204388250811064,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 6.871555266944494e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.04205591532177677,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 6.8729180768313525e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=0.8,vin=5",
+     "tolerance_corner": "L x0.8, Ceff 12 uF, ESR 10 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.04124331417050908,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 6.883784225392153e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.04125537928912837,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 6.8851881603157646e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=1",
+     "averaged_id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=1,vin=5",
+     "tolerance_corner": "L x1, Ceff 4.7 uF, ESR 5 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.06411844337058725,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.69289156047753e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.06415747789470472,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.697010037391636e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=1",
+     "averaged_id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=1,vin=5",
+     "tolerance_corner": "L x1, Ceff 12 uF, ESR 5 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.04919802278520291,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 7.746246305536395e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.049232006366776826,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 7.749349570261663e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=1",
+     "averaged_id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=1,vin=5",
+     "tolerance_corner": "L x1, Ceff 12 uF, ESR 10 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.048363064250316334,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 7.754353867792064e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.04839703731205791,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 7.757548462864697e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=0.8,vin=4.5",
+     "tolerance_corner": "L x0.8, Ceff 4.7 uF, ESR 10 mohm",
+     "vin_v": 4.5,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.057988178452320405,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.511872214108374e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.058000829753940275,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.513492739104577e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+     "averaged_id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=1.2,vin=4.5",
+     "tolerance_corner": "L x1.2, Ceff 4.7 uF, ESR 10 mohm",
+     "vin_v": 4.5,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.07740605153678892,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 6.407671537797099e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.0774788760556342,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 6.413179642584263e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=0.8,vin=5",
+     "tolerance_corner": "L x0.8, Ceff 4.7 uF, ESR 10 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.0539546449630961,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.1957200298411365e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.05396871600071451,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.1975910726367695e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    },
+    {
+     "switched_id": "typical/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+     "averaged_id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=0.8,vin=5",
+     "tolerance_corner": "L x0.8, Ceff 4.7 uF, ESR 10 mohm",
+     "vin_v": 5.0,
+     "checks": {
+      "up.deviation_v": {
+       "switched": null,
+       "predicted": 0.0539546449630961,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "up.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.1957200298411365e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.deviation_v": {
+       "switched": null,
+       "predicted": 0.05396871600071451,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      },
+      "back.recovery_time_s": {
+       "switched": null,
+       "predicted": 5.1975910726367695e-06,
+       "rel_err": null,
+       "tol": 0.3,
+       "verdict": "no_value"
+      }
+     },
+     "verdict": "no_value"
+    }
+   ]
+  }
+ },
+ "units": {
+  "tol": [
+   {
+    "id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=0.8",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1717016.3305127316,
+     "crossings": 455
+    },
+    "run": {
+     "t_first_s": 0.00048000115189645,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005880468100610294,
+      0.000599694922920869
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006678363831509308,
+      0.0006794844960107704
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1727109.0566281592,
+     "crossings": 462
+    },
+    "run": {
+     "t_first_s": 0.0004800021957188211,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.000588287180240309,
+      0.0005998672248954196
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.000668189488360572,
+      0.0006797695330156826
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=0.8",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1330644.2622744795,
+     "crossings": 373
+    },
+    "run": {
+     "t_first_s": 0.0004800021602020003,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005846552805830338,
+      0.0005996855937681776
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006643159404642957,
+      0.0006793462536494395
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=0.8",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1679972.8029007055,
+     "crossings": 450
+    },
+    "run": {
+     "t_first_s": 0.0004800012096868813,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005878172201892811,
+      0.0005997221748203723
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.000667580416217592,
+      0.0006794853708486832
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=0.8",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1461377.090723042,
+     "crossings": 408
+    },
+    "run": {
+     "t_first_s": 0.0004800016371429513,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005858274897095597,
+      0.0005995132112984377
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006658889610044957,
+      0.0006795746825933737
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=0.8",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1487046.0760831586,
+     "crossings": 416
+    },
+    "run": {
+     "t_first_s": 0.0004800000796858463,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005862944363504487,
+      0.0005997439187314382
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006663188565173363,
+      0.0006797683388983257
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=1",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1750045.4089828331,
+     "crossings": 439
+    },
+    "run": {
+     "t_first_s": 0.0004800000140912392,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005883030520814071,
+      0.0005997313269692138
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006683009762960543,
+      0.000679729251183861
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=1",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=1",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=1",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1473426.3563988141,
+     "crossings": 412
+    },
+    "run": {
+     "t_first_s": 0.0004800021642138764,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005861432392989193,
+      0.0005997170429119359
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006662286806157169,
+      0.0006798024842287335
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=1",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1424335.0385171985,
+     "crossings": 398
+    },
+    "run": {
+     "t_first_s": 0.000480001755854537,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005855338601840834,
+      0.000599575500289224
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006655712087833845,
+      0.000679612848888525
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.005,lfac=1.2",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=6e-06,esr=0.005,lfac=1.2",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=6e-06,esr=0.01,lfac=1.2",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.005,lfac=1.2",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=1.2e-05,esr=0.01,lfac=1.2",
+    "bench": "tol",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   }
+  ],
+  "full": [
+   {
+    "id": "typical/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1828661.0491449942,
+     "crossings": 509
+    },
+    "run": {
+     "t_first_s": 0.0004800020280342576,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000093573e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005890377182484044,
+      0.0005999746822141164
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006688775551981025,
+      0.0006798145191638145
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1558968.9576388574,
+     "crossings": 435
+    },
+    "run": {
+     "t_first_s": 0.0004800002578918377,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005865736723740051,
+      0.0005994026641906805
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006667548712282267,
+      0.0006795838630449021
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 439087.96528036566,
+     "crossings": 122
+    },
+    "run": {
+     "t_first_s": 0.0004800024659735083,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005531694967823992,
+      0.0005987184564019817
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006328801761166686,
+      0.000678429135736251
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1727109.0566281592,
+     "crossings": 462
+    },
+    "run": {
+     "t_first_s": 0.0004800021957188211,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.000588287180240309,
+      0.0005998672248954196
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.000668189488360572,
+      0.0006797695330156826
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1689229.7874611015,
+     "crossings": 473
+    },
+    "run": {
+     "t_first_s": 0.0004800004049136357,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005876156309450109,
+      0.0005994553463871946
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006681256959518605,
+      0.0006799654113940442
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "rising crossings of Vin/2 on V(sw) over the saved tail",
+     "f_hz": 1827656.219466769,
+     "crossings": 510
+    },
+    "run": {
+     "t_first_s": 0.0004800002537335906,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0005889290683333095,
+      0.0005998720453477915
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    },
+    "back": {
+     "settled": false,
+     "settle_measure_window_s": [
+      0.0006688128005390284,
+      0.0006797557775535104
+     ],
+     "settled_since_s": null,
+     "available": false,
+     "reason": "not settled before the step: no value is reported (\u00a70.4)"
+    }
+   },
+   {
+    "id": "typical/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "typical/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "typical",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ff/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ff",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "ss/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "ss",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "fs/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "fs",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/4.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/4.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/4.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 4.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.000V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.000V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.000V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.0,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.500V/-40C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": -40.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.500V/27C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=0.8",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   },
+   {
+    "id": "sf/5.500V/125C/params:c_out=4.7e-06,esr=0.01,lfac=1.2",
+    "bench": "full",
+    "process": "sf",
+    "vin_v": 5.5,
+    "temp_c": 125.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "error",
+    "klt_diagnostics": [
+     "lost_shard"
+    ],
+    "graded": false,
+    "reason": "no waveform: klt status error ['lost_shard']"
+   }
+  ],
+  "avg": [
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=0.8,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800005281349263,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000185511939266,
+     "v_pre_step_mean_v": 1.7999988056918883,
+     "undershoot_v": 0.05901271166210997,
+     "overshoot_v": 0.000427025704399675,
+     "deviation_v": 0.05901271166210997,
+     "recovered": true,
+     "recovery_time_s": 5.495132615359558e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999791477777654,
+     "v_pre_step_mean_v": 1.8000185511939266,
+     "undershoot_v": 0.00042359177789275115,
+     "overshoot_v": 0.05902559524131212,
+     "deviation_v": 0.05902559524131212,
+     "recovered": true,
+     "recovery_time_s": 5.496766287567813e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=0.8,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800000728014461,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000185500409562,
+     "v_pre_step_mean_v": 1.7999988057204914,
+     "undershoot_v": 0.057988178452320405,
+     "overshoot_v": 0.0004281321391821358,
+     "deviation_v": 0.057988178452320405,
+     "recovered": true,
+     "recovery_time_s": 5.511872214108374e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999791483009007,
+     "v_pre_step_mean_v": 1.8000185500409562,
+     "undershoot_v": 0.00042469121937327436,
+     "overshoot_v": 0.058000829753940275,
+     "deviation_v": 0.058000829753940275,
+     "recovered": true,
+     "recovery_time_s": 5.513492739104577e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=0.8,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.000480001759675573,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800018394099069,
+     "v_pre_step_mean_v": 1.7999988071083273,
+     "undershoot_v": 0.0548014057214008,
+     "overshoot_v": 0.00048710986389299826,
+     "deviation_v": 0.0548014057214008,
+     "recovered": true,
+     "recovery_time_s": 5.785921260599179e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999793036478704,
+     "v_pre_step_mean_v": 1.800018394099069,
+     "undershoot_v": 0.00048331220390918084,
+     "overshoot_v": 0.054814035505733605,
+     "deviation_v": 0.054814035505733605,
+     "recovered": true,
+     "recovery_time_s": 5.787349934677742e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=0.8,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800004097801621,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000183930730824,
+     "v_pre_step_mean_v": 1.7999988070060156,
+     "undershoot_v": 0.053876464311074956,
+     "overshoot_v": 0.0004902334397876018,
+     "deviation_v": 0.053876464311074956,
+     "recovered": true,
+     "recovery_time_s": 5.812081069314244e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999793053977704,
+     "v_pre_step_mean_v": 1.8000183930730824,
+     "undershoot_v": 0.0004864199364125188,
+     "overshoot_v": 0.05388876053268632,
+     "deviation_v": 0.05388876053268632,
+     "recovered": true,
+     "recovery_time_s": 5.813512054076678e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=0.8,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.000480000067313876,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000176976806443,
+     "v_pre_step_mean_v": 1.7999988064493628,
+     "undershoot_v": 0.0452484366729593,
+     "overshoot_v": 0.002716804863670097,
+     "deviation_v": 0.0452484366729593,
+     "recovered": true,
+     "recovery_time_s": 7.3435799072985464e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999799973707582,
+     "v_pre_step_mean_v": 1.8000176976806443,
+     "undershoot_v": 0.0027114999824162656,
+     "overshoot_v": 0.04525956420621213,
+     "deviation_v": 0.04525956420621213,
+     "recovered": true,
+     "recovery_time_s": 7.344759275705083e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=0.8,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800007311536902,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000093573e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000176921182864,
+     "v_pre_step_mean_v": 1.799998807096533,
+     "undershoot_v": 0.044435247880934226,
+     "overshoot_v": 0.00267354412311116,
+     "deviation_v": 0.044435247880934226,
+     "recovered": true,
+     "recovery_time_s": 7.3566355106248395e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999800025623147,
+     "v_pre_step_mean_v": 1.8000176921182864,
+     "undershoot_v": 0.0026683072815354425,
+     "overshoot_v": 0.04444634910454304,
+     "deviation_v": 0.04444634910454304,
+     "recovered": true,
+     "recovery_time_s": 7.357849959562955e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=1,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800001876249247,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000667515797548,
+     "v_pre_step_mean_v": 1.7999988057094525,
+     "undershoot_v": 0.0688921765892585,
+     "overshoot_v": 0.0020921704172929267,
+     "deviation_v": 0.0688921765892585,
+     "recovered": true,
+     "recovery_time_s": 5.974710241405247e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799931263583906,
+     "v_pre_step_mean_v": 1.8000667515797548,
+     "undershoot_v": 0.002075640770802023,
+     "overshoot_v": 0.06893537583018561,
+     "deviation_v": 0.06893537583018561,
+     "recovered": true,
+     "recovery_time_s": 5.978867532824023e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=1,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800006116846306,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800066748248935,
+     "v_pre_step_mean_v": 1.7999988057456,
+     "undershoot_v": 0.06792292924999876,
+     "overshoot_v": 0.002099147989395256,
+     "deviation_v": 0.06792292924999876,
+     "recovered": true,
+     "recovery_time_s": 5.9970816484242314e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999312663450497,
+     "v_pre_step_mean_v": 1.800066748248935,
+     "undershoot_v": 0.002082587958941673,
+     "overshoot_v": 0.0679663760312661,
+     "deviation_v": 0.0679663760312661,
+     "recovered": true,
+     "recovery_time_s": 6.001242743519566e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=1,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800003378713188,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000093573e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000662336854774,
+     "v_pre_step_mean_v": 1.7999988061517338,
+     "undershoot_v": 0.06420273511197871,
+     "overshoot_v": 0.0025506507052761584,
+     "deviation_v": 0.06420273511197871,
+     "recovered": true,
+     "recovery_time_s": 6.3710603505498856e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799931781056548,
+     "v_pre_step_mean_v": 1.8000662336854774,
+     "undershoot_v": 0.0025320521048124434,
+     "overshoot_v": 0.06424478299016845,
+     "deviation_v": 0.06424478299016845,
+     "recovered": true,
+     "recovery_time_s": 6.3747004382568376e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=1,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800016593341968,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000662285584075,
+     "v_pre_step_mean_v": 1.7999988064369778,
+     "undershoot_v": 0.06330434876188296,
+     "overshoot_v": 0.0025753065705129696,
+     "deviation_v": 0.06330434876188296,
+     "recovered": true,
+     "recovery_time_s": 6.397587762959505e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999317860760902,
+     "v_pre_step_mean_v": 1.8000662285584075,
+     "undershoot_v": 0.002556693630943796,
+     "overshoot_v": 0.06334629445843065,
+     "deviation_v": 0.06334629445843065,
+     "recovered": true,
+     "recovery_time_s": 6.401263252750066e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=1,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800018768435432,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000639603791357,
+     "v_pre_step_mean_v": 1.7999988070727886,
+     "undershoot_v": 0.05286019104002282,
+     "overshoot_v": 0.007992098362974653,
+     "deviation_v": 0.05286019104002282,
+     "recovered": true,
+     "recovery_time_s": 8.215013245295379e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999340542811868,
+     "v_pre_step_mean_v": 1.8000639603791357,
+     "undershoot_v": 0.007973927162355121,
+     "overshoot_v": 0.052897667736355736,
+     "deviation_v": 0.052897667736355736,
+     "recovered": true,
+     "recovery_time_s": 8.218206406368283e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=1,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800017377695083,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000639455093572,
+     "v_pre_step_mean_v": 1.799998805966743,
+     "undershoot_v": 0.05200896832806934,
+     "overshoot_v": 0.007792691217421321,
+     "deviation_v": 0.05200896832806934,
+     "recovered": true,
+     "recovery_time_s": 8.222686604960499e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799934069079758,
+     "v_pre_step_mean_v": 1.8000639455093572,
+     "undershoot_v": 0.007774703397892546,
+     "overshoot_v": 0.052046459812705725,
+     "deviation_v": 0.052046459812705725,
+     "recovered": true,
+     "recovery_time_s": 8.225970960545198e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=1.2,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800010006743409,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8001150171988867,
+     "v_pre_step_mean_v": 1.7999988056895164,
+     "undershoot_v": 0.07834396133731447,
+     "overshoot_v": 0.004365756804598053,
+     "deviation_v": 0.07834396133731447,
+     "recovered": true,
+     "recovery_time_s": 6.383854064503794e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7998833265456784,
+     "v_pre_step_mean_v": 1.8001150171988867,
+     "undershoot_v": 0.004332573797813044,
+     "overshoot_v": 0.07841672517695009,
+     "deviation_v": 0.07841672517695009,
+     "recovered": true,
+     "recovery_time_s": 6.389332833974014e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=1.2,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800023400411908,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8001150114212987,
+     "v_pre_step_mean_v": 1.7999988056791674,
+     "undershoot_v": 0.07740605153678892,
+     "overshoot_v": 0.004388733210445084,
+     "deviation_v": 0.07740605153678892,
+     "recovered": true,
+     "recovery_time_s": 6.407671537797099e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7998833326877575,
+     "v_pre_step_mean_v": 1.8001150114212987,
+     "undershoot_v": 0.004355528394885955,
+     "overshoot_v": 0.0774788760556342,
+     "deviation_v": 0.0774788760556342,
+     "recovered": true,
+     "recovery_time_s": 6.413179642584263e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=1.2,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800022880070836,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8001141713088027,
+     "v_pre_step_mean_v": 1.799998806752597,
+     "undershoot_v": 0.07310227740896469,
+     "overshoot_v": 0.005949080780561777,
+     "deviation_v": 0.07310227740896469,
+     "recovered": true,
+     "recovery_time_s": 6.875226939875032e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7998841767899674,
+     "v_pre_step_mean_v": 1.8001141713088027,
+     "undershoot_v": 0.005913391324035011,
+     "overshoot_v": 0.07317299237697839,
+     "deviation_v": 0.07317299237697839,
+     "recovered": true,
+     "recovery_time_s": 6.88012356221397e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=1.2,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800024537786069,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8001141615328209,
+     "v_pre_step_mean_v": 1.7999988064906693,
+     "undershoot_v": 0.07220944008904295,
+     "overshoot_v": 0.005965543437651766,
+     "deviation_v": 0.07220944008904295,
+     "recovered": true,
+     "recovery_time_s": 6.8996376010995114e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799884186590389,
+     "v_pre_step_mean_v": 1.8001141615328209,
+     "undershoot_v": 0.005930043174222632,
+     "overshoot_v": 0.07228014702446939,
+     "deviation_v": 0.07228014702446939,
+     "recovered": true,
+     "recovery_time_s": 6.904599000774614e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=1.2,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.00048000217924731,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8001103279984014,
+     "v_pre_step_mean_v": 1.799998805911058,
+     "undershoot_v": 0.059916382484845654,
+     "overshoot_v": 0.013975755590997174,
+     "deviation_v": 0.059916382484845654,
+     "recovered": true,
+     "recovery_time_s": 8.965089527402845e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799888037431944,
+     "v_pre_step_mean_v": 1.8001103279984014,
+     "undershoot_v": 0.013945660513848601,
+     "overshoot_v": 0.059979264077251626,
+     "deviation_v": 0.059979264077251626,
+     "recovered": true,
+     "recovery_time_s": 8.969629995781076e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=1.2,vin=4.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 4.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800003726802712,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000093573e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8001104603158515,
+     "v_pre_step_mean_v": 1.799998807045745,
+     "undershoot_v": 0.059031531743278576,
+     "overshoot_v": 0.013613365285578105,
+     "deviation_v": 0.059031531743278576,
+     "recovered": true,
+     "recovery_time_s": 8.967331497727296e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00063,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7998879093073872,
+     "v_pre_step_mean_v": 1.8001104603158515,
+     "undershoot_v": 0.01358350098833272,
+     "overshoot_v": 0.0590944865975942,
+     "deviation_v": 0.0590944865975942,
+     "recovered": true,
+     "recovery_time_s": 8.971996604581174e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=0.8,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800006999991443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000203528253937,
+     "v_pre_step_mean_v": 1.7999989286054239,
+     "undershoot_v": 0.055009869741524886,
+     "overshoot_v": 0.0005068095483666823,
+     "deviation_v": 0.055009869741524886,
+     "recovered": true,
+     "recovery_time_s": 5.18220714887602e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.0006100000000000001,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999775834399372,
+     "v_pre_step_mean_v": 1.8000203528253937,
+     "undershoot_v": 0.000503278984930855,
+     "overshoot_v": 0.05502344839578277,
+     "deviation_v": 0.05502344839578277,
+     "recovered": true,
+     "recovery_time_s": 5.184090390461592e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=0.8,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800020999991443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000203518925895,
+     "v_pre_step_mean_v": 1.799998928795297,
+     "undershoot_v": 0.0539546449630961,
+     "overshoot_v": 0.0005077611492503298,
+     "deviation_v": 0.0539546449630961,
+     "recovered": true,
+     "recovery_time_s": 5.1957200298411365e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.0006100000000000001,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999775846522743,
+     "v_pre_step_mean_v": 1.8000203518925895,
+     "undershoot_v": 0.0005042268867299082,
+     "overshoot_v": 0.05396871600071451,
+     "deviation_v": 0.05396871600071451,
+     "recovered": true,
+     "recovery_time_s": 5.1975910726367695e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=0.8,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800013901358546,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000201870123393,
+     "v_pre_step_mean_v": 1.7999989296646342,
+     "undershoot_v": 0.05095655574410807,
+     "overshoot_v": 0.0005596501576505819,
+     "deviation_v": 0.05095655574410807,
+     "recovered": true,
+     "recovery_time_s": 5.439685653818322e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999777490830953,
+     "v_pre_step_mean_v": 1.8000201870123393,
+     "undershoot_v": 0.0005558478879641449,
+     "overshoot_v": 0.05097021029059157,
+     "deviation_v": 0.05097021029059157,
+     "recovered": true,
+     "recovery_time_s": 5.441346437847069e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=0.8,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800014519522609,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000201854736015,
+     "v_pre_step_mean_v": 1.799998928730272,
+     "undershoot_v": 0.05000950880470523,
+     "overshoot_v": 0.0005619365795654918,
+     "deviation_v": 0.05000950880470523,
+     "recovered": true,
+     "recovery_time_s": 5.463951032378322e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799977750715493,
+     "v_pre_step_mean_v": 1.8000201854736015,
+     "undershoot_v": 0.0005581249282964329,
+     "overshoot_v": 0.05002315707604188,
+     "deviation_v": 0.05002315707604188,
+     "recovered": true,
+     "recovery_time_s": 5.46561437917586e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=0.8,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800016326163123,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000194524090254,
+     "v_pre_step_mean_v": 1.7999989272880303,
+     "undershoot_v": 0.04204388250811064,
+     "overshoot_v": 0.001975923249832423,
+     "deviation_v": 0.04204388250811064,
+     "recovered": true,
+     "recovery_time_s": 6.871555266944494e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999784812540947,
+     "v_pre_step_mean_v": 1.8000194524090254,
+     "undershoot_v": 0.0019704501825730247,
+     "overshoot_v": 0.04205591532177677,
+     "deviation_v": 0.04205591532177677,
+     "recovered": true,
+     "recovery_time_s": 6.8729180768313525e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=0.8,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800002191397534,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000194467888109,
+     "v_pre_step_mean_v": 1.7999989279665662,
+     "undershoot_v": 0.04124331417050908,
+     "overshoot_v": 0.001974308692005655,
+     "deviation_v": 0.04124331417050908,
+     "recovered": true,
+     "recovery_time_s": 6.883784225392153e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999784874803102,
+     "v_pre_step_mean_v": 1.8000194467888109,
+     "undershoot_v": 0.0019689071619877208,
+     "overshoot_v": 0.04125537928912837,
+     "deviation_v": 0.04125537928912837,
+     "recovered": true,
+     "recovery_time_s": 6.8851881603157646e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=1,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800003093741443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000607964018935,
+     "v_pre_step_mean_v": 1.7999989281232753,
+     "undershoot_v": 0.06411844337058725,
+     "overshoot_v": 0.0020054264479161255,
+     "deviation_v": 0.06411844337058725,
+     "recovered": true,
+     "recovery_time_s": 5.69289156047753e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999373643495682,
+     "v_pre_step_mean_v": 1.8000607964018935,
+     "undershoot_v": 0.001991622490260747,
+     "overshoot_v": 0.06415747789470472,
+     "deviation_v": 0.06415747789470472,
+     "recovered": true,
+     "recovery_time_s": 5.697010037391636e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=1,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800014749991443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000607933430621,
+     "v_pre_step_mean_v": 1.7999989288240879,
+     "undershoot_v": 0.06312472514195111,
+     "overshoot_v": 0.0020099558740125367,
+     "deviation_v": 0.06312472514195111,
+     "recovered": true,
+     "recovery_time_s": 5.712860013966131e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999373673429182,
+     "v_pre_step_mean_v": 1.8000607933430621,
+     "undershoot_v": 0.0019961344978915996,
+     "overshoot_v": 0.06316394259924185,
+     "deviation_v": 0.06316394259924185,
+     "recovered": true,
+     "recovery_time_s": 5.71696828719436e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=1,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800021738272602,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800060344981547,
+     "v_pre_step_mean_v": 1.799998928072718,
+     "undershoot_v": 0.0596698442102741,
+     "overshoot_v": 0.002285050542393696,
+     "deviation_v": 0.0596698442102741,
+     "recovered": true,
+     "recovery_time_s": 6.043485050808719e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999378162044517,
+     "v_pre_step_mean_v": 1.800060344981547,
+     "undershoot_v": 0.0022699670834660512,
+     "overshoot_v": 0.059707871896053755,
+     "deviation_v": 0.059707871896053755,
+     "recovered": true,
+     "recovery_time_s": 6.047084401173243e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=1,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800002214835107,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000093573e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.80006034003472,
+     "v_pre_step_mean_v": 1.7999989288058267,
+     "undershoot_v": 0.05876090310848192,
+     "overshoot_v": 0.0022991217888430615,
+     "deviation_v": 0.05876090310848192,
+     "recovered": true,
+     "recovery_time_s": 6.069354201139053e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999378214869168,
+     "v_pre_step_mean_v": 1.80006034003472,
+     "undershoot_v": 0.0022840045070167125,
+     "overshoot_v": 0.05879910658744314,
+     "deviation_v": 0.05879910658744314,
+     "recovered": true,
+     "recovery_time_s": 6.072981581653827e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=1,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800020867178768,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000583822660565,
+     "v_pre_step_mean_v": 1.7999989270488073,
+     "undershoot_v": 0.04919802278520291,
+     "overshoot_v": 0.006445662988481038,
+     "deviation_v": 0.04919802278520291,
+     "recovered": true,
+     "recovery_time_s": 7.746246305536395e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999397807599529,
+     "v_pre_step_mean_v": 1.8000583822660565,
+     "undershoot_v": 0.0064294606775971985,
+     "overshoot_v": 0.049232006366776826,
+     "deviation_v": 0.049232006366776826,
+     "recovered": true,
+     "recovery_time_s": 7.749349570261663e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=1,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800010109366215,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800058365451102,
+     "v_pre_step_mean_v": 1.7999989279792523,
+     "undershoot_v": 0.048363064250316334,
+     "overshoot_v": 0.006316283456215155,
+     "deviation_v": 0.048363064250316334,
+     "recovered": true,
+     "recovery_time_s": 7.754353867792064e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999397974713987,
+     "v_pre_step_mean_v": 1.800058365451102,
+     "undershoot_v": 0.0063002628956894124,
+     "overshoot_v": 0.04839703731205791,
+     "deviation_v": 0.04839703731205791,
+     "recovered": true,
+     "recovery_time_s": 7.757548462864697e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=1.2,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800003874991443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8001013282905542,
+     "v_pre_step_mean_v": 1.799998927946903,
+     "undershoot_v": 0.07286568944254324,
+     "overshoot_v": 0.0039152194921985295,
+     "deviation_v": 0.07286568944254324,
+     "recovered": true,
+     "recovery_time_s": 6.109113762344182e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799897066161717,
+     "v_pre_step_mean_v": 1.8001013282905542,
+     "undershoot_v": 0.0038887647838241612,
+     "overshoot_v": 0.07292954734564949,
+     "deviation_v": 0.07292954734564949,
+     "recovered": true,
+     "recovery_time_s": 6.114423418251188e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=1.2,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800022624991443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800101323086348,
+     "v_pre_step_mean_v": 1.7999989278146717,
+     "undershoot_v": 0.0719121961176119,
+     "overshoot_v": 0.003928663833961954,
+     "deviation_v": 0.0719121961176119,
+     "recovered": true,
+     "recovery_time_s": 6.131843470592673e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7998970715639733,
+     "v_pre_step_mean_v": 1.800101323086348,
+     "undershoot_v": 0.0039021779378627386,
+     "overshoot_v": 0.07197600309122931,
+     "deviation_v": 0.07197600309122931,
+     "recovered": true,
+     "recovery_time_s": 6.137168210329914e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=1.2,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800019150381981,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8001006268026205,
+     "v_pre_step_mean_v": 1.799998928536888,
+     "undershoot_v": 0.06795584754656359,
+     "overshoot_v": 0.004850407523736333,
+     "deviation_v": 0.06795584754656359,
+     "recovered": true,
+     "recovery_time_s": 6.549052253177921e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7998977718002809,
+     "v_pre_step_mean_v": 1.8001006268026205,
+     "undershoot_v": 0.004821316956285626,
+     "overshoot_v": 0.06801769617300013,
+     "deviation_v": 0.06801769617300013,
+     "recovered": true,
+     "recovery_time_s": 6.553756960670648e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=1.2,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800010027335123,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800100618177886,
+     "v_pre_step_mean_v": 1.799998929229989,
+     "undershoot_v": 0.06706147975921262,
+     "overshoot_v": 0.004879227459293256,
+     "deviation_v": 0.06706147975921262,
+     "recovered": true,
+     "recovery_time_s": 6.573823891721075e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7998977801039715,
+     "v_pre_step_mean_v": 1.800100618177886,
+     "undershoot_v": 0.004850222309529473,
+     "overshoot_v": 0.06712344761167444,
+     "deviation_v": 0.06712344761167444,
+     "recovered": true,
+     "recovery_time_s": 6.578581600164219e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=1.2,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.00048000117851475,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000975732636626,
+     "v_pre_step_mean_v": 1.7999989295413086,
+     "undershoot_v": 0.0558448767395856,
+     "overshoot_v": 0.011682800324031017,
+     "deviation_v": 0.0558448767395856,
+     "recovered": true,
+     "recovery_time_s": 8.489371435938735e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.79990084325145,
+     "v_pre_step_mean_v": 1.8000975732636626,
+     "undershoot_v": 0.01165656779120372,
+     "overshoot_v": 0.05590022658054172,
+     "deviation_v": 0.05590022658054172,
+     "recovered": true,
+     "recovery_time_s": 8.493637187964543e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=1.2,vin=5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.0,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [
+     "nonconvergence"
+    ],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800015871084948,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800097580308031,
+     "v_pre_step_mean_v": 1.7999989291140799,
+     "undershoot_v": 0.054978143109293054,
+     "overshoot_v": 0.011406780896223045,
+     "deviation_v": 0.054978143109293054,
+     "recovered": true,
+     "recovery_time_s": 8.492805303166517e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999008361052304,
+     "v_pre_step_mean_v": 1.800097580308031,
+     "undershoot_v": 0.01138078244506291,
+     "overshoot_v": 0.05503357381253737,
+     "deviation_v": 0.05503357381253737,
+     "recovered": true,
+     "recovery_time_s": 8.497191364050904e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=0.8,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800022624991443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000207725179236,
+     "v_pre_step_mean_v": 1.799999021628994,
+     "undershoot_v": 0.05165020646486029,
+     "overshoot_v": 0.0005556858431956524,
+     "deviation_v": 0.05165020646486029,
+     "recovered": true,
+     "recovery_time_s": 4.881012523317435e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.0006100000000000001,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999773386037843,
+     "v_pre_step_mean_v": 1.8000207725179236,
+     "undershoot_v": 0.0005522805976505563,
+     "overshoot_v": 0.05166406012094793,
+     "deviation_v": 0.05166406012094793,
+     "recovered": true,
+     "recovery_time_s": 4.883020648241594e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=0.8,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800004312491443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000207715816292,
+     "v_pre_step_mean_v": 1.7999990211218986,
+     "undershoot_v": 0.05056775350952658,
+     "overshoot_v": 0.0005565002097887017,
+     "deviation_v": 0.05056775350952658,
+     "recovered": true,
+     "recovery_time_s": 4.891624393580816e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.0006100000000000001,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999773397115035,
+     "v_pre_step_mean_v": 1.8000207715816292,
+     "undershoot_v": 0.0005530922077841005,
+     "overshoot_v": 0.05058177597735414,
+     "deviation_v": 0.05058177597735414,
+     "recovered": true,
+     "recovery_time_s": 4.893624322174425e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=0.8,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800002654288259,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000206086767672,
+     "v_pre_step_mean_v": 1.7999990223362436,
+     "undershoot_v": 0.04771966044628506,
+     "overshoot_v": 0.0006021974035799182,
+     "deviation_v": 0.04771966044628506,
+     "recovered": true,
+     "recovery_time_s": 5.112718214838013e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999775017766877,
+     "v_pre_step_mean_v": 1.8000206086767672,
+     "undershoot_v": 0.000598583934120045,
+     "overshoot_v": 0.04773324133905721,
+     "deviation_v": 0.04773324133905721,
+     "recovered": true,
+     "recovery_time_s": 5.1145171624970365e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=0.8,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800009734366338,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800020606913693,
+     "v_pre_step_mean_v": 1.7999990212985846,
+     "undershoot_v": 0.04674889096666335,
+     "overshoot_v": 0.0006039916543418844,
+     "deviation_v": 0.04674889096666335,
+     "recovered": true,
+     "recovery_time_s": 5.135205713207723e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999775036103884,
+     "v_pre_step_mean_v": 1.800020606913693,
+     "undershoot_v": 0.0006003711277522417,
+     "overshoot_v": 0.04676247371367248,
+     "deviation_v": 0.04676247371367248,
+     "recovered": true,
+     "recovery_time_s": 5.137000720639804e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=0.8,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800011980459982,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800019885111459,
+     "v_pre_step_mean_v": 1.7999990220796729,
+     "undershoot_v": 0.039302521010830205,
+     "overshoot_v": 0.0014893049300710448,
+     "deviation_v": 0.039302521010830205,
+     "recovered": true,
+     "recovery_time_s": 6.439928619849538e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999782240936757,
+     "v_pre_step_mean_v": 1.800019885111459,
+     "undershoot_v": 0.0014840951189589724,
+     "overshoot_v": 0.03931465961592995,
+     "deviation_v": 0.03931465961592995,
+     "recovered": true,
+     "recovery_time_s": 6.441396342644293e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=0.8,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 0.8,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800022649405309,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000198788244184,
+     "v_pre_step_mean_v": 1.7999990218073814,
+     "undershoot_v": 0.03851097160979533,
+     "overshoot_v": 0.001509981340802602,
+     "deviation_v": 0.03851097160979533,
+     "recovered": true,
+     "recovery_time_s": 6.450973213316218e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.79997823010283,
+     "v_pre_step_mean_v": 1.8000198788244184,
+     "undershoot_v": 0.001504829408891073,
+     "overshoot_v": 0.038523163945852534,
+     "deviation_v": 0.038523163945852534,
+     "recovered": true,
+     "recovery_time_s": 6.4524851145374065e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=1,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800003874991443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000552940994368,
+     "v_pre_step_mean_v": 1.7999990232829732,
+     "undershoot_v": 0.06010179802550253,
+     "overshoot_v": 0.0019244496954828882,
+     "deviation_v": 0.06010179802550253,
+     "recovered": true,
+     "recovery_time_s": 5.425712905028721e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799942981614463,
+     "v_pre_step_mean_v": 1.8000552940994368,
+     "undershoot_v": 0.0019127499537747727,
+     "overshoot_v": 0.06013713659506803,
+     "deviation_v": 0.06013713659506803,
+     "recovered": true,
+     "recovery_time_s": 5.429729248720267e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=1,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800023062491443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000552912550214,
+     "v_pre_step_mean_v": 1.799999022008244,
+     "undershoot_v": 0.05908230881338761,
+     "overshoot_v": 0.001927720926067078,
+     "deviation_v": 0.05908230881338761,
+     "recovered": true,
+     "recovery_time_s": 5.4432421341462246e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999429842068526,
+     "v_pre_step_mean_v": 1.8000552912550214,
+     "undershoot_v": 0.001916011134034834,
+     "overshoot_v": 0.059117927718653096,
+     "deviation_v": 0.059117927718653096,
+     "recovered": true,
+     "recovery_time_s": 5.4472414670546886e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=1,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800020183585099,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000549009456672,
+     "v_pre_step_mean_v": 1.799999022297382,
+     "undershoot_v": 0.05583275163441992,
+     "overshoot_v": 0.002124605784703082,
+     "deviation_v": 0.05583275163441992,
+     "recovered": true,
+     "recovery_time_s": 5.739307944369163e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999433754174328,
+     "v_pre_step_mean_v": 1.8000549009456672,
+     "undershoot_v": 0.0021120678931974,
+     "overshoot_v": 0.055867111566283656,
+     "deviation_v": 0.055867111566283656,
+     "recovered": true,
+     "recovery_time_s": 5.742833559715379e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=1,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800017742178835,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000548963811265,
+     "v_pre_step_mean_v": 1.7999990221827826,
+     "undershoot_v": 0.05490938943084278,
+     "overshoot_v": 0.002133267889186108,
+     "deviation_v": 0.05490938943084278,
+     "recovered": true,
+     "recovery_time_s": 5.764268992100195e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799943380125313,
+     "v_pre_step_mean_v": 1.8000548963811265,
+     "undershoot_v": 0.002120706839750408,
+     "overshoot_v": 0.054943929294000826,
+     "deviation_v": 0.054943929294000826,
+     "recovered": true,
+     "recovery_time_s": 5.767811583246084e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=1,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.00048000155937413,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000093573e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000531985005344,
+     "v_pre_step_mean_v": 1.7999990219333883,
+     "undershoot_v": 0.04605408016561463,
+     "overshoot_v": 0.005250677879246268,
+     "deviation_v": 0.04605408016561463,
+     "recovered": true,
+     "recovery_time_s": 7.321303545645562e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999450808466984,
+     "v_pre_step_mean_v": 1.8000531985005344,
+     "undershoot_v": 0.005236289959184903,
+     "overshoot_v": 0.0460850114965865,
+     "deviation_v": 0.0460850114965865,
+     "recovered": true,
+     "recovery_time_s": 7.3243043858763806e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=1,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.0,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800023601553704,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000531821306474,
+     "v_pre_step_mean_v": 1.799999020395198,
+     "undershoot_v": 0.04523231011839801,
+     "overshoot_v": 0.005175939422738862,
+     "deviation_v": 0.04523231011839801,
+     "recovered": true,
+     "recovery_time_s": 7.329453966895146e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799945096899635,
+     "v_pre_step_mean_v": 1.8000531821306474,
+     "undershoot_v": 0.005161725464331246,
+     "overshoot_v": 0.04526325376123297,
+     "deviation_v": 0.04526325376123297,
+     "recovered": true,
+     "recovery_time_s": 7.332543400629266e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.005,lfac=1.2,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800006999991443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800089915861353,
+     "v_pre_step_mean_v": 1.799999021912368,
+     "undershoot_v": 0.06823699063308486,
+     "overshoot_v": 0.0036065936753308936,
+     "deviation_v": 0.06823699063308486,
+     "recovered": true,
+     "recovery_time_s": 5.854428304941225e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999085319089028,
+     "v_pre_step_mean_v": 1.800089915861353,
+     "undershoot_v": 0.0035849089871080597,
+     "overshoot_v": 0.06829318941371332,
+     "deviation_v": 0.06829318941371332,
+     "recovered": true,
+     "recovery_time_s": 5.859548406904943e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=4.7e-06,esr=0.01,lfac=1.2,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 4.7e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800023062491443,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000899108056911,
+     "v_pre_step_mean_v": 1.7999990226470926,
+     "undershoot_v": 0.06726416349309039,
+     "overshoot_v": 0.0036151981301679736,
+     "deviation_v": 0.06726416349309039,
+     "recovered": true,
+     "recovery_time_s": 5.875693567724432e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999085369499221,
+     "v_pre_step_mean_v": 1.8000899108056911,
+     "undershoot_v": 0.003593492324840186,
+     "overshoot_v": 0.06732076514085672,
+     "deviation_v": 0.06732076514085672,
+     "recovered": true,
+     "recovery_time_s": 5.880814664899008e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.005,lfac=1.2,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800016179678868,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000893300018097,
+     "v_pre_step_mean_v": 1.7999990203356004,
+     "undershoot_v": 0.06357996207029948,
+     "overshoot_v": 0.0041889751400183695,
+     "deviation_v": 0.06357996207029948,
+     "recovered": true,
+     "recovery_time_s": 6.250688329488855e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999091216186678,
+     "v_pre_step_mean_v": 1.8000893300018097,
+     "undershoot_v": 0.004165287071008494,
+     "overshoot_v": 0.06363477799993267,
+     "deviation_v": 0.06363477799993267,
+     "recovered": true,
+     "recovery_time_s": 6.255203721628366e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=6e-06,esr=0.01,lfac=1.2,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 6e-06,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800019109366338,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000893222856829,
+     "v_pre_step_mean_v": 1.799999020965747,
+     "undershoot_v": 0.06267961895784335,
+     "overshoot_v": 0.004213090361610217,
+     "deviation_v": 0.06267961895784335,
+     "recovered": true,
+     "recovery_time_s": 6.275439286947777e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999091290480356,
+     "v_pre_step_mean_v": 1.8000893222856829,
+     "undershoot_v": 0.004189409632778585,
+     "overshoot_v": 0.06273448849331276,
+     "deviation_v": 0.06273448849331276,
+     "recovered": true,
+     "recovery_time_s": 6.279997575443894e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.005,lfac=1.2,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.005,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800023894522509,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.800086834279555,
+     "v_pre_step_mean_v": 1.7999990227851816,
+     "undershoot_v": 0.052340934891393465,
+     "overshoot_v": 0.009841436231966538,
+     "deviation_v": 0.052340934891393465,
+     "recovered": true,
+     "recovery_time_s": 8.060922065032021e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.7999116336827126,
+     "v_pre_step_mean_v": 1.800086834279555,
+     "undershoot_v": 0.009818420520740112,
+     "overshoot_v": 0.052390043878486114,
+     "deviation_v": 0.052390043878486114,
+     "recovered": true,
+     "recovery_time_s": 8.0649474805529e-06,
+     "run_long_enough": true
+    }
+   },
+   {
+    "id": "default/novdd/27C/params:ceff=1.2e-05,esr=0.01,lfac=1.2,vin=5.5",
+    "bench": "avg",
+    "process": "default",
+    "vin_v": 5.5,
+    "temp_c": 27.0,
+    "lfac": 1.2,
+    "ceff_f": 1.2e-05,
+    "esr_ohm": 0.01,
+    "klt_status": "pass",
+    "klt_diagnostics": [],
+    "clock": {
+     "source": "commanded 2e+06 Hz (the averaged model has no clock)"
+    },
+    "run": {
+     "t_first_s": 0.0004800024968741249,
+     "t_last_s": 0.0007599999999999999,
+     "step_max_observed_s": 2.500000000039363e-09,
+     "step_ok": true
+    },
+    "graded": true,
+    "up": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.0005899999999999999,
+      0.0006
+     ],
+     "settled_since_s": 0.00049,
+     "available": true,
+     "t_step_s": 0.0006,
+     "t_end_s": 0.0006799999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.8000868161780608,
+     "v_pre_step_mean_v": 1.7999990229682354,
+     "undershoot_v": 0.05148964827628877,
+     "overshoot_v": 0.00963700641248999,
+     "deviation_v": 0.05148964827628877,
+     "recovered": true,
+     "recovery_time_s": 8.065174646391341e-06,
+     "run_long_enough": true
+    },
+    "back": {
+     "settled": true,
+     "settle_measure_window_s": [
+      0.00067,
+      0.00068
+     ],
+     "settled_since_s": 0.00062,
+     "available": true,
+     "t_step_s": 0.0006799999999999999,
+     "t_end_s": 0.0007599999999999999,
+     "cycles_after_step": 160.0,
+     "v_ref_v": 1.799911651775871,
+     "v_pre_step_mean_v": 1.8000868161780608,
+     "undershoot_v": 0.00961422159567249,
+     "overshoot_v": 0.05153892868186172,
+     "deviation_v": 0.05153892868186172,
+     "recovered": true,
+     "recovery_time_s": 8.069315232675988e-06,
+     "run_long_enough": true
+    }
+   }
+  ]
+ }
+}
