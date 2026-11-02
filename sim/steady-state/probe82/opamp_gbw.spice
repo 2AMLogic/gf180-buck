@@ -1,0 +1,11 @@
+* Issue #82 probe: behavioural stand-in for opamp_two_stage (same port order: vdd vss vinp vinn vout ibias).
+* Single pole, DC gain a0, unity-gain frequency gbw, ideal voltage output clamped to 0.1 V .. vdd-0.1 V.
+* NOT a design: used only to show what the switched loop does when the error amplifier's GBW is not limiting.
+.param a0=4.5e4 gbw=100meg
+.subckt opamp_two_stage vdd vss vinp vinn vout ibias
+Eg e1 vss vinp vinn {a0}
+Rg e1 e2 1k
+Cg e2 vss {a0/(6.2831853*1k*gbw)}
+Bo vout vss V = min(max(v(e2,vss), 0.1), v(vdd,vss)-0.1)
+Rib ibias vss 1k
+.ends

@@ -1,0 +1,49 @@
+* Issue #82 probe: Middlebrook loop gain T of the AVERAGED buck (same parts, DC operating point and injection as
+* design/averaged/buck_avg.spice, typical, 5 V, 250 mA) with the REAL modulator window and, selectably, the REAL
+* error amplifier (opamp_two_stage.spice, DC bias ib_ea). Small-signal only: no switching, package or ground bounce.
+*   run_ac_realea.sh enables the *EA_IDEAL* line (E source, flat gain 1e6, what design/averaged/ uses) or the
+*   *EA_REAL* line (XEA, the adopted opamp) or the *EA_GBW* lines (single-pole behavioural EA, DC gain a0, unity-gain
+*   frequency gbw, ideal voltage output: isolates GBW from the real output stage) by stripping that marker.
+*   duty = clamp((vc - vvalley)/vamp, 0, 1)  (vvalley/vamp from probe82/osc_alone.spice: 1.183 V / 0.613 V p-p)
+* @MODEL_FILE@ / @DESIGN_INC@ are substituted at run time. Run from the repo root.
+.include @DESIGN_INC@
+.lib @MODEL_FILE@ typical
+.lib @MODEL_FILE@ mimcap_typical
+.lib @MODEL_FILE@ cap_mim
+.lib @MODEL_FILE@ res_typical
+.options gmin=1e-13
+.include sim/steady-state/opamp_two_stage.spice
+.param a0=4.5e4 gbw=1.1meg ib_ea=10u vvalley=1.183 vamp=0.613 vin=5 iload=0.25 vref=0.591
+.param l0=3.3u dcr=0.1 cw=3p esl=0.5n rpk=0.05 lpk=1n ceff=6u esr=5m
+.param rtop=10k rbot=5k p_r2=4.55k p_r3=204 p_c1=1.75n p_c2=35.7p p_c3=780p
+Vsrc vinp 0 DC {vin}
+Bsw sw 0 V = min(max((v(vc)-{vvalley})/{vamp}, 0), 1) * v(vinp)
+Rpk sw n1 {rpk}
+Lpk n1 n2 {lpk}
+Rdc n2 n3 {dcr}
+L1 n3 vo {l0}
+Cw n2 vo {cw}
+Cout vo m1 {ceff}
+Resr m1 m2 {esr}
+Lesl m2 0 {esl}
+Iload vo 0 DC {iload}
+Vinj b vo DC 0 AC 1
+Rtop b fbn {rtop}
+R3 b x {p_r3}
+C3 x fbn {p_c3}
+Rbot fbn 0 {rbot}
+Rz fbn z {p_r2}
+C1 z vc {p_c1}
+C2 fbn vc {p_c2}
+Vref vref 0 DC {vref}
+Vdd33 vdd33 0 3.3
+Iea 0 ib_ea DC {ib_ea}
+*EA_IDEAL* Eea vc 0 vref fbn 1e6
+*EA_IDEAL* Rib ib_ea 0 1k
+*EA_GBW* Eg e1 0 vref fbn {a0}
+*EA_GBW* Rg e1 e2 1k
+*EA_GBW* Cg e2 0 {a0/(6.2831853*1k*gbw)}
+*EA_GBW* Eo vc 0 e2 0 1
+*EA_GBW* Rib ib_ea 0 1k
+*EA_REAL* XEA vdd33 0 vref fbn vc ib_ea opamp_two_stage
+.nodeset v(vo)=1.77 v(fbn)=0.591 v(vc)=1.4

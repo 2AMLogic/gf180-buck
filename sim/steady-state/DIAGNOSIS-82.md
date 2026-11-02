@@ -40,3 +40,34 @@ Record `records/20261102-issue82-kelvin-typ-5V-27C-250mA.json`; probe `probe82_k
   and the slow oscillation is a separate, unresolved loop issue. No decision record, no spec row or
   settled-test gate changed. Next: trace the slow oscillation (ideal-vref / ideal-opamp substitution,
   open-loop `vc` step, averaged-model comparison #17), then settle at 0/50/500 mA before any grid.
+
+## Addendum 2026-11-02 (third increment): the slow oscillation is a small-signal unstable loop (error-amp GBW)
+
+Record `records/20261102-issue82-ea-gbw-typ-5V-27C-250mA.json`; probes under `probe82/`, `bench_gbw82.spice`,
+`probe82_gbw.json`, `settled82.py`. Simulated, pre-layout, typical, 5 V, 27 C, 250 mA, one unit / one ngspice run each.
+
+- **The ramp is not the averaged model's ramp.** `osc_ramp` alone (12 uA bias) gives 1.183-1.796 V, 0.613 V p-p, not
+  the 0..1.0 V that `design/averaged/buck_avg.spice` assumes. Modulator gain is 1.63x higher: ideal-EA fc moves
+  148 -> 224 kHz (PM 62.5 -> 59.0 deg).
+- **With the adopted error amplifier in the loop the averaged loop is unstable.** Opamp alone: 93 dB DC gain,
+  single pole, unity-gain frequency about 1.1 MHz at 10 uA. Loop gain at the regulated point (Middlebrook,
+  `probe82/run_ac_realea.sh`): ideal EA PM +59.0 deg; adopted EA PM **-51.6 deg**, phase -180 deg at 123 kHz with
+  +8.7 dB gain (at the 1.0 V ramp of the averaged record: -30.0 deg). `design/compensator.md` already lists the finite
+  GBW as not included, and `reuse.lock.json` lists "GBW into the type-III compensation load not yet checked".
+- **GBW is the cause, and the bias is not a cheap lever.** A single-pole EA with the same DC gain: 1.1 MHz -> PM
+  -15.6 deg, 8 MHz -> +47.8 deg, 100 MHz -> +58.4 deg. The adopted opamp stays unstable when its bias is raised
+  (20 uA: -44.0 deg; 80 uA: -34.3 deg), so its output stage / loading also costs margin; not traced further.
+- **Switched confirmation.** `bench_gbw82.spice` is the kelvin bench with only the EA replaced by a 100 MHz
+  single-pole stand-in. Vout regulates: 25 us window means 1.770-1.775 V from 270 us to 450 us (the earlier runs
+  swung -0.9..2.5 V), clock 1.80-1.88 MHz. The slow 50-100 us oscillation and the vc-below-valley lockout were this
+  unstable loop hitting the rails, with ground bounce as the separate, earlier effect.
+- **Not settled.** `settled82.py` (spec 0.4: consecutive 20-cycle windows, <0.1 % mean Vout, <1 % peak iL): 5 of 15
+  consecutive pairs pass, the last three pass, earlier ones show 0.1-0.45 % and 1-11 %. Not claimed as settled.
+  Vout sits at 3 x vref = 1.773 V (vref 0.591 V in this bench), 1.5 % under 1.8 V; not examined here.
+- **Verdict: design defect in the loop (EA GBW against the type-III compensator), plus the confirmed ground-return
+  bench artifact.** The fix is a design decision (resize/replace the adopted EA, or re-tune the compensator against
+  a measured EA), so it is **not made here**: see `spec/decision-records/0004-error-amplifier-gbw.md` (proposed).
+  No spec row or settled-test gate is changed. The averaged-model R13 evidence (#17) uses an ideal EA and a 1.0 V ramp
+  and must not be read as covering this netlist.
+- Not done: 0 and 500 mA; other corners; the fix; the settled test; the real-opamp averaged transient waveform
+  (the run did not finish in 580 s). Cross-link #77 (R15/R16): the same unstable loop is the likely common cause.
