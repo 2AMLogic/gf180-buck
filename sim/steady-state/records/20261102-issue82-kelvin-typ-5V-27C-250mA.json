@@ -1,0 +1,24 @@
+{
+ "record": "issue-82 kelvin-control-return probe (simulated, pre-layout; NOT measured)",
+ "repo_commit": "6694e1f (+ uncommitted probe files listed below at time of run)",
+ "klt": "klt sim --backend local, 1 unit (runtime 310 s)",
+ "engine": "ngspice 42",
+ "corner": "typical / Vin 5.0 V / 27 C / iload 0.25 A (ramps in at 260 us); bench sim/steady-state/bench_kelvin82.spice",
+ "tran": "2.5n 450u (saved from 20u), step_max 2.5 ns. About 840 cycles. NOT SETTLED: spec 0.4 settled test not passed (Vout 20-cycle-scale windows swing -0.9..2.5 V)",
+ "bench_changes_vs_bench_py": "probe-only copy: (1) power stage + gate driver return on gnd_p (2 wires, spec 0.3 package: 0.1 ohm, 2 nH each, unchanged), (2) control blocks, Vdd33, bias, Vbg, EN return on gnd_d through their OWN single wire to board 0 (same wire R/L as one power wire), (3) Cout/ESL and Iload return to board 0 instead of gnd_d. l_wire stays at the spec value 2 nH. gate-driver Vdd33 supply stays referenced to gnd_d (probe simplification)",
+ "files_sha256": {
+  "probe82_kelvin.json": "6f9648585efed7ed00b8137b3302330e4295a7fdfcc2a5e254666c536618117b",
+  "bench_kelvin82.spice": "c772a0a71bdfc6175863509281b64faf72a1c751b57afaa31e387c977c298e7f",
+  "probe82/buck_top_kelvin.spice": "4c13f942eb0ab79463f51f865ec6e50244a511180b0bfd4452c992fcef115894 (buck_top.spice with only XGD/XPS GND -> new GNDP port)"
+ },
+ "results": {
+  "control_ground": "gnd_d stays within about -0.08..+0.10 V (5 us windows, 100-150 us) while gnd_p still rings -2.2..+1.6 V: the kelvin split removes the bounce from the control domain",
+  "clock": "1.80-1.88 MHz in every 25 us window against gnd_d (baseline: ~3 MHz, wandering): the oscillator frequency wander of the original symptom is a ground-bounce effect",
+  "vref": "ramps 0.05 -> 0.591 V (soft start done by ~245 us) and holds",
+  "vout": "NOT regulating: 25 us window means -0.04, -0.01, 0.13, 0.80, -0.04, -0.05, 0.11, 1.40, 0.43, 2.52, 0.24, 1.56, 2.38, 0.22, 1.49, 2.39, 1.63, -0.54 V; roughly 50-100 us period, 3 V swing; fbn tracks Vout/3, never holds at vref",
+  "mechanism_seen": "e.g. 110-150 us: duty 0 with vc 0.96-1.26 V below the ramp valley (ramp 1.18-1.80 V) and Vout driven to -0.88 V (forced-CCM sink through L, iL negative); vc then recovers only slowly. A slow, large-signal loop oscillation, not ground bounce",
+  "vc_rate": "max |dvc/dt| 0.26-0.38 V/us in 1 us bins (error-amp bias mirror x6 into M7, C1 = 1.75 nF in the compensator): slew limiting NOT confirmed or excluded; not traced further"
+ },
+ "diagnosis": "PARTIAL. Bench artifact component CONFIRMED: with the control return separated (kelvin), gnd_d is clean and the clock wander and vref/fbn corruption disappear. That does not by itself decide design defect vs artifact for the original symptom, because a real package must provide that separate control return (separate down-bond/pad), which is a package/pinout decision not yet made. The loop still does NOT regulate at the spec package value: a slow (50-100 us) large-signal oscillation of Vout remains and is untraced (candidates: compensator/error-amp large-signal behaviour or slew, forced-CCM negative current, or small-signal instability the averaged model #17 does not show). No spec row or settled-test gate is changed; no decision record written because defect vs artifact is not decided.",
+ "not_done": "other corners; 50 mA and 500 mA loads; averaged-model comparison; tracing the 50-100 us oscillation (e.g. ideal-vref/ideal-opamp substitution, open-loop vc step); any netlist fix; settled test"
+}
