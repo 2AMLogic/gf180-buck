@@ -1,0 +1,116 @@
+{
+ "netlist": "bench.spice",
+ "engine": "ngspice",
+ "models": {
+  "pdk": "gf180mcuD",
+  "lib": "libs.tech/ngspice/sm141064.ngspice"
+ },
+ "analysis": {
+  "kind": "tran",
+  "args": "100p 600u 540u 100p"
+ },
+ "corners": {
+  "process": [
+   {
+    "name": "typical",
+    "sections": [
+     "typical",
+     "mimcap_typical",
+     "cap_mim",
+     "res_typical"
+    ]
+   },
+   {
+    "name": "ff",
+    "sections": [
+     "ff",
+     "mimcap_ff",
+     "cap_mim",
+     "res_ff"
+    ]
+   },
+   {
+    "name": "ss",
+    "sections": [
+     "ss",
+     "mimcap_ss",
+     "cap_mim",
+     "res_ss"
+    ]
+   },
+   {
+    "name": "fs",
+    "sections": [
+     "fs",
+     "mimcap_typical",
+     "cap_mim",
+     "res_typical"
+    ]
+   },
+   {
+    "name": "sf",
+    "sections": [
+     "sf",
+     "mimcap_typical",
+     "cap_mim",
+     "res_typical"
+    ]
+   }
+  ],
+  "supply_v": {
+   "vsrc": [
+    4.5,
+    5.0,
+    5.5
+   ]
+  },
+  "supply_waveforms": [
+   "vsrc"
+  ],
+  "temperature_c": [
+   -40,
+   27,
+   125
+  ],
+  "params": {
+   "iload": [
+    0.0,
+    0.05,
+    0.5
+   ]
+  }
+ },
+ "measurements": [
+  {
+   "name": "vthn",
+   "spice": ".meas tran vthn FIND v(vthn) AT=599u",
+   "unit": "V"
+  },
+  {
+   "name": "vthp",
+   "spice": ".meas tran vthp FIND v(vthp) AT=599u",
+   "unit": "V"
+  }
+ ],
+ "batch": {
+  "max_units_per_job": 1,
+  "max_concurrent_jobs": 12
+ },
+ "options": {
+  "keep_artifacts": true,
+  "waveforms": true,
+  "timeout_s": 3300,
+  "threads_per_worker": 1,
+  "save_vectors": [
+   "v(out)",
+   "i(lind)",
+   "v(sw_d)",
+   "v(vsrc)",
+   "i(vsrc)",
+   "v(xtop.gh)",
+   "v(xtop.gl)",
+   "v(vin_d)",
+   "v(gnd_d)"
+  ]
+ }
+}

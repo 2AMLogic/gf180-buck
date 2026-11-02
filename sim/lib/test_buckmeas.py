@@ -289,5 +289,72 @@ class AnalyzeTest(unittest.TestCase):
             self.assertNotIn("mean_v", res[key])
 
 
+def _ramp_run(v_end=1.8, ramp_s=200e-6, t_en=20e-6, t_stop=400e-6, dip=None, bump=0.0):
+    t = grid(int(t_stop / T))
+    v = []
+    for x in t:
+        r = min(max((x - t_en) / ramp_s, 0.0), 1.0) * v_end
+        if dip and dip[0] <= x < dip[1]:
+            r -= 0.05
+        if bump and x > t_en + ramp_s:
+            r += bump * math.exp(-(x - t_en - ramp_s) / 20e-6) * math.sin(math.pi * (x - t_en - ramp_s) / 40e-6)
+        v.append(r + 0.004 * math.sin(2 * math.pi * F * x))
+    edges = [i * T for i in range(len(t) // 100 + 1)]
+    return t, v, [0.3] * len(t), edges
+
+
+class SoftStartTest(unittest.TestCase):
+    def meas(self, **kw):
+        t, v, il, edges = _ramp_run(**kw)
+        return bm.soft_start(t, v, il, edges, t_en=20e-6, v_target=1.8, v_reg_max=1.872)
+
+    def test_linear_ramp_t90_and_monotonic(self):
+        r = self.meas()
+        self.assertTrue(r["available"], r)
+        self.assertAlmostEqual(r["t_90_s"], 0.9 * 200e-6, delta=1e-6)
+        self.assertTrue(r["monotonic"], r)
+        self.assertEqual(r["overshoot_v"], 0.0)
+        self.assertAlmostEqual(r["peak_il_a"], 0.3)
+
+    def test_dip_during_rise_is_not_monotonic(self):
+        r = self.meas(dip=(80e-6, 100e-6))
+        self.assertFalse(r["monotonic"])
+        self.assertGreater(r["max_drawdown_v"], 0.04)
+
+    def test_overshoot_above_r4_max(self):
+        r = self.meas(bump=0.3)
+        self.assertGreater(r["overshoot_v"], 0.02)
+        self.assertLess(r["overshoot_v"], 0.2)
+
+    def test_never_reaching_90_percent_has_no_time(self):
+        r = self.meas(v_end=1.5)
+        self.assertFalse(r["available"])
+        self.assertNotIn("t_90_s", r)
+
+
+class TripEventTest(unittest.TestCase):
+    def test_trip_reports_current_at_assertion(self):
+        t = grid(50)
+        il = [x / t[-1] * 2.0 for x in t]            # 0 -> 2 A
+        trip = [3.3 if i >= 1.2 else 0.0 for i in il]  # asserts at ~1.2 A
+        r = bm.trip_event(t, trip, il, 1.65)
+        self.assertTrue(r["engaged"])
+        self.assertAlmostEqual(r["trip_il_a"], 1.2, delta=0.02)
+
+    def test_no_assertion_is_no_trip_not_a_pass(self):
+        t = grid(50)
+        il = [0.5] * len(t)
+        r = bm.trip_event(t, [0.0] * len(t), il, 1.65)
+        self.assertFalse(r["engaged"])
+        self.assertIsNone(r["trip_il_a"])
+        self.assertEqual(r["n_assertions"], 0)
+
+    def test_assertions_before_t_from_are_ignored(self):
+        t = grid(50)
+        trip = [3.3 if 10 * T <= x < 12 * T else 0.0 for x in t]
+        r = bm.trip_event(t, trip, [0.4] * len(t), 1.65, t_from=20 * T)
+        self.assertFalse(r["engaged"])
+
+
 if __name__ == "__main__":
     unittest.main()

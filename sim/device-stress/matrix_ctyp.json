@@ -1,0 +1,28 @@
+{
+ "process": [
+  {
+   "name": "typical",
+   "sections": [
+    "typical",
+    "mimcap_typical",
+    "cap_mim",
+    "res_typical"
+   ]
+  }
+ ],
+ "supply_v": {
+  "vsrc": [
+   5.0
+  ]
+ },
+ "temperature_c": [
+  27
+ ],
+ "params": {
+  "iload": [
+   0.0,
+   0.05,
+   0.5
+  ]
+ }
+}

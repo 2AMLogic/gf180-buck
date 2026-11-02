@@ -117,3 +117,42 @@ combinations (18 units); `request_full` = C-full (45) x the two deviation-bindin
 tolerance combinations (54 units). `design/averaged/records/` hold loop-gain metrics only, so the R13(c)
 prediction is a transient run of the averaged model, stated as such in the record. C-full x the full
 tolerance cube (810 units) is not run; the record states the argument and its limit. Simulated, never measured.
+
+## Soft-start and current-limit benches (rows R15, R16, R6 no-trip clause)
+
+```
+python3 -I sim/soft-start/gen_requests.py       # request_grid.json, matrix_grid.json
+python3 -I sim/current-limit/gen_requests.py    # request_ramp.json, request_min.json, matrix_*.json
+KLT_SIM_BACKEND=batch klt sim --batch-set sim/soft-start/request_grid.json \
+    sim/current-limit/request_ramp.json sim/current-limit/request_min.json -o OUT --report-out BATCH.json
+python3 -I sim/soft-start/collect.py --report <soft-start report>.json
+python3 -I sim/current-limit/collect.py --ramp <ramp report>.json --min <min report>.json
+```
+
+Both benches wrap `buck_top.spice` like `sim/steady-state/bench.spice` (same external parts and package).
+`TRIP` is internal to `buck_top`; it is saved hierarchically as `v(xtop.trip)`. Measurement code is
+`buckmeas.soft_start` (0 -> 90 % of 1.8 V from EN on per-cycle means, monotonicity with a 1 mV floor,
+overshoot above R4 max after the 20 MHz low-pass, peak I(L)) and `buckmeas.trip_event` (I(L) at the first
+TRIP assertion). A run that never reaches 90 % has no soft-start time; a run whose TRIP never asserts
+has no trip value, and the row is `not_demonstrated`, never a pass.
+
+- `sim/soft-start/`: C-full x load {none, 3.6 ohm} = 90 units, `.tran 2.5n 700u`, saved from EN (20 us);
+  rows R15 and the R6 clause (no TRIP in the last 100 us at 0 load).
+- `sim/current-limit/`: C-full ramp 0 -> 3 A over 300 us from 600 us (45 units, trip current vs 0.70 - 2.1 A),
+  and the R16 min-bound case (L -20 %, Vin 5.5 V, 500 mA held 160 us, 15 units). The oscillator free-runs,
+  so "f min" is not forced: each unit's measured f is recorded and the min-bound row is `pass` only if
+  every unit ran at or below 1.7 MHz.
+
+Records are append-only under `records/`, simulated and pre-layout.
+
+## Device stress and top-level dead time (rows R2, R14)
+
+```
+python3 -I sim/device-stress/gen_requests.py     # rewrites request_grid.json (135), request_ctyp.json (3), matrix_*.json
+klt sim sim/device-stress/request_ctyp.json --backend batch -o OUT --report-out ctyp.json   # or request_grid.json
+python3 -I sim/device-stress/collect.py --report ctyp.json --set ctyp   # writes the R2 and the R14 record
+```
+
+One closed-loop `buck_top` run per (corner, load) serves both rows; `collect.py` writes
+`sim/device-stress/records/<UTC>-<sha>.json` (R2) and `sim/dead-time/records/<UTC>-<sha>-top.json` (R14).
+Details, the 100 ps step, the Vth definition and what has and has not run: [`device-stress/README.md`](device-stress/README.md).
