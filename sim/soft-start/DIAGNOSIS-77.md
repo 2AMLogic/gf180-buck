@@ -39,3 +39,24 @@ same corner, local backend, one unit each). The record above is untouched.
 Verdict: still partial. No design defect established, no decision record, no spec row changed.
 Suggested next step: a bench variant returning Cout/Rload to node 0, and probing `vref`, `fbn`
 and PWM duty against `gnd_d` for the Vout shortfall.
+
+## Update 3 — kelvin control return + non-limiting EA (simulated, pre-layout; not measured)
+Evidence: `records/20261102-issue77-probe3-ea-gbw-kelvin.json`; `bench_ss77.spice`, `probe_ss77.json`,
+`analyze_ss77.py` (probe-only; `bench.spice` and `design/` untouched). Typical, 5.0 V, 27 C, no load,
+`--backend local`, 1 unit, `.tran 2.5n 700u` saved from 15 us, step_max 2.5 ns. The bench is #82's
+`bench_gbw82.spice` (separate control-ground wire; 100 MHz single-pole EA stand-in) with the load removed.
+
+- **The corner starts up.** t_90 = 175.6 us after EN (R15: 100-500 us), peak I(L) 0.405 A (< 0.70 A),
+  no overshoot above 1.872 V, Vout 1.772-1.774 V from 260 us. Clock 1.86 MHz; `vc` inside the ramp
+  window from 60 us. Oscillator, bias ports and soft-start reference do not deviate.
+- **Not a pass of R15.** `monotonic` fails against the 1 mV tolerance: a 20.7 mV drawdown of the cycle
+  mean at 187 us (Vout about 1.52 V), cause not traced. Vout ends 1.5 % under 1.8 V (as in #82).
+  Steady state was not tested against spec 0.4.
+- **Diagnosis.** The R15 failures seen at the first probes are the two causes found under #82: die-ground
+  bounce (bench artifact, fixed in the kelvin variant) and the unstable loop with the adopted error
+  amplifier (design defect, `spec/decision-records/0004-error-amplifier-gbw.md`, proposed, unchosen).
+  Neither the oscillator, the bias ports nor the soft-start reference is at fault at this corner. The
+  stand-in EA and the control-return pinout are open decisions, so the adopted netlist is **not** shown
+  to pass.
+- **Not done:** other corners, the 3.6 ohm load, R16 trip behaviour (not probed), the drawdown, the
+  grid. No decision record is added (0004 covers the defect); no spec row changed.
