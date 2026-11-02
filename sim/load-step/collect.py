@@ -12,18 +12,16 @@ A unit that timed out, errored or did not settle before a step carries NO value 
 nothing is relaxed. Simulated, never measured. Writes sim/load-step/records/<UTC>-<sha>.json.
 """
 import argparse
-import datetime
-import hashlib
 import json
 import os
 import re
-import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
 import buckmeas  # noqa: E402
 import rawgrade  # noqa: E402
+import recordkit  # noqa: E402
 
 # Target-tier R12 bounds (spec/target-spec.md section 1)
 DEV_MAX = 0.090        # V   deviation, larger of under/overshoot
@@ -32,7 +30,6 @@ REC_MAX = 25e-6        # s   recovery time to the last exit from the band
 XTOL = 0.30            # R13(c)
 F_AVG = 2.0e6          # Hz  averaged model has no clock; cycle counts use the commanded 2 MHz
 EXPECTED = {"tol": 18, "full": 90, "avg": 54}   # C-full = 45 x 2 tolerance corners = 90
-IDRE = re.compile(r"^(?P<proc>[^/]+)/(?P<vin>[^/]+)/(?P<temp>-?[0-9.]+)C/params:(?P<params>.*)$")
 
 
 def bench_timing():
@@ -46,20 +43,14 @@ def bench_timing():
 
 
 def parse_id(cid):
-    m = IDRE.match(cid)
-    if not m:
-        raise ValueError("unrecognised corner id %r" % cid)
-    params = {k: float(v) for k, v in (kv.split("=") for kv in m.group("params").split(","))}
-    vin = params.get("vin")
-    if vin is None:
-        vin = float(m.group("vin").rstrip("V"))
-    return {"process": m.group("proc"), "vin_v": vin, "temp_c": float(m.group("temp")),
+    """Corner id -> process, vin_v, temp_c, lfac, ceff_f, esr_ohm. The averaged bench has no supply
+    source, so its id carries a non-numeric supply segment ("novdd") and Vin comes from the `vin` param."""
+    proc, vin_seg, rest = cid.split("/", 2)
+    if not re.fullmatch(r"[0-9.]+V", vin_seg):
+        vin_seg = "0V"
+    key, params = recordkit.parse_corner("/".join((proc, vin_seg, rest)))
+    return {"process": key["process"], "vin_v": params.get("vin", key["vin_v"]), "temp_c": key["temp_c"],
             "lfac": params["lfac"], "ceff_f": params.get("c_out", params.get("ceff")), "esr_ohm": params["esr"]}
-
-
-def sha256(path):
-    with open(path, "rb") as fh:
-        return hashlib.sha256(fh.read()).hexdigest()
 
 
 def tol_key(u):
@@ -188,9 +179,7 @@ def main(argv=None):
     units, envs = {"tol": [], "full": [], "avg": []}, []
     for k in ("tol", "full", "avg"):
         rep = json.load(open(getattr(a, k)))
-        rem = rep.get("environment", {}).get("remote") or {}
-        envs.append({"request": "request_%s.json" % k, "report": os.path.basename(getattr(a, k)), "status": rep.get("status"),
-                     "remote": {x: rem.get(x) for x in ("provider", "job_id", "instance_type", "lifecycle", "elapsed_seconds", "state")}})
+        envs.append({"request": "request_%s.json" % k, **recordkit.report_env(rep, getattr(a, k))})
         for c in rep["corners"]:
             units[k].append(grade_unit(c, "avg" if k == "avg" else k, tm))
     counts = {k: len(v) for k, v in units.items()}
@@ -205,19 +194,14 @@ def main(argv=None):
             "R13c": r13c(graded, [u for u in units["avg"] if u.get("graded")])}
     rows["R13b"]["verdict"] = ("fail" if any(e["verdict"] == "fail" for e in rows["R13b"]["per_tolerance_corner"].values())
                                else "not_demonstrated" if any(e["verdict"] != "pass" for e in rows["R13b"]["per_tolerance_corner"].values()) else "pass")
-    sha = subprocess.check_output(["git", "-C", HERE, "rev-parse", "--short=12", "HEAD"], text=True).strip()
-    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = os.path.join(HERE, "..", "..")
-    files = {f: sha256(os.path.join(HERE, f)) for f in ("bench.spice", "avg_step.spice", "request_tol.json", "request_full.json",
-                                                         "request_avg.json", "gen_requests.py")}
-    files.update({"design/netlists/buck_top.spice": sha256(os.path.join(root, "design", "netlists", "buck_top.spice")),
-                  "design/averaged/buck_avg.spice": sha256(os.path.join(root, "design", "averaged", "buck_avg.spice")),
-                  "sim/steady-state/opamp_two_stage.spice": sha256(os.path.join(root, "sim", "steady-state", "opamp_two_stage.spice")),
-                  "sim/lib/buckmeas.py": sha256(os.path.join(root, "sim", "lib", "buckmeas.py")),
-                  "sim/lib/rawgrade.py": sha256(os.path.join(root, "sim", "lib", "rawgrade.py"))})
+    ts, sha, hdr = recordkit.header(HERE)
+    files = recordkit.files_sha256(
+        HERE, ("bench.spice", "avg_step.spice", "request_tol.json", "request_full.json", "request_avg.json", "gen_requests.py"),
+        root_files=("design/netlists/buck_top.spice", "design/averaged/buck_avg.spice", "sim/steady-state/opamp_two_stage.spice"),
+        lib_files=("buckmeas.py", "rawgrade.py"))
     rec = {
         "record": "simulated, not measured; pre-layout; target tier (5 V -> 1.8 V, 50 -> 450 -> 50 mA); rows R12, R13(b), R13(c)",
-        "environment": {"utc": ts, "repo_commit": sha, "klt": subprocess.check_output(["klt", "--version"], text=True).strip(),
+        "environment": {**hdr,
                         "local_grader_python": sys.version.split()[0], "reports": envs, "files_sha256": files},
         "method": {
             "analysis": ".tran 2.5n 760u, waveforms saved from 480u; max step 2.5 ns = T/200 at 2 MHz",
@@ -244,14 +228,7 @@ def main(argv=None):
         brief = {k: {kk: vv for kk, vv in v.items() if kk not in ("table", "failing_steps", "no_value_steps")} for k, v in rows.items()}
         print(json.dumps(brief, indent=1))
         return 0
-    path = os.path.join(HERE, "records", "%s-%s.json" % (ts, sha))
-    if os.path.exists(path):
-        print("collect.py: records are append-only; %s exists" % path, file=sys.stderr)
-        return 1
-    with open(path, "w") as fh:
-        fh.write(json.dumps(rec, indent=1) + "\n")
-    print("collect.py: record %s" % path)
-    return 0
+    return recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
 
 
 if __name__ == "__main__":

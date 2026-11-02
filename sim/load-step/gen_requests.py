@@ -16,14 +16,13 @@ The C-full x full-cube product (810 units) is not run; collect.py says so in the
 Run: python3 -I sim/load-step/gen_requests.py   (deterministic)
 """
 import itertools
-import json
 import os
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FAMILY = {"typical": "typical", "ff": "ff", "ss": "ss", "fs": "typical", "sf": "typical"}
-PROCESS = [{"name": p, "sections": [p, "mimcap_" + f, "cap_mim", "res_" + f]} for p, f in FAMILY.items()]
-VIN = [4.5, 5.0, 5.5]
-TEMP = [-40, 27, 125]
+sys.path.insert(0, os.path.join(HERE, "..", "lib"))
+import genkit  # noqa: E402
+from genkit import PROCESS, TEMP, VIN  # noqa: E402
 LFAC = [0.8, 1.0, 1.2]
 CEFF = [4.7e-6, 6e-6, 12e-6]
 ESR = [5e-3, 10e-3]
@@ -33,7 +32,6 @@ WORST = [(0.8, 4.7e-6, 10e-3), (1.2, 4.7e-6, 10e-3)]
 TRAN = "2.5n 760u 480u 2.5n"
 OPTIONS = {"keep_artifacts": True, "waveforms": True, "timeout_s": 1200, "threads_per_worker": 1,
            "save_vectors": ["v(out)", "i(lind)", "v(sw_d)", "v(vsrc)", "i(vsrc)"]}
-BATCH = {"max_units_per_job": 1, "max_concurrent_jobs": 12}   # one unit per job, as sim/steady-state
 
 
 def params(rows, names):
@@ -41,29 +39,23 @@ def params(rows, names):
 
 
 def switched(corners):
-    return {"netlist": "bench.spice", "engine": "ngspice",
-            "models": {"pdk": "gf180mcuD", "lib": "libs.tech/ngspice/sm141064.ngspice"},
-            "analysis": {"kind": "tran", "args": TRAN}, "corners": corners,
-            "measurements": [{"name": "vout_last", "spice": ".meas tran vout_last FIND v(out) AT=759u", "unit": "V"}],
-            "batch": BATCH, "options": OPTIONS}
+    return genkit.request(corners, TRAN, [genkit.vout_last(759)], OPTIONS)
 
 
 def dump(name, obj):
-    with open(os.path.join(HERE, name), "w") as fh:
-        json.dump(obj, fh, indent=1)
-        fh.write("\n")
+    genkit.dump(HERE, name, obj)
 
 
 NAMES = ("lfac", "c_out", "esr")
 tol = {"process": [PROCESS[0]], "supply_v": {"vsrc": [5.0]}, "supply_waveforms": ["vsrc"],
        "temperature_c": [27], "params": params(CUBE, NAMES)}
 dump("request_tol.json", switched(tol))
-dump("matrix_tol.json", {k: tol[k] for k in ("process", "supply_v", "temperature_c", "params")})
+dump("matrix_tol.json", genkit.matrix(tol))
 
 full = {"process": PROCESS, "supply_v": {"vsrc": VIN}, "supply_waveforms": ["vsrc"],
         "temperature_c": TEMP, "params": params(WORST, NAMES)}
 dump("request_full.json", switched(full))
-dump("matrix_full.json", {k: full[k] for k in ("process", "supply_v", "temperature_c", "params")})
+dump("matrix_full.json", genkit.matrix(full))
 
 # averaged: klt params rows zip by index, so the Vin x tolerance cross product is expanded here
 rows = list(itertools.product(VIN, LFAC, CEFF, ESR))
