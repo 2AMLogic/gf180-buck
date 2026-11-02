@@ -1,0 +1,100 @@
+{
+ "record": "issue-82 error-amplifier GBW diagnosis (simulated, pre-layout; NOT measured)",
+ "repo_commit": "7b5dc8a (+ uncommitted probe files listed below at time of run)",
+ "engine": "ngspice 42",
+ "ac_loop_gain": {
+  "method": "probe82/run_ac_realea.sh: averaged buck (parts of design/averaged/buck_avg.spice) with the real ramp window (valley 1.183 V, 0.613 V p-p, from probe82/osc_alone.spice at ib_osc 12 uA; the averaged record assumed 0..1.0 V), Middlebrook injection, typical, Vin 5 V, 250 mA, vref 0.591 V, ac dec 100 1k-100meg, one ngspice run per row",
+  "rows": [
+   {
+    "ea": "ideal 1e6 (as design/averaged/)",
+    "vamp_V": 1.0,
+    "fc_kHz": 147.9,
+    "pm_deg": 62.5
+   },
+   {
+    "ea": "ideal 1e6",
+    "vamp_V": 0.613,
+    "fc_kHz": 223.9,
+    "pm_deg": 59.0
+   },
+   {
+    "ea": "adopted opamp_two_stage, ib 10 uA",
+    "vamp_V": 1.0,
+    "fc_kHz": 158.5,
+    "pm_deg": -30.0,
+    "phase_-180_at_kHz": 123.0,
+    "gain_there_dB": 4.4
+   },
+   {
+    "ea": "adopted opamp_two_stage, ib 10 uA",
+    "vamp_V": 0.613,
+    "fc_kHz": 190.5,
+    "pm_deg": -51.6,
+    "phase_-180_at_kHz": 123.0,
+    "gain_there_dB": 8.7
+   },
+   {
+    "ea": "adopted opamp_two_stage, ib 20 uA",
+    "vamp_V": 0.613,
+    "fc_kHz": 195.0,
+    "pm_deg": -44.0
+   },
+   {
+    "ea": "adopted opamp_two_stage, ib 80 uA",
+    "vamp_V": 0.613,
+    "fc_kHz": 199.5,
+    "pm_deg": -34.3
+   },
+   {
+    "ea": "single pole, A0 4.5e4, GBW 1.1 MHz, ideal output",
+    "vamp_V": 0.613,
+    "fc_kHz": 223.9,
+    "pm_deg": -15.6
+   },
+   {
+    "ea": "single pole, GBW 8 MHz",
+    "vamp_V": 0.613,
+    "fc_kHz": 245.5,
+    "pm_deg": 47.8
+   },
+   {
+    "ea": "single pole, GBW 100 MHz",
+    "vamp_V": 0.613,
+    "fc_kHz": 223.9,
+    "pm_deg": 58.4
+   }
+  ],
+  "ea_open_loop": "adopted opamp, ib 10 uA, unity-feedback ac (probe in this record's session; deck not committed): DC gain 93 dB, single pole, unity-gain frequency about 1.1 MHz, phase -90 deg to about 18 MHz"
+ },
+ "transient_averaged": "probe82/avg_realea.spice, ideal EA, real ramp window, soft start to 245 us, 250 mA from 260 us: Vout 1.773 V from 275 us, steady to 700 us (ngspice 700 us in 0.5 s). The same deck with the adopted opamp did not finish 700 us within a 580 s cap (step held near 12 ns from about 235 us); no waveform kept",
+ "switched": {
+  "klt": "klt sim --backend local --max-workers 1, 1 unit (runtime 289 s)",
+  "bench": "sim/steady-state/bench_gbw82.spice = bench_kelvin82.spice with only the .include of opamp_two_stage replaced by probe82/opamp_gbw.spice (single pole, A0 4.5e4, GBW 100 MHz, output clamped 0.1..Vdd-0.1 V). Kelvin control return, spec 0.3 package (l_wire 2 nH, 2 wires), nothing else changed",
+  "corner": "typical / Vin 5.0 V / 27 C / iload 0.25 A (ramps in at 260 us)",
+  "tran": ".tran 2.5n 450u 20u 2.5n (step_max 2.5 ns, saved from 20 us), about 830 cycles; clock 1.80-1.88 MHz",
+  "vout_25us_window_means_V_from_270us": [
+   1.77,
+   1.773,
+   1.775,
+   1.773,
+   1.772,
+   1.775,
+   1.775,
+   1.771
+  ],
+  "vout_last_V": 1.772901,
+  "settled_test_0.4": "NOT MET. settled82.py (consecutive 20-cycle windows from 260 us): Vout mean differs 0.01-0.45 %, peak iL 0.01-11 %; only 5 of 15 consecutive pairs under 0.1 % / 1 %, the last 3 pairs pass (0.022/0.63, 0.068/0.25, 0.009/0.014 %). Not claimed as settled",
+  "note_vout_level": "1.773 V = 3 x vref (0.591 V soft-start end value of this bench), 1.5 % under 1.8 V; the reference level is untouched here"
+ },
+ "files_sha256": {
+  "probe82/osc_alone.spice": "3ba721dafea2be4ebeece25041aaedd5e015c59cf42bb42affd334289782c695",
+  "probe82/avg_realea.spice": "af0bc1c5a044da8a28ed26ee816a208014cd2a012a2aa42ac547ee4fc52b3057",
+  "probe82/ac_realea.spice": "8d6610d91ea9cec7846627dca079790e281192b20bd4b9dee0fc472a104970bf",
+  "probe82/run_ac_realea.sh": "efde6136fbf686039426f3a5f0cfb87a46a69c3a22230bc98c43eaf666507ec6",
+  "probe82/opamp_gbw.spice": "f9cd1ba10ce1da709d4fc1b08fff1e6f2efe813636f4f7f97aadb8d3958524c9",
+  "bench_gbw82.spice": "667e14a97f56df02442dd21f4d7c4bf2914486b72724fcc2cf4ad5c2a5af6d0c",
+  "probe82_gbw.json": "8c0d03a5d73c962135c5d85a1f854c40f9f1417be21466c5ee42ae11760162fe",
+  "settled82.py": "0e18eef44f957dccbe17003ded09ca1b2e4db092e68da687ad251117cf154b3f"
+ },
+ "not_done": "other corners; 0 and 500 mA loads; a netlist or compensator fix (needs a decision, see spec/decision-records/0004); the settled test; the open-loop 'vc step' probe; the real-opamp averaged transient waveform"
+}

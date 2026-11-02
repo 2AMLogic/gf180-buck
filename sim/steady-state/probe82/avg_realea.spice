@@ -1,0 +1,44 @@
+* Issue #82 probe: AVERAGED power stage (same parts as design/averaged/buck_avg.spice) with the REAL modulator
+* window and, selectably, the REAL error amplifier (opamp_two_stage.spice, ideal 10 uA bias, 3.3 V, ideal ground).
+*   duty = clamp((vc - vvalley)/vamp, 0, 1)      vvalley, vamp measured from osc_ramp.spice (probe82/osc_alone.spice)
+*   ideal_ea=0 -> XEA (real two-stage opamp)     ideal_ea=1 -> gain 1e6 source clamped to 0.3..3.0 V
+* No switching, no package, no ground bounce: separates the large-signal loop from the switched bench.
+* @MODEL_FILE@ / @DESIGN_INC@ are substituted at run time.
+.include @DESIGN_INC@
+.lib @MODEL_FILE@ typical
+.lib @MODEL_FILE@ mimcap_typical
+.lib @MODEL_FILE@ cap_mim
+.lib @MODEL_FILE@ res_typical
+.options gmin=1e-13 reltol=1e-4
+.include sim/steady-state/opamp_two_stage.spice
+.param ideal_ea=0 vin=5 iload=0.25 vvalley=1.183 vamp=0.613 vref_end=0.591 t_ss=245u t_load=260u
+.param l0=3.3u dcr=0.1 cw=3p esl=0.5n rpk=0.05 lpk=1n ceff=6u esr=5m
+.param rtop=10k rbot=5k p_r2=4.55k p_r3=204 p_c1=1.75n p_c2=35.7p p_c3=780p
+Vsrc vinp 0 DC {vin}
+Bsw sw 0 V = min(max((v(vc)-{vvalley})/{vamp}, 0), 1) * v(vinp)
+Rpk sw n1 {rpk}
+Lpk n1 n2 {lpk}
+Rdc n2 n3 {dcr}
+L1 n3 vo {l0}
+Cw n2 vo {cw}
+Cout vo m1 {ceff}
+Resr m1 m2 {esr}
+Lesl m2 0 {esl}
+Iload vo 0 PWL(0 0 {t_load} 0 {t_load+0.5u} {iload})
+Rtop vo fbn {rtop}
+R3 vo x {p_r3}
+C3 x fbn {p_c3}
+Rbot fbn 0 {rbot}
+Rz fbn z {p_r2}
+C1 z vc {p_c1}
+C2 fbn vc {p_c2}
+* reference: ramps 0.05 V -> vref_end between 20 us and t_ss; supply and bias are DC (op-point seeded by .nodeset) (approximates soft_start.spice; vref_end=fixed removes it)
+Vref vref 0 PWL(0 0.05 20u 0.05 {t_ss} {vref_end})
+.nodeset v(vo)=0.15 v(fbn)=0.05 v(vc)=1.3 v(vdd33)=3.3 v(ib_ea)=0.8
+Vdd33 vdd33 0 3.3
+Iea 0 ib_ea 10u
+.if (ideal_ea == 1)
+Bea vc 0 V = min(max(1e6*(v(vref)-v(fbn)), 0.3), 3.0)
+.else
+XEA vdd33 0 vref fbn vc ib_ea opamp_two_stage
+.endif
