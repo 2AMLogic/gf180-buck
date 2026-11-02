@@ -255,6 +255,53 @@ def load_step(t, vout, t_step, v_ref, band, f_sw):
     }
 
 
+def load_step_pair(t, vout, il, f_sw, t_up, t_dn, band, *, t_clk0=0.0, fc_ripple=RIPPLE_LP_HZ):
+    """R12: an up step at t_up and the step back at t_dn on one run.
+
+    Each step is graded only if the §0.4 settled test passes on the cycles just
+    before it (50 mA state for the up step, 450 mA state for the step back); else
+    that step reports no value. Deviation and recovery use the 20 MHz low-pass of
+    Vout (as R11) and the reference Vout the run settles to after the step: the
+    mean over the last 20 whole cycles of that step's hold (up: before t_dn;
+    back: end of run). The up step's hold is cut at t_dn so the second edge
+    cannot leak into it."""
+    T = 1.0 / f_sw
+    lp = lowpass(t, vout, fc_ripple)
+    out = {}
+    for name, ts, te, t_hold_end in (("up", t_up, t_dn, t_dn), ("back", t_dn, None, t[-1])):
+        st = settle(t, vout, il, f_sw, t_end=cycle_floor(ts, f_sw, t_clk0), t_clk0=t_clk0)
+        res = {"settle_before_step": st, "available": False}
+        if not st["settled"]:
+            res["reason"] = "not settled before the step: no value is reported (§0.4)"
+            out[name] = res
+            continue
+        end = cycle_floor(t_hold_end, f_sw, t_clk0)
+        v_ref = window_mean(t, vout, end - WINDOW_CYCLES * T, end)
+        tt, (vv,) = window(t, [lp], t[0], t_hold_end)
+        ls = load_step(tt, vv, ts, v_ref, band, f_sw)
+        v_pre = window_mean(t, vout, st["measure_window_s"][0], st["measure_window_s"][1])
+        res.update(available=True, v_pre_step_mean_v=v_pre, lowpass_hz=fc_ripple,
+                   v_ref_window_s=[end - WINDOW_CYCLES * T, end], **ls)
+        out[name] = res
+    return out
+
+
+def crosscheck(switched, predicted, tol=0.30):
+    """R13(c): |switched - predicted| / predicted within +-tol. Relative error is
+    undefined when predicted is 0: equal zeros agree, anything else does not.
+    A missing value on either side is `no_value`, never a pass."""
+    if switched is None or predicted is None:
+        return {"switched": switched, "predicted": predicted, "rel_err": None, "tol": tol,
+                "verdict": "no_value"}
+    if predicted == 0:
+        ok = switched == 0
+        return {"switched": switched, "predicted": predicted, "rel_err": 0.0 if ok else None,
+                "tol": tol, "verdict": "pass" if ok else "fail"}
+    rel = (switched - predicted) / predicted
+    return {"switched": switched, "predicted": predicted, "rel_err": rel, "tol": tol,
+            "verdict": "pass" if abs(rel) <= tol else "fail"}
+
+
 def rising_crossings(t, v, level, t_from=None):
     """Linearly interpolated rising crossings of `level` at or after t_from."""
     out = []

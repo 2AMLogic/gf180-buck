@@ -22,7 +22,7 @@ NEEDED = ("time", "i(lind)", "v(out)", "v(sw_d)", "v(vsrc)", "i(vsrc)")
 
 
 def read_ascii_raw(path, needed=NEEDED):
-    """ngspice ASCII rawfile (real, one plot) -> {name: [floats]}."""
+    """ngspice ASCII rawfile (real, one plot) -> {name: [floats]}. `needed` lists the vectors that must be present."""
     with open(path) as fh:
         text = fh.read()
     head, _, body = text.partition("\nValues:\n")
