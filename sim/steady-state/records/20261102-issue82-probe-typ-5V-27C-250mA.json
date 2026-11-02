@@ -1,0 +1,33 @@
+{
+ "record": "issue-82 single-corner diagnosis probes (simulated, pre-layout; NOT measured)",
+ "repo_commit": "ba7e948e9e7b",
+ "klt": "klt local backend, 1 unit per run",
+ "engine": "ngspice 46",
+ "corner": "typical / Vin 5.0 V / 27 C / iload 0.25 A (load ramps in at 260 us); bench sim/steady-state/bench.spice",
+ "tran": "2.5n 450u (saved from 20u), step_max 2.5 ns (T/200 at 2 MHz). About 860 cycles, but the loop did NOT settle in any run: steady state not established, spec 0.4 settled test not passed",
+ "files_sha256": {
+  "probe82_base.json": "cfbf3e591b7dca496f8f1f91ed99ec79a136447d3f7577435fca2aaabd326e75",
+  "probe82_nocwind.json": "d68a12040ea921c09593e6b00fa325a05f6ca87d477cc58985426b4d960ad674",
+  "probe82_gnd.json": "9c5b2911858bc14d70e287c0fa01532bac77e83cc9bbae228252e5c7c84b3299",
+  "probe82_lwire0p2n.json": "22eed3bb4ce40bc44e35a3fc88e6a85184d87fba0db39f533e3ffc4d3aa1d581",
+  "analyze_probe82.py": "d3b4691b0a2f060207fc9a691b2b66dd441555296e2fac34e047ac36be83954c",
+  "design/netlists/buck_top.spice": "8600d7d34d8175ff5b7f979241fd8e5c873380c1bccdaf66b79309df652f28ff"
+ },
+ "runs": {
+  "base": "vout (abs) 1.64-1.69 V over 270-450 us; fbn 0.55-0.56 V vs vref 0.595 V; duty 0.35; unsettled",
+  "nocwind (c_wind=0)": "same: vout 1.64-1.71 V, 3.2-3.7 % of samples outside -0.5..2.2 V, so winding capacitance is NOT the cause of the out-node spikes",
+  "gnd (also saves gnd_d, vdd33, vin_d)": "node values below are against gnd_d unless stated; window 400-450 us",
+  "lwire0p2n (l_wire 0.2 nH/wire, bench param)": "diagnostic only, not a spec package value"
+ },
+ "observations": {
+  "error_amp_dc": "refuted as cause: opamp alone, 3.3 V, ibias 10 uA, typical, 27 C, DC sweep (single ngspice -b, not committed): input offset 1.25 mV and open-loop gain ~6200 (76 dB) at Vcm=0.6 V (1.75 mV at 0.5 V). Cannot explain a ~40 mV fbn-vref error",
+  "gnd_d_bounce": "v(gnd_d) vs ideal 0 reaches -2.49 / +2.07 V (400-450 us), a ~1 ns ring at the SW falling edge (t=407.86 us: gnd_d -2.49 V while sw_d falls 5.7 -> 0.1 V). vdd33-gnd_d stays 3.300 V (ideal source); vin_d swings 2.52-7.08 V",
+  "control_nodes_follow_ground": "at that edge (absolute): vref 0.57 -> 0.26 -> 0.92 V, fbn 0.40 -> -1.65 -> +2.49 V, vc 1.41 -> -0.64 -> 3.5 V. Against gnd_d, vc stays in 0.78-2.02 V (0 % outside -0.1..3.4 V): the 'vc out of the 3.3 V rail' of #77 is a measurement against ideal 0, not a rail violation",
+  "out_spikes": "v(out) abs -1.16..3.72 V but out-gnd_d is 1.14..1.97 V (mean 1.653): the +/-2 V out spikes noted in #77 are the ground bounce, not Cwind/ESL",
+  "clock": "against gnd_d the clock runs 2.9-3.0 MHz in the baseline over 250-450 us (1.65 V crossings), 1.84 MHz with l_wire = 0.2 nH: ground bounce shifts the oscillator by ~60 %",
+  "dc_error": "baseline 400-450 us: fbn-gnd 0.546 V vs vref-gnd 0.583 V; vout-gnd 1.657 V vs 1.8 V target",
+  "l_wire_0p2n": "ground bounce 0.70 V pk (vs 2.49): vref and fbn agree (0.581 / 0.581 V in 400-450 us), clock 1.84 MHz, BUT vout-gnd swings between 0.98 and 1.66 V from one 50 us window to the next (1.11, 1.57, 0.98, 1.66 V): a second, slow, non-settled behaviour, NOT yet diagnosed"
+ },
+ "diagnosis": "PARTIAL. First departing node: the die ground gnd_d, ringing +/-2.5 V for ~1 ns at each SW edge through the shared power/control ground bond wires (spec 0.3 package: 2 wires, 2 nH, 0.1 ohm each; bench Cdie 1 uF). It corrupts vref, the feedback sense, vc and the oscillator. The error amp, its 0.6 V input common mode, Cwind and the oscillator netlist alone are not the cause. Design defect (control ground not isolated, no local decoupling) versus bench artifact (die-ground model, ideal Vdd33 tied to gnd_d) is UNDECIDED. A second behaviour (slow Vout swing at low bounce) is untraced. No decision record, no bench change, no spec row changed.",
+ "not_done": "other corners; 50 mA and 500 mA loads; averaged-model comparison; any fix; the slow swing at l_wire 0.2 nH"
+}
