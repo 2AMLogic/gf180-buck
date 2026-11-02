@@ -1,0 +1,27 @@
+{
+ "record": "issue-77 single-corner diagnosis probe 4: R15 start-up at the 3.6 ohm load, kelvin control return + 100 MHz single-pole EA stand-in (simulated, pre-layout; NOT measured)",
+ "repo_commit": "4b12fa2",
+ "klt": "klt sim --backend local, 1 unit",
+ "corner": "typical / Vin 5.0 V / 27 C / 3.6 ohm resistor on out from t=0; Vin ramps 0->5 V over 10 us, EN at 20 us",
+ "supersedes": "none; extends records/20261102-issue77-probe3-ea-gbw-kelvin.json (earlier records untouched)",
+ "files_sha256": {
+  "sim/soft-start/bench_ss77_load.spice": "0bea52cdd6f83f9c5ff9d7a2a56c1178040135387ec3ba8aa684ce216ed75342",
+  "sim/soft-start/probe_ss77_load.json": "48480e37b29bfdc05a387117398ad9521d3b91598ac0be33d0161a4ca935e263",
+  "sim/soft-start/analyze_ss77.py": "6911123fe3ee6acb3be38a5692c4579c822326f9008fd195ced77357e463c201"
+ },
+ "run": {
+  "tran": "2.5n 700u (saved from 15u), step_max 2.5 ns; runtime 515 s",
+  "change_vs_probe3": "Iload (0 until 260 us) replaced by a 3.6 ohm resistor from t=0, so the start-up is under load",
+  "steady_state": "not established as a spec 0.4 settled test; 40 us window means of Vout are 1.692 V from 260 us to 700 us"
+ },
+ "observations": {
+  "t_90": "181.8 us after EN (threshold 1.62 V on the per-cycle mean), inside the R15 window 100-500 us",
+  "peak_il": "0.571 A during start-up, below the 0.70 A R16 minimum trip",
+  "overshoot": "0 V",
+  "monotonic": "FALSE by the 1 mV tolerance: max drawdown 18.9 mV (probe3, no load: 20.7 mV), cause not traced",
+  "final_vout": "1.692 V from 260 us, 6 percent below 1.8 V (no load: 1.773 V); vc-gnd_d keeps ramping 1.74 -> 3.20 V (rail) between 220 and 580 us, then sits at the rail while Vout does not move. Cause not traced (candidates, none tested: duty headroom limit, switch Ron drop, finite EA stand-in gain)",
+  "clock": "1.842 MHz mean (1262 edges)"
+ },
+ "diagnosis": "PARTIAL. At this corner under load the unit starts up (t_90 inside the window, peak current below the R16 min trip), so the earlier failures are not an oscillator, bias or soft-start-reference fault here either. Two things still fail with the stand-in EA and kelvin control return: the monotonic clause (18.9 mV drawdown) and a 6 percent Vout shortfall at 3.6 ohm with vc pinned at the 3.3 V rail. The shortfall is a candidate design defect (control authority runs out) but is NOT traced, so no decision record is written. No spec row, design netlist or earlier record is changed.",
+ "not_done": "monotonic drawdown node trace; a second (originally failing) corner; R16 trip probe; the 6 percent shortfall cause; the grid (#60)"
+}
