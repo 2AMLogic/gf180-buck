@@ -4,6 +4,7 @@ Run: python3 -m unittest discover sim/lib
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -111,12 +112,14 @@ class DriftTest(unittest.TestCase):
 
     def test_generated_requests_match_committed_files(self):
         with tempfile.TemporaryDirectory() as tmp:
-            src = open(os.path.join(DS, "gen_requests.py")).read()
-            gen = os.path.join(tmp, "gen_requests.py")
-            open(gen, "w").write(src)
-            subprocess.run([sys.executable, "-I", gen], check=True)
+            # the generator imports sim/lib/genkit.py as ../lib/genkit.py: mirror that layout under tmp
+            out = os.path.join(tmp, "device-stress")
+            os.makedirs(out)
+            shutil.copy(os.path.join(DS, "gen_requests.py"), out)
+            shutil.copytree(os.path.join(ROOT, "sim", "lib"), os.path.join(tmp, "lib"))
+            subprocess.run([sys.executable, "-I", os.path.join(out, "gen_requests.py")], check=True)
             for f in ("request_grid.json", "request_ctyp.json", "matrix_grid.json", "matrix_ctyp.json"):
-                self.assertEqual(json.load(open(os.path.join(tmp, f))), json.load(open(os.path.join(DS, f))), f)
+                self.assertEqual(json.load(open(os.path.join(out, f))), json.load(open(os.path.join(DS, f))), f)
 
     def test_request_states_the_100ps_step_and_c_full(self):
         req = json.load(open(os.path.join(DS, "request_grid.json")))
