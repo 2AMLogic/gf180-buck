@@ -30,8 +30,31 @@ def row(units, fn, expected):
 
 class VerdictTest(unittest.TestCase):
     def test_complete_clean_set_passes(self):
-        r = row([unit("a"), unit("b")], collect.r2_margin, 2)
+        n = collect.EXPECTED["grid"]
+        r = row([unit("u%d" % i) for i in range(n)], collect.r2_margin, n)
         self.assertEqual(r["verdict"], "pass")
+        self.assertTrue(r["corner_set_complete"])
+
+    def test_clean_ctyp_subset_is_not_demonstrated(self):
+        n = collect.EXPECTED["ctyp"]
+        for fn in (collect.r2_margin, collect.r14_margin):
+            r = row([unit("u%d" % i) for i in range(n)], fn, n)
+            self.assertEqual(r["verdict"], "not_demonstrated")
+            self.assertFalse(r["corner_set_complete"])
+
+    def test_ctyp_subset_with_a_failure_still_fails(self):
+        n = collect.EXPECTED["ctyp"]
+        us = [unit("u%d" % i) for i in range(n - 1)] + [unit("bad", sw_min=-0.71)]
+        self.assertEqual(row(us, collect.r2_margin, n)["verdict"], "fail")
+
+    def test_134_of_135_clean_is_not_demonstrated(self):
+        n = collect.EXPECTED["grid"] - 1
+        self.assertEqual(row([unit("u%d" % i) for i in range(n)], collect.r2_margin, 135)["verdict"], "not_demonstrated")
+
+    def test_135_with_one_no_value_unit_is_not_demonstrated(self):
+        n = collect.EXPECTED["grid"]
+        us = [unit("u%d" % i) for i in range(n - 1)] + [unit("x", settled=False)]
+        self.assertEqual(row(us, collect.r2_margin, n)["verdict"], "not_demonstrated")
 
     def test_subset_cannot_pass_the_row(self):
         r = row([unit("a"), unit("b")], collect.r2_margin, 135)
@@ -58,7 +81,8 @@ class VerdictTest(unittest.TestCase):
         self.assertLess(collect.r2_margin(unit("a", term=6.01)), 0)
 
     def test_dead_time_band_and_overlap(self):
-        self.assertEqual(row([unit("a", dead=(1e-9, 6e-9))], collect.r14_margin, 1)["verdict"], "pass")
+        full = collect.EXPECTED["grid"]
+        self.assertEqual(row([unit("u%d" % i, dead=(1e-9, 6e-9)) for i in range(full)], collect.r14_margin, full)["verdict"], "pass")
         self.assertEqual(row([unit("a", dead=(0.9e-9, 5e-9))], collect.r14_margin, 1)["verdict"], "fail")
         self.assertEqual(row([unit("a", dead=(2e-9, 6.1e-9))], collect.r14_margin, 1)["verdict"], "fail")
         self.assertEqual(row([unit("a", overlap=1e-12)], collect.r14_margin, 1)["verdict"], "fail")

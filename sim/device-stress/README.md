@@ -45,7 +45,7 @@ axes being process x T). Netlists are not changed.
 - A limit exceeded anywhere in the saved window **fails** the unit, settled or not (a coarser step can only
   under-read a peak, and R2 takes no transient credit). Overlap seen anywhere also fails R14.
 - A **pass** needs: settled, every edge-window step <= 100 ps, all values inside their limits.
-- A row is `pass` only if every unit of the full corner set (135) passes; any other outcome without a
+- A row is `pass` only if the full 135-unit grid is present and every unit passes (a subset such as C-typ never passes, whatever `--set` names); any other outcome without a
   failure is `not_demonstrated`. A unit that timed out, errored or was lost has no value.
 - R2 grades SW as the lower of the die-side level and the level against the die ground (the substrate-diode
   clamp is die side); terminal peaks use the die-side `vin_d`, `sw_d`, `gnd_d` and the gates `xtop.gh`, `xtop.gl`.
