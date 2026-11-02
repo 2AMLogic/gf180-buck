@@ -16,39 +16,22 @@ when the full 135-unit PVT grid is present and every unit is a pass (a subset su
 out or errored contributes no value. Simulated, never measured.
 """
 import argparse
-import datetime
-import hashlib
 import json
 import os
-import re
-import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
 import rawgrade  # noqa: E402
+import recordkit  # noqa: E402
 import stressmeas as sm  # noqa: E402
+from recordkit import parse_id  # noqa: E402
 
 EXPECTED = {"grid": 135, "ctyp": 3}            # C-full x 3 loads; C-typ x 3 loads
 R14_MIN, R14_TYP, R14_MAX = 1e-9, 3e-9, 6e-9   # spec target tier
 LOADS = (0.0, 0.05, 0.5)
-IDRE = re.compile(r"^(?P<proc>[a-z]+)/(?P<vin>[0-9.]+)V/(?P<temp>-?[0-9.]+)C/params:(?P<params>.*)$")
 GATE_VECTORS = ("v(xtop.gh)", "v(xtop.gl)", "v(vin_d)", "v(gnd_d)")
-
-
-def parse_id(cid):
-    m = IDRE.match(cid)
-    if not m:
-        raise ValueError("unrecognised corner id %r" % cid)
-    params = dict(kv.split("=") for kv in m.group("params").split(","))
-    return {"process": m.group("proc"), "vin_v": float(m.group("vin")), "temp_c": float(m.group("temp")),
-            "iload_a": float(params["iload"])}
-
-
-def sha256(path):
-    with open(path, "rb") as fh:
-        return hashlib.sha256(fh.read()).hexdigest()
 
 
 def meas(corner, name):
@@ -158,21 +141,6 @@ def judge(units, name, margin_fn, expected, what, extra):
             "unit_status": {x[0]["id"]: x[2] for x in marks}, **extra}
 
 
-def write(path, rec, dry):
-    text = json.dumps(rec, indent=1) + "\n"
-    if dry:
-        print(path)
-        return 0
-    if os.path.exists(path):
-        print("collect.py: records are append-only; %s exists" % path, file=sys.stderr)
-        return 1
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w") as fh:
-        fh.write(text)
-    print("collect.py: record %s" % path)
-    return 0
-
-
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--report", required=True)
@@ -181,24 +149,18 @@ def main(argv=None):
     a = ap.parse_args(argv)
     rep = json.load(open(a.report))
     units = [unit_record(c) for c in rep["corners"]]
-    remote = (rep.get("environment") or {}).get("remote") or {}
-    sha = subprocess.check_output(["git", "-C", HERE, "rev-parse", "--short=12", "HEAD"], text=True).strip()
-    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    ngv = (subprocess.run(["ngspice", "--version"], capture_output=True, text=True).stdout.split("\n") + [""])[1]
+    ts, sha, env = recordkit.header(HERE)
     n_corners = len({(u["process"], u["vin_v"], u["temp_c"]) for u in units})
     common = {
         "record": "simulated, not measured; pre-layout; C-%s x loads %s mA = %d units (%d corner points)" % (
             "full" if a.set == "grid" else "typ", [int(x * 1000) for x in LOADS], len(units), n_corners),
-        "environment": {"utc": ts, "repo_commit": sha, "klt": subprocess.check_output(["klt", "--version"], text=True).strip(),
-                        "local_grader_python": sys.version.split()[0], "local_ngspice_banner": ngv.strip(),
+        "environment": {**env, "local_grader_python": sys.version.split()[0], "local_ngspice_banner": recordkit.ngspice_banner(),
                         "report": {"file": os.path.basename(a.report), "status": rep.get("status"),
-                                   "remote": {k: remote.get(k) for k in ("provider", "job_id", "instance_type", "lifecycle", "elapsed_seconds", "state")},
-                                   "jobs": remote.get("jobs") or None},
-                        "files_sha256": {f: sha256(os.path.join(HERE, f)) for f in (
-                            "bench.spice", "../steady-state/opamp_two_stage.spice", "request_%s.json" % a.set, "gen_requests.py")}
-                        | {"design/netlists/buck_top.spice": sha256(os.path.join(ROOT, "design", "netlists", "buck_top.spice")),
-                           "sim/lib/stressmeas.py": sha256(os.path.join(HERE, "..", "lib", "stressmeas.py")),
-                           "sim/lib/rawgrade.py": sha256(os.path.join(HERE, "..", "lib", "rawgrade.py"))}},
+                                   "remote": recordkit.remote_subset(rep),
+                                   "jobs": ((rep.get("environment") or {}).get("remote") or {}).get("jobs") or None},
+                        "files_sha256": recordkit.files_sha256(
+                            HERE, ("bench.spice", "../steady-state/opamp_two_stage.spice", "request_%s.json" % a.set, "gen_requests.py"),
+                            ("design/netlists/buck_top.spice",), ("stressmeas.py", "rawgrade.py"))},
         "method": {
             "analysis": ".tran 100p 600u, waveforms saved from 540u (a 60 us tail); max step 100 ps over the WHOLE run (spec 0.4 edge-window step)",
             "edge_window": "[-2 ns, +10 ns] around every mid-swing crossing of SW and both gates; the unit's largest step inside them is units[].edge.max_step_s, "
@@ -224,8 +186,8 @@ def main(argv=None):
                                                 "with the unit's own Vth instead of the 0.5 V conservative level" % ("full" if a.set == "grid" else "typ")})
     rec2 = {**common, "row": "R2", "rows": {"R2": r2}}
     rec14 = {**common, "row": "R14", "rows": {"R14": r14}}
-    rc = write(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec2, a.dry)
-    rc |= write(os.path.join(ROOT, "sim", "dead-time", "records", "%s-%s-top.json" % (ts, sha)), rec14, a.dry)
+    rc = recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec2, a.dry)
+    rc |= recordkit.write_record(os.path.join(ROOT, "sim", "dead-time", "records", "%s-%s-top.json" % (ts, sha)), rec14, a.dry)
     if a.dry:
         print(json.dumps({"R2": {k: v for k, v in r2.items() if k not in ("unit_status",)},
                           "R14": {k: v for k, v in r14.items() if k not in ("unit_status", "zero_overlap")}}, indent=1))

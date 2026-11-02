@@ -11,17 +11,15 @@ such unit is `not_demonstrated` (or `fail` if a valued unit is out of bounds). N
 is relaxed to make a row pass. Simulated, never measured.
 """
 import argparse
-import datetime
-import hashlib
 import json
 import os
-import re
-import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
 import rawgrade  # noqa: E402
+import recordkit  # noqa: E402
+from recordkit import parse_id as _parse_id  # noqa: E402
 
 # Target-tier bounds (spec/target-spec.md section 1)
 R4 = (1.728, 1.872)          # V   mean Vout
@@ -30,23 +28,10 @@ R8 = (0.119, 0.270)          # A p-p
 R9_MIN = 0.85                # peak efficiency, C-typ, pre-layout
 R11_MAX = 0.018              # V p-p after the 20 MHz low-pass
 R6_MAX_GAP = 1.5             # longest period / median period: above it a pulse was skipped
-IDRE = re.compile(r"^(?P<proc>[a-z]+)/(?P<vin>[0-9.]+)V/(?P<temp>-?[0-9.]+)C/params:(?P<params>.*)$")
 
 
 def parse_id(cid):
-    m = IDRE.match(cid)
-    if not m:
-        raise ValueError("unrecognised corner id %r" % cid)
-    params = dict(kv.split("=") for kv in m.group("params").split(","))
-    return {"process": m.group("proc"), "vin_v": float(m.group("vin")), "temp_c": float(m.group("temp")),
-            "iload_a": float(params["iload"]), "lfac": float(params.get("lfac", 1.0))}
-
-
-def sha256(path):
-    h = hashlib.sha256()
-    with open(path, "rb") as fh:
-        h.update(fh.read())
-    return h.hexdigest()
+    return _parse_id(cid, lfac_default=1.0)
 
 
 def unit_record(corner, bench):
@@ -167,27 +152,19 @@ def main(argv=None):
     for path in a.report:
         rep = json.load(open(path))
         bench = "r8" if "lfac" in json.dumps([c["corner_id"] for c in rep["corners"]][:1]) else "grid"
-        envs.append({"report": os.path.basename(path), "status": rep.get("status"),
-                     "remote": {k: (rep.get("environment", {}).get("remote") or {}).get(k)
-                                for k in ("provider", "job_id", "instance_type", "lifecycle", "elapsed_seconds", "state")},
-                     "jobs": [j for j in (rep.get("environment", {}).get("remote") or {}).get("jobs", [])] or None})
+        envs.append(recordkit.report_env(rep, path, jobs=True))
         for c in rep["corners"]:
             units.append(unit_record(c, bench))
     grid = [u for u in units if u["bench"] == "grid"]
     r8 = [u for u in units if u["bench"] == "r8"]
     rows = judge(grid, r8)
-    sha = subprocess.check_output(["git", "-C", HERE, "rev-parse", "--short=12", "HEAD"], text=True).strip()
-    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    ngv = subprocess.run(["ngspice", "--version"], capture_output=True, text=True).stdout
+    ts, sha, env = recordkit.header(HERE)
     rec = {
         "record": "simulated, not measured; pre-layout; R9/R10 are not the graded (post-layout) value",
-        "environment": {"utc": ts, "repo_commit": sha, "klt": subprocess.check_output(["klt", "--version"], text=True).strip(),
-                        "local_grader_python": sys.version.split()[0], "reports": envs,
-                        "files_sha256": {f: sha256(os.path.join(HERE, f)) for f in
-                                         ("bench.spice", "opamp_two_stage.spice", "request_grid.json", "request_r8.json", "gen_requests.py")}
-                        | {"design/netlists/buck_top.spice": sha256(os.path.join(HERE, "..", "..", "design", "netlists", "buck_top.spice")),
-                           "sim/lib/buckmeas.py": sha256(os.path.join(HERE, "..", "lib", "buckmeas.py")),
-                           "sim/lib/rawgrade.py": sha256(os.path.join(HERE, "..", "lib", "rawgrade.py"))}},
+        "environment": {**env, "local_grader_python": sys.version.split()[0], "reports": envs,
+                        "files_sha256": recordkit.files_sha256(
+                            HERE, ("bench.spice", "opamp_two_stage.spice", "request_grid.json", "request_r8.json", "gen_requests.py"),
+                            ("design/netlists/buck_top.spice",), ("buckmeas.py", "rawgrade.py"))},
         "method": {"analysis": ".tran 2.5n 600u, waveforms saved from 480u (a 120 us tail); max step 2.5 ns = T/200 at 2 MHz",
                    "startup": "Vin ramps 0 -> Vin over 10 us, control rails/bias over 5 us, EN at 20 us (soft start ~200 us), load applied 0 -> I at 260 us over 0.5 us",
                    "steady_state": "spec 0.4: two consecutive 20-cycle windows < 0.1 % in mean Vout and < 1 % in peak I(L), at the measured cycle period, "
@@ -196,18 +173,10 @@ def main(argv=None):
                    "clock": "cycle period and phase from rising crossings of Vin/2 on V(sw) over the saved tail (free-running oscillator)",
                    "corner_counts": {"grid": len(grid), "grid_per_load": len(grid) // 4 if grid else 0, "r8": len(r8)}},
         "rows": rows, "units": units}
-    text = json.dumps(rec, indent=1) + "\n"
     if a.dry:
         print(json.dumps({k: {kk: vv for kk, vv in v.items() if kk not in ("no_value_units", "failing_units")} for k, v in rows.items()}, indent=1))
         return 0
-    path = os.path.join(HERE, "records", "%s-%s.json" % (ts, sha))
-    if os.path.exists(path):
-        print("collect.py: records are append-only; %s exists" % path, file=sys.stderr)
-        return 1
-    with open(path, "w") as fh:
-        fh.write(text)
-    print("collect.py: record %s" % path)
-    return 0
+    return recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
 
 
 if __name__ == "__main__":

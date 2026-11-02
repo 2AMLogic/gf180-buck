@@ -10,18 +10,15 @@ timeout, or a Vout that never reaches 90 % contributes NO value: the row is `not
 (or `fail` if another unit is out of bounds). Nothing is relaxed. Simulated, never measured.
 """
 import argparse
-import datetime
-import hashlib
 import json
 import os
-import re
-import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
 import buckmeas  # noqa: E402
 import rawgrade  # noqa: E402
+import recordkit  # noqa: E402
 
 V_TARGET = 1.8                        # V, R4 typ
 V_REG_MAX = 1.872                     # V, R4 max
@@ -33,19 +30,11 @@ TRIP_LEVEL = 1.65                     # V, VDD33 / 2 on the digital TRIP net
 R6_TAIL_S = 100e-6                    # R6 clause is read on the last 100 us (~200 cycles) at 0 load
 STEP_MAX = 2.5e-9
 NEEDED = ("time", "v(out)", "i(lind)", "v(sw_d)", "v(xtop.trip)")
-IDRE = re.compile(r"^(?P<proc>[a-z]+)/(?P<vin>[0-9.]+)V/(?P<temp>-?[0-9.]+)C/params:(?P<params>.*)$")
-
-
-def sha256(path):
-    with open(path, "rb") as fh:
-        return hashlib.sha256(fh.read()).hexdigest()
 
 
 def unit_record(c):
-    m = IDRE.match(c["corner_id"])
-    params = dict(kv.split("=") for kv in m.group("params").split(","))
-    u = {"id": c["corner_id"], "process": m.group("proc"), "vin_v": float(m.group("vin")),
-         "temp_c": float(m.group("temp")), "rload_ohm": float(params["rload"]), "klt_status": c.get("status")}
+    key, params = recordkit.parse_corner(c["corner_id"])
+    u = {"id": c["corner_id"], **key, "rload_ohm": params["rload"], "klt_status": c.get("status")}
     u["load"] = "none" if u["rload_ohm"] > 1e6 else "%g ohm" % u["rload_ohm"]
     raw = (c.get("artifacts") or {}).get("raw")
     if c.get("status") not in ("pass", "fail") or not raw or not os.path.exists(raw):
@@ -136,18 +125,15 @@ def main(argv=None):
     rep = json.load(open(a.report))
     units = [unit_record(c) for c in rep["corners"]]
     rows = judge(units)
-    remote = (rep.get("environment") or {}).get("remote") or {}
-    sha = subprocess.check_output(["git", "-C", HERE, "rev-parse", "--short=12", "HEAD"], text=True).strip()
-    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    ts, sha, hdr = recordkit.header(HERE)
     rec = {
         "record": "simulated, not measured; pre-layout; spec R15 and the R6 no-trip clause",
-        "environment": {"utc": ts, "repo_commit": sha, "klt": subprocess.check_output(["klt", "--version"], text=True).strip(),
+        "environment": {**hdr,
                         "report": {"file": os.path.basename(a.report), "status": rep.get("status"),
-                                   "remote": {k: remote.get(k) for k in ("provider", "job_id", "instance_type", "state")}},
-                        "files_sha256": {f: sha256(os.path.join(HERE, f)) for f in ("bench.spice", "request_grid.json", "gen_requests.py")}
-                        | {"design/netlists/buck_top.spice": sha256(os.path.join(HERE, "..", "..", "design", "netlists", "buck_top.spice")),
-                           "sim/lib/buckmeas.py": sha256(os.path.join(HERE, "..", "lib", "buckmeas.py")),
-                           "sim/lib/rawgrade.py": sha256(os.path.join(HERE, "..", "lib", "rawgrade.py"))}},
+                                   "remote": recordkit.remote_subset(rep, ("provider", "job_id", "instance_type", "state"))},
+                        "files_sha256": recordkit.files_sha256(
+                            HERE, ("bench.spice", "request_grid.json", "gen_requests.py"),
+                            ("design/netlists/buck_top.spice",), ("buckmeas.py", "rawgrade.py"))},
         "method": {
             "analysis": ".tran 2.5n 700u, saved from 20 us (EN); max step 2.5 ns = T/200 at 2 MHz (unit.step_ok)",
             "startup": "Vin ramps 0 -> Vin over 10 us, control rails / bias over 5 us, EN at 20 us; load resistor present from t = 0",
@@ -160,14 +146,7 @@ def main(argv=None):
     if a.dry:
         print(json.dumps(rows, indent=1))
         return 0
-    path = os.path.join(HERE, "records", "%s-%s.json" % (ts, sha))
-    if os.path.exists(path):
-        print("collect.py: records are append-only; %s exists" % path, file=sys.stderr)
-        return 1
-    with open(path, "w") as fh:
-        fh.write(json.dumps(rec, indent=1) + "\n")
-    print("collect.py: record %s" % path)
-    return 0
+    return recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
 
 
 if __name__ == "__main__":

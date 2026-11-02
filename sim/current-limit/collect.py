@@ -13,18 +13,15 @@ min:  R16 min bound, L -20 %, Vin 5.5 V, 500 mA, all process x T points: TRIP mu
 Nothing is relaxed. Simulated, never measured.
 """
 import argparse
-import datetime
-import hashlib
 import json
 import os
-import re
-import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
 import buckmeas  # noqa: E402
 import rawgrade  # noqa: E402
+import recordkit  # noqa: E402
 
 TRIP_BOUNDS = (0.70, 2.1)             # A, R16
 F_MIN_HZ = 1.7e6                      # R7 min
@@ -34,19 +31,11 @@ MIN_SETTLE_S = 10e-6                  # min case: peak I(L) and f read from 10 u
 V_REG_MIN = 0.9 * 1.8                 # V: Vout at the start of the load must be >= 90 % of target (start-up done)
 STEP_MAX = 2.5e-9
 NEEDED = ("time", "v(out)", "i(lind)", "v(sw_d)", "v(xtop.trip)")
-IDRE = re.compile(r"^(?P<proc>[a-z]+)/(?P<vin>[0-9.]+)V/(?P<temp>-?[0-9.]+)C/params:(?P<params>.*)$")
-
-
-def sha256(path):
-    with open(path, "rb") as fh:
-        return hashlib.sha256(fh.read()).hexdigest()
 
 
 def unit_base(c):
-    m = IDRE.match(c["corner_id"])
-    p = {k: float(v) for k, v in (kv.split("=") for kv in m.group("params").split(","))}
-    u = {"id": c["corner_id"], "process": m.group("proc"), "vin_v": float(m.group("vin")),
-         "temp_c": float(m.group("temp")), "params": p, "klt_status": c.get("status")}
+    key, p = recordkit.parse_corner(c["corner_id"])
+    u = {"id": c["corner_id"], **key, "params": p, "klt_status": c.get("status")}
     raw = (c.get("artifacts") or {}).get("raw")
     if c.get("status") not in ("pass", "fail") or not raw or not os.path.exists(raw):
         u.update(graded=False, reason="no waveform: klt status %s %s" % (c.get("status"), [(d.get("code"), (d.get("message") or "")[-90:]) for d in c.get("diagnostics") or []][:1]))
@@ -143,22 +132,17 @@ def main(argv=None):
     ramp = [ramp_unit(c) for c in reps["ramp"]["corners"]]
     mn = [min_unit(c) for c in reps["min"]["corners"]]
     rows = judge(ramp, mn)
-    sha = subprocess.check_output(["git", "-C", HERE, "rev-parse", "--short=12", "HEAD"], text=True).strip()
-    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    ts, sha, hdr = recordkit.header(HERE)
+    fields = ("provider", "job_id", "instance_type", "state")
 
     def env(k, p):
-        r = (reps[k].get("environment") or {}).get("remote") or {}
-        return {"report": os.path.basename(p), "status": reps[k].get("status"),
-                "remote": {x: r.get(x) for x in ("provider", "job_id", "instance_type", "state")}}
+        return recordkit.report_env(reps[k], p, fields)
     rec = {
         "record": "simulated, not measured; pre-layout; spec R16",
-        "environment": {"utc": ts, "repo_commit": sha, "klt": subprocess.check_output(["klt", "--version"], text=True).strip(),
-                        "reports": [env("ramp", a.ramp), env("min", a.mn)],
-                        "files_sha256": {f: sha256(os.path.join(HERE, f)) for f in
-                                         ("bench.spice", "request_ramp.json", "request_min.json", "gen_requests.py")}
-                        | {"design/netlists/buck_top.spice": sha256(os.path.join(HERE, "..", "..", "design", "netlists", "buck_top.spice")),
-                           "sim/lib/buckmeas.py": sha256(os.path.join(HERE, "..", "lib", "buckmeas.py")),
-                           "sim/lib/rawgrade.py": sha256(os.path.join(HERE, "..", "lib", "rawgrade.py"))}},
+        "environment": {**hdr, "reports": [env("ramp", a.ramp), env("min", a.mn)],
+                        "files_sha256": recordkit.files_sha256(
+                            HERE, ("bench.spice", "request_ramp.json", "request_min.json", "gen_requests.py"),
+                            ("design/netlists/buck_top.spice",), ("buckmeas.py", "rawgrade.py"))},
         "method": {
             "analysis_ramp": ".tran 2.5n 920u, saved from 600 us; max step 2.5 ns = T/200 at 2 MHz; soft start done by 520 us (R15 max), "
                              "load 0 -> 3 A linear over 300 us from 600 us (10 mA/us, ~5 mA per cycle)",
@@ -173,14 +157,7 @@ def main(argv=None):
     if a.dry:
         print(json.dumps(rows, indent=1))
         return 0
-    path = os.path.join(HERE, "records", "%s-%s.json" % (ts, sha))
-    if os.path.exists(path):
-        print("collect.py: records are append-only; %s exists" % path, file=sys.stderr)
-        return 1
-    with open(path, "w") as fh:
-        fh.write(json.dumps(rec, indent=1) + "\n")
-    print("collect.py: record %s" % path)
-    return 0
+    return recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
 
 
 if __name__ == "__main__":
