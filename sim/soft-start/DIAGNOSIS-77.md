@@ -60,3 +60,15 @@ Evidence: `records/20261102-issue77-probe3-ea-gbw-kelvin.json`; `bench_ss77.spic
   to pass.
 - **Not done:** other corners, the 3.6 ohm load, R16 trip behaviour (not probed), the drawdown, the
   grid. No decision record is added (0004 covers the defect); no spec row changed.
+
+## Update 4 — 3.6 ohm load (simulated, pre-layout; not measured)
+Evidence: `records/20261102-issue77-probe4-load-3p6.json`; `bench_ss77_load.spice`, `probe_ss77_load.json`
+(probe-only; analysed with `analyze_ss77.py`). Typical, 5.0 V, 27 C, 3.6 ohm from t=0, kelvin control
+return + 100 MHz EA stand-in, local backend, 1 unit, `.tran 2.5n 700u`, step_max 2.5 ns. Start-up
+transient only; the spec 0.4 settled test was not run.
+
+- Starts up: t_90 181.8 us after EN, peak I(L) 0.571 A (< 0.70 A), no overshoot. Clock 1.84 MHz.
+- Not a pass: monotonic fails (18.9 mV drawdown, cause not traced), and Vout holds 1.692 V (6 % low)
+  while `vc` climbs to the 3.3 V rail by ~580 us and stays there. Cause not traced; a possible
+  design defect (control authority) is untested, so no decision record.
+- Not done: monotonic drawdown trace, a second failing corner, R16 trip probe. Issue stays open.
