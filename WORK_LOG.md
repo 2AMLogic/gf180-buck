@@ -5,6 +5,13 @@ Maintained by the Guide role.
 
 ### 2026-11-02
 
+- **PR #90**: docs: record R15 single-corner probe with kelvin control return and non-limiting error amp (partial)
+- **PR #89**: refactor: move load-step collector and generator onto sim/lib recordkit and genkit
+- **PR #88**: docs: diagnose closed-loop non-regulation as error-amp GBW instability (partial)
+- **PR #87**: docs: record kelvin control-return probe for closed-loop non-regulation (partial)
+- **PR #86**: docs: record die-ground-referenced R15 probe showing vc/out excursions are a bench artifact
+- **PR #85**: docs: record partial diagnosis of closed-loop non-regulation (die-ground bounce)
+- **Issue #81** (closed): Finish #74 dedupe: move sim/load-step collector and generator onto sim/lib recordkit/genkit
 - **PR #80**: docs: record single-corner R15 start-up probe and partial diagnosis
 - **PR #79**: refactor: share sim record and request-generator plumbing in sim/lib
 - **Issue #74** (closed): Dedupe sim collector and request-generator plumbing into sim/lib
