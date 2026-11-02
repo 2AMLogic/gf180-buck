@@ -1,0 +1,33 @@
+{
+ "record": "issue-77 single-corner diagnosis probe 3: kelvin control return + 100 MHz single-pole EA stand-in, R15 start-up (simulated, pre-layout; NOT measured)",
+ "repo_commit": "6b6f19e",
+ "klt": "klt 0.8.1.dev1073+gbe5754378ff3 (--backend local, 1 unit)",
+ "engine": "ngspice (the klt-launched binary; `ngspice --version` on this host reports ngspice-42)",
+ "corner": "typical / Vin 5.0 V / 27 C / no load (iload=0); Vin ramps 0->5 V over 10 us, EN at 20 us",
+ "supersedes": "none; extends records/20261102-issue77-probe2-gnd-reference.json (earlier records untouched)",
+ "files_sha256": {
+  "sim/soft-start/bench_ss77.spice": "d668218fcde33d439279cb3bbae70cf1b8325728d1cef2fafc00dc295eef5587",
+  "sim/soft-start/probe_ss77.json": "7a3882132f2ab97bb12ad120141b7098863f31516b91f22750e9c4e2c3f19c9e",
+  "sim/soft-start/analyze_ss77.py": "6911123fe3ee6acb3be38a5692c4579c822326f9008fd195ced77357e463c201",
+  "design/netlists/buck_top.spice": "8600d7d34d8175ff5b7f979241fd8e5c873380c1bccdaf66b79309df652f28ff",
+  "sim/steady-state/probe82/buck_top_kelvin.spice": "4c13f942eb0ab79463f51f865ec6e50244a511180b0bfd4452c992fcef115894",
+  "sim/steady-state/probe82/opamp_gbw.spice": "f9cd1ba10ce1da709d4fc1b08fff1e6f2efe813636f4f7f97aadb8d3958524c9"
+ },
+ "run": {
+  "request": "probe_ss77.json",
+  "tran": "2.5n 700u (saved from 15u), step_max 2.5 ns (max saved step 2.50 ns)",
+  "change_vs_bench.spice": "(a) control domain on its own return wire to board 0 (gnd_d vs gnd_p, as in #82's kelvin probe); (b) the adopted error amplifier replaced by a 100 MHz single-pole stand-in (a probe, not a design); everything else as sim/soft-start/bench.spice",
+  "steady_state": "not established as a spec 0.4 settled test (not run); 40 us window means of Vout are 1.772-1.774 V from 260 us to 700 us"
+ },
+ "observations": {
+  "t_90": "175.6 us after EN (threshold 1.62 V on the per-cycle mean, buckmeas.soft_start), inside the R15 window 100-500 us",
+  "peak_il": "0.405 A during start-up, below the 0.70 A R16 minimum trip",
+  "overshoot_above_R4_max": "0 V (low-passed Vout never exceeded 1.872 V)",
+  "monotonic": "FALSE by the 1 mV R15 tolerance: max drawdown of a cycle mean below its running maximum is 20.7 mV, at 187 us (Vout about 1.52 V, 32 us before the soft-start reference flattens). Cause not traced",
+  "final_vout": "1.772-1.774 V from 260 us (3 x vref 0.591 V), 1.5 % below 1.8 V; the same offset as #82's third addendum, not examined here",
+  "clock": "1.859 MHz mean over 685 us (1273 edges)",
+  "bias_and_oscillator": "vc-gnd_d 1.26-1.48 V from 60 us, inside the 1.18-1.80 V ramp window; no deviation in the oscillator or soft-start reference"
+ },
+ "diagnosis": "PARTIAL (CONFIRMED for the cause of the earlier failures; R15 as a whole is not shown to pass). With the control ground separated and the EA's GBW not limiting, the previously failing typical/5 V/27 C/no-load unit starts up: Vout reaches 90 % at 175.6 us and holds 1.77 V. The earlier t_90 failures (Vout stuck near 1.55 V) are therefore the two causes already diagnosed in #82: the die-ground bounce (bench artifact) and the unstable loop with the adopted error amplifier (design defect, spec/decision-records/0004). They are not an oscillator, bias or soft-start-reference fault. This record does NOT show the adopted netlist passes R15: the EA here is a stand-in and the bench has a separate control return, both decisions still open (0004, #87). The 20.7 mV drawdown means the monotonic clause is not met even with the stand-in. No spec row, decision record or design netlist is changed.",
+ "not_done": "other corners (31 of 33 grid units fail, 10 never reach 90 %); the 3.6 ohm load; R16 (trip level at 0.08-1.0 A was not probed; likely the same non-regulation, not shown); the monotonic drawdown; the 1.5 % Vout offset; the grid (#60, held until decision 0004 is made)"
+}
