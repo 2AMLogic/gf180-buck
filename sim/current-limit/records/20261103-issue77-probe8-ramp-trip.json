@@ -1,0 +1,22 @@
+{
+ "record": "issue-77 probe 8: R16 ramped-load trip probe, single corner (simulated, pre-layout; NOT measured)",
+ "repo_commit": "d8a92dd",
+ "klt": "klt sim --backend local, 1 unit, ngspice 42",
+ "corner": "typical / Vin 5.0 V / 27 C, sim/current-limit/bench.spice (original R16 bench, ideal bias/rails, current-sink load), i_end 1.5 A, t_ramp 100 us, t_r0 300 us, lfac 1, osc_k 1",
+ "supersedes": "none; extends records/20261103-issue77-probe6-ocp-trip-chain.json (earlier records untouched)",
+ "files_sha256": {
+  "sim/current-limit/probe_ramp77.json": "6c63877663643daaa3e991c083990258fc7e06746ba2c7e3ccb0937cbcf9a9f9"
+ },
+ "run": {
+  "analysis": "tran 2.5n 420u saved from 280u, step_max 2.5 ns (verified, 123911 points), 258 s",
+  "shortened": "load ramp shortened from the grid's 600 us start / 300 us ramp to 300 us / 100 us, 0->1.5 A (15 A/ms), so the run is one local single-corner job",
+  "steady_state": "NOT established: Vout is 1.665 V at 280 us and I(L) still rings (min -1.07 A at 295 us); the load ramp starts at 300 us. Start-up transient, not a spec 0.4 settled test"
+ },
+ "observations": {
+  "trip_event_collect_method": "first rising 1.65 V crossing of xtop.trip after the ramp starts (buckmeas.trip_event, the collect.py method): t=358.88 us, I(L) 0.5536 A, load 0.88 A at that instant; 104 trip assertions to 420 us",
+  "before_that": "I(L) peaks are capped at 0.565-0.573 A from 285 us on, while the load current is still below them; trip never exceeds 0.32 V at the saved 2.5 ns points before 340 us (the sub-ns pulse of probe 6 is not resolved at this step)",
+  "after": "Vout falls 1.71 V (330 us) -> 0.77 V (360 us) -> about -0.1 V (380-419 us) while I(L) rises to 1.4-1.6 A: the converter loses regulation as the load ramp passes its 0.565 A peak cap, and the load keeps drawing from a collapsed Vout (an ideal current sink, so Vout goes negative: a bench property, not a physical claim)",
+  "against_spec": "R16 requires the trip between 0.70 and 2.1 A. The measured trip event is 0.554 A, 0.146 A below the minimum, consistent with the 0.5652 A comparator trip traced in probe 6 (the 2.5 ns step reads it slightly lower because Vout/I(L) are sampled with ringing)"
+ },
+ "verdict": "R16 ramped-load trip: fail at this corner (0.554 A < 0.70 A minimum), one unit, start-up transient. It corroborates decision 0005. Not established: other corners/temperatures, the trip point after steady state. No spec row, design netlist, bench or earlier record changed."
+}
