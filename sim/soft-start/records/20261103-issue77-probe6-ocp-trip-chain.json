@@ -1,0 +1,28 @@
+{
+ "record": "issue-77 single-corner diagnosis probes 6 and 7: the OCP trip chain ends the on-time at 0.565 A (typical); ff corner start-up (simulated, pre-layout; NOT measured)",
+ "repo_commit": "cad0246",
+ "klt": "klt sim --backend local, 1 unit per run, ngspice 42",
+ "corner": "probe 6 (and the intermediate latch run): typical / Vin 5.0 V / 27 C / 3.6 ohm from t=0, kelvin control return + 100 MHz EA stand-in. probe 7: ff / 5.0 V / 27 C / 3.6 ohm, same bench",
+ "supersedes": "none; extends records/20261102-issue77-probe5-ontime-termination.json (earlier records untouched)",
+ "files_sha256": {
+  "sim/soft-start/probe_ss77_latch.json": "a3d3f538f0e6946cb178607d5621203398338553112f459e77d33c5bf677f013",
+  "sim/soft-start/probe_ss77_dense.json": "d10c3f22a94f675fc6e85bff5ad295c248994244bddf7a57d09de5e06797c196",
+  "sim/soft-start/bench_ss77_dense.spice": "dd26d9fc49b17fe91f8e134a0c5bacc26e93d7d457b2a1d9764b54f09680ad88",
+  "sim/soft-start/probe_ss77_ff.json": "80dff81a9a00426b120d4c0f5a3a401d29e6d08b3217be27e62ff1b3847d6ecb",
+  "sim/soft-start/analyze_ss77_trip.py": "203680abbd12b58d85971966376c1e53a518c23e989723aae875c57cd048fdbf"
+ },
+ "run": {
+  "latch_run": "tran 2.5n 255u saved from 225u, step_max 2.5 ns, 181 s; saved q/qb/qn/rst/cmp/ocpb/trip and ocp_sense raw/trn/blr/bld",
+  "dense_run": "tran 2.5n 226.7u saved from 226.3u, step_max 2.5 ns, 158 s; bench_ss77_dense.spice adds an unconnected PWL source whose 100 ps breakpoints force timepoints over 226.50-226.70 us (max step 0.053 ns there)",
+  "ff_run": "tran 2.5n 300u saved from 240u, step_max 2.5 ns, 216 s; only pwm/i(lind)/vc/ramp/clk/out/sw saved",
+  "steady_state": "not established; start-up transient, not a spec 0.4 settled test"
+ },
+ "observations": {
+  "why_probe5_missed_it": "in the latch run the PWM fall at 226.59 us shows q falling with rst 0 V, cmp 3.3 V, ocpb 3.3 V and trip max 0.021 V. The saved points are 1.3 ns apart there, and the pulse is shorter",
+  "trip_chain_typical": "first PWM fall in the dense run, 226.6237 us, I(L) 0.5659 A. Crossings of 1.65 V relative to the PWM fall: ocp_sense raw rises -0.714 ns (I(L) 0.5652 A), trn falls -0.638, trip rises -0.572, ocpb falls -0.514, rst rises -0.395, q falls -0.238, pwm falls -0.037. trip falls +0.185 ns, so the pulse is about 0.76 ns wide and self-clears when the high side turns off",
+  "blanking": "bld goes high about 35 ns after the PWM rise (226.385 us rise, bld high by 226.419 us), so the trip is not blanked near the end of a 0.55 us on-time",
+  "ff_corner": "ff / 5.0 V / 27 C / 3.6 ohm: Vout 1.777 V mean over 280-300 us; I(L) at 117 PWM falls over 240-300 us is 0.612-0.613 A in steady cycles (min 0.496, mean 0.600 over all falls); vc-gnd_d 1.50 V against ramp 1.45 V at the falls. Whether the ff on-time is ended by the trip or by the loop was not determined (trip/rst nets not saved)"
+ },
+ "diagnosis": "DESIGN DEFECT AT TYPICAL (R16). At typical / 5.0 V / 27 C the ocp_sense comparator trips at an inductor current of about 0.565 A, through raw -> trn -> trip -> ocpb -> rst -> q -> pwm, ending every on-time from ~100 us. R16 requires no trip below 0.70 A (target min). The probe5 inference (a fixed ~0.563 A peak termination) is confirmed as the current-limit path. This accounts for the 6 percent Vout shortfall at 3.6 ohm and the vc windup. Spec rows unchanged; decision record 0005 raised.",
+ "not_done": "R16 ramped-load trip test; the trip point over corners (ff on-time cause undetermined, ss, fs, sf, temperature); the monotonic drawdown node; the 0 load case; the grid (#60)"
+}

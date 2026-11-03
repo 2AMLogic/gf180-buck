@@ -107,3 +107,26 @@ earlier record changed. #82 (EA/loop) is not the cause of this: the loop asks fo
 Next: save `pwm_comp` nets between the latch (`q`) and `pwm`, and the `ocp_sense` output stage (`raw`, `trn`), at
 one cycle near 240 us (a 30 us window is enough), then either file the decision record (R16 minimum violated)
 or mark it a bench artifact. Not done: a second failing corner, the R16 ramped-load trip test, the grid (#60).
+
+## Update 6 — the OCP trip chain ends the on-time at 0.565 A (simulated, pre-layout; not measured)
+Evidence: `records/20261103-issue77-probe6-ocp-trip-chain.json`; `bench_ss77_dense.spice`, `probe_ss77_latch.json`,
+`probe_ss77_dense.json`, `probe_ss77_ff.json`, `analyze_ss77_trip.py` (probe-only; `design/` and `bench.spice` untouched).
+Typical, 5.0 V, 27 C, 3.6 ohm, kelvin return + 100 MHz EA stand-in, local backend, 1 unit per run, step_max 2.5 ns.
+Start-up transient only; spec 0.4 settled test not run.
+
+- **Why Update 5 saw no trip.** In a 225-255 us run the PWM falls with `rst` 0 V, `cmp` 3.3 V, `ocpb` 3.3 V and `trip` max
+  0.021 V at the saved points, 1.3 ns apart. The trip pulse is shorter than that. A second run adds an unconnected PWL source
+  whose 100 ps breakpoints force timepoints (max step 0.053 ns over 226.50-226.70 us).
+- **The chain, at the first PWM fall in that run (226.6237 us, I(L) 0.5659 A).** 1.65 V crossings relative to the PWM fall:
+  `ocp_sense` `raw` rises -0.714 ns (I(L) 0.5652 A), `trn` falls -0.638, `trip` rises -0.572, `ocpb` falls -0.514, `rst` rises
+  -0.395, `q` falls -0.238, `pwm` falls -0.037 ns. `trip` falls again at +0.185 ns, a pulse about 0.76 ns wide that clears when the
+  high side turns off. `bld` is already high, so the trip is not blanked.
+- **Diagnosis: design defect against R16, at this corner.** The Ron-sense comparator trips at an inductor current of about
+  0.565 A. R16's target minimum is 0.70 A (no trip at the 0.635 A peak of a 500 mA load). This is the mechanism Update 5
+  inferred: the on-time ends at the current limit, the loop asks for more duty and is overridden, `vc` winds up, and Vout holds
+  6 % low. Decision record `spec/decision-records/0005-ocp-trip-below-r16-minimum.md` is raised; R15/R16 are unchanged.
+- **Second corner (ff / 5.0 V / 27 C / 3.6 ohm).** Regulates: Vout 1.777 V (280-300 us mean); I(L) at the PWM falls is 0.612-0.613 A
+  in steady cycles, `vc` 1.50 V against ramp 1.45 V. Whether the trip or the loop ends the on-time there was not determined (trip
+  nets not saved), so the trip point at ff is **not** established. This corner is not a sign-off of anything.
+- **Not done:** R16 ramped-load trip test, the trip point over the other corners and temperature, the 0-load case, the
+  monotonic drawdown node (the skipped cycle at 139.5-140 us), the grid (#60). Issue stays open.
