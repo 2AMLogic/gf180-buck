@@ -3,8 +3,18 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-03
+
+- **PR #99**: docs: trace the R15 drawdown to a lost PWM latch set and read the OCP trip at 0.407 A at a hot corner
+- **PR #98**: docs: record R16 ramped-load trip probe reading 0.554 A at the typical corner (partial)
+- **PR #97**: docs: trace on-time termination to the OCP trip at 0.565 A and raise decision 0005 (partial)
+- **PR #95**: docs: record operator ruling to source a >= 8 MHz error amplifier from gf180-opamp
+- **Issue #77** (closed): Diagnose R15/R16 failures at many corners seen in the partial soft-start and current-limit benches
+
 ### 2026-11-02
 
+- **PR #94**: docs: record 3.6 ohm probe showing a fixed 0.563 A on-time termination
+- **PR #93**: docs: record R15 single-corner probe at the 3.6 ohm load (partial)
 - **PR #90**: docs: record R15 single-corner probe with kelvin control return and non-limiting error amp (partial)
 - **PR #89**: refactor: move load-step collector and generator onto sim/lib recordkit and genkit
 - **PR #88**: docs: diagnose closed-loop non-regulation as error-amp GBW instability (partial)
