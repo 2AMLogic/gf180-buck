@@ -14,7 +14,7 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-- **#22**: T1 item 2 (layout): buck GDS with power-path widths and via counts per the R18 electromigration budget
+- **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading)
 
 ## Important
 
@@ -65,7 +65,8 @@ Issues carrying `loom:curated`.
 
 ## Proposed (Architect / Hermit)
 
-- **#81**: Finish #74 dedupe: move sim/load-step collector and generator onto sim/lib recordkit/genkit *(hermit)*
+- **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)*
+- **#101**: Remove 250-line literal PWL table from bench_ss77_dense.spice: a one-line PULSE does the same *(hermit)*
 
 ## Epics
 
@@ -83,6 +84,6 @@ _None._
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
 | Curated | 8 |
-| Architect / Hermit proposals | 1 |
+| Architect / Hermit proposals | 2 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
