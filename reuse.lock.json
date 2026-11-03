@@ -50,7 +50,7 @@
       "spec": "spec/target-spec.md",
       "status": "adopted_at_interface",
       "covers": "ratified (partial) 3.3 V op-amp target rows",
-      "delta": "supply domain: rail decided in spec/decision-records/0003-control-rail.md (dedicated VIN-fed linear 3.3 V regulator, 2.97-3.63 V at the pin; supply current not yet read); GBW into the type-III compensation load not yet checked against the sibling's recorded value"
+      "delta": "supply domain: rail decided in spec/decision-records/0003-control-rail.md (dedicated VIN-fed linear 3.3 V regulator, 2.97-3.63 V at the pin; supply current not yet read); GBW into the type-III compensation load is about 1.1 MHz against about 8 MHz needed (spec/decision-records/0004-error-amplifier-gbw.md, ruled option A 2026-11-03): target to be raised at the sibling (2AMLogic/gf180-opamp#295) and re-pinned here"
     },
     {
       "block": "pwm_and_current_limit_comparator",

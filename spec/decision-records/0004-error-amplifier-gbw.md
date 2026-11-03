@@ -1,6 +1,7 @@
 # 0004 — Error-amplifier GBW against the type-III compensator
 
-- **Status**: Proposed. Not ratified: the path in §3 is a PO-level choice and is **not made by this record**.
+- **Status**: Decided 2026-11-03 by operator ruling: **option A** (see §4). The new amplifier target is not yet
+  ratified at `gf180-opamp`; this repo's netlists are unchanged until it is, and the sibling is re-pinned.
 - **Date**: 2026-11-02
 - **Raised by**: issue #82 (`sim/steady-state/DIAGNOSIS-82.md`, third addendum;
   `sim/steady-state/records/20261102-issue82-ea-gbw-typ-5V-27C-250mA.json`).
@@ -29,3 +30,19 @@ not cover this netlist. Replacing only the EA by a single-pole stand-in of 8 MHz
 The operator picks A or B (or a new option). Until then: spec rows, `design/netlists/` and the settled-test gate are
 unchanged, and the grids (#59, #60, #69) must not be re-run on this netlist.
 A second, separate call is open from #87: whether the package has a separate control-ground return (pinout).
+
+## 4. Ruling (2026-11-03)
+
+Operator ruling (rjwalters, attended `fleet:decide`, round 20261031-r5, question r5-q59, recorded on #82): **option A**.
+
+- The loop gets an error amplifier with GBW >= about 8 MHz into the type-III load. R12, R13 and the ratified
+  compensator stay as they are: no spec row is relaxed, and option B is rejected because it would relax R13/R12.
+  Option C is rejected as measured ineffective.
+- Route, per the design-once rule (2am `REUSE.md`): raise the GBW target at `2AMLogic/gf180-opamp` (filed as gf180-opamp#295; a GBW row change
+  there, with its own ratification there) and re-pin `error_amplifier` in `reuse.lock.json` here. Size no amplifier in
+  this repo. Only if `gf180-opamp` rules the target out of its scope is one sized here, and then by a new decision
+  record, not by accident.
+- Still true until the re-pin lands: `design/netlists/` and the settled-test gate are unchanged, and the grids
+  (#59, #60, #69) must not be re-run on this netlist. The 8 MHz figure is a simulated, typical-corner,
+  pre-layout requirement (single-pole stand-in), never measured.
+- Not decided here: the separate control-ground return in the package (pinout) from #87 stays open.
