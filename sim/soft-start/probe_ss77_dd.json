@@ -1,0 +1,84 @@
+{
+ "netlist": "bench_ss77_load.spice",
+ "engine": "ngspice",
+ "models": {
+  "pdk": "gf180mcuD",
+  "lib": "libs.tech/ngspice/sm141064.ngspice"
+ },
+ "analysis": {
+  "kind": "tran",
+  "args": "2.5n 143u 133u 2.5n"
+ },
+ "corners": {
+  "process": [
+   {
+    "name": "typical",
+    "sections": [
+     "typical",
+     "mimcap_typical",
+     "cap_mim",
+     "res_typical"
+    ]
+   }
+  ],
+  "supply_v": {
+   "vsrc": [
+    5.0
+   ]
+  },
+  "supply_waveforms": [
+   "vsrc"
+  ],
+  "temperature_c": [
+   27
+  ],
+  "params": {
+   "rload": [
+    3.6
+   ]
+  }
+ },
+ "measurements": [
+  {
+   "name": "vout_last",
+   "spice": ".meas tran vout_last FIND v(out) AT=142u",
+   "unit": "V"
+  }
+ ],
+ "options": {
+  "keep_artifacts": true,
+  "waveforms": true,
+  "timeout_s": 1500,
+  "threads_per_worker": 1,
+  "save_vectors": [
+   "v(out)",
+   "i(lind)",
+   "v(pwm)",
+   "v(vc)",
+   "v(gnd_d)",
+   "v(xtop.ramp)",
+   "v(xtop.clk)",
+   "v(xtop.trip)",
+   "v(xtop.xpwm.cmp)",
+   "v(xtop.xpwm.rst)",
+   "v(xtop.xpwm.ocpb)",
+   "v(xtop.xpwm.q)",
+   "v(xtop.xpwm.qb)",
+   "v(xtop.xpwm.qn)",
+   "v(xtop.xpwm.cp_y2)",
+   "v(xtop.xpwm.cp_z)",
+   "v(xtop.xpwm.nr_n)",
+   "v(xtop.xpwm.l1_p)",
+   "v(xtop.xocp.v1)",
+   "v(xtop.xocp.v2)",
+   "v(xtop.xocp.raw)",
+   "v(xtop.xocp.trn)",
+   "v(xtop.xocp.blr)",
+   "v(xtop.xocp.bld)",
+   "v(xtop.xocp.blN)",
+   "v(xtop.gh)",
+   "v(xtop.gl)",
+   "v(sw_d)"
+  ]
+ }
+}

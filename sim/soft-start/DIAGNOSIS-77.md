@@ -144,3 +144,27 @@ starting at 300 us (the grid uses 300 us / 3 A starting at 600 us) so it fits on
   load 0.88 A then. R16 requires 0.70-2.1 A. This **fails** the R16 minimum at this corner, matching the 0.5652 A comparator trip traced in Update 6.
 - Not done: the other corners and temperatures, the 0-load case, the monotonic drawdown node, a second originally failing corner
   (the ff probe in Update 6 covers an ff regulation case but not the trip), the grid (#60). Decision 0005 still awaits an operator ruling.
+
+## Update 8 — the drawdown node, and a hot, low-supply corner (simulated, pre-layout; not measured)
+Evidence: `records/20261103-issue77-probe9-clock-set-race.json`; `probe_ss77_dd.json`, `probe_ss77_dd2.json`, `analyze_ss77_race.py`
+(probe-only; `bench_ss77_load.spice`, `bench.spice` and `design/` untouched). Same bench as Update 4 (kelvin return, 100 MHz EA stand-in,
+3.6 ohm from t=0), local backend, 1 unit per run, step_max 2.5 ns. Probe 9 typical / 5.0 V / 27 C, `tran 2.5n 143u` saved from 133 us (104 s).
+Probe 10 typical / 4.5 V / 125 C (an originally failing unit), `tran 2.5n 260u` saved from 130 us (169 s). Start-up transients; steady state not established.
+
+- **Drawdown node found (R15 `monotonic`).** The 20 mV drawdown at 139.5-140.0 us is two consecutive clock edges (138.957 and 139.481 us) at which the
+  `pwm_comp` latch did not set: the PWM falls at 138.689 us and next rises at 140.006 us, a 1.32 us gap against a 0.54 us clock period.
+  Vout (vs `gnd_d`) goes 1.111 V to 1.091 V across the gap.
+- **Why the set is lost.** `Q = NOR(RST, QB)`, `QB = NOR(CLK, Q)`: Q sets only while CLK is high and RST is low. RST clears when the comparator
+  output goes high after the ramp resets. CLK stays high 8.0-9.3 ns; RST clears 6.1-10.4 ns after the clock edge. So the set is won or lost
+  inside a 1-2 ns window. Over the 17 edges in 133-143 us, Q set on 8: every edge with vc minus ramp valley >= 0.293 V set it (to 0.493 V), every edge
+  <= 0.285 V missed it (from 0.210 V). Alternate edges miss in the settled stretch, so PWM runs near half the clock rate before the two misses in a row.
+- **Diagnosis: design defect (R15).** The set pulse is as long as the comparator delay. Decision record
+  `spec/decision-records/0006-pwm-set-pulse-vs-comparator-delay.md` is raised (proposed; R15 unchanged). Not checked: real (non-ideal) bias, which
+  could move both delays; other corners.
+- **Hot corner (typical / 4.5 V / 125 C / 3.6 ohm).** Never reaches 90 %: Vout holds 1.20 V from 180 to 260 us, `vc` at the rail. I(L) is 0.404-0.409 A at
+  each of the 117 PWM falls after 200 us. `trip` crossed 1.65 V once in the saved window, at 171.18 us with I(L) 0.407 A. At the later falls
+  the trip pulse (sub-ns) falls between saved points, so the chain there is **not traced**. The identical peak current and the one resolved
+  trip are consistent with the Update 6 mechanism (`ocp_sense` ends the on-time) at about 0.407 A, below the R16 0.70 A minimum: the same defect
+  as decision 0005 at a second corner, with a lower trip point than at typical / 5.0 V / 27 C (0.565 A). Inferred.
+- **Not done:** trip point over the other process corners and the cold end; the 0-load case; the grid (#60). With decision 0005 (R16) and 0006 (R15) each
+  R15 and R16 now have a diagnosis (design defect plus decision record); the fixes are for the operator rulings and separate issues. No spec row relaxed.
