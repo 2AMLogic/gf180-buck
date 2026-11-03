@@ -1,0 +1,25 @@
+{
+ "record": "issue-77 single-corner diagnosis probes 9 and 10: the set-vs-comparator race that skips clock cycles (typical), and the OCP trip at a hotter, lower-supply corner (simulated, pre-layout; NOT measured)",
+ "repo_commit": "f082b52",
+ "klt": "klt sim --backend local, 1 unit per run, ngspice 46",
+ "corner": "probe 9: typical / 5.0 V / 27 C / 3.6 ohm from t=0 (bench_ss77_load.spice: kelvin control return + 100 MHz EA stand-in). probe 10: typical / 4.5 V / 125 C / 3.6 ohm, same bench (an originally failing unit: typical/4.500V/125C/params:rload=3.6)",
+ "supersedes": "none; extends records/20261103-issue77-probe6-ocp-trip-chain.json (earlier records untouched)",
+ "files_sha256": {
+  "sim/soft-start/probe_ss77_dd.json": "2d21e78cab48846feaaa4896624639ca9f369ac74511cc66b04ce50082272001",
+  "sim/soft-start/probe_ss77_dd2.json": "cb453f8ab1066084c1508043d4704653e28d07842c59f870b105d09b2c85b2c9",
+  "sim/soft-start/analyze_ss77_race.py": "626e8f0bc8b078263ee8abf97ed483efa3d6d4e30deac5cbc0766e4ef5cfe31d"
+ },
+ "run": {
+  "probe9": "tran 2.5n 143u saved from 133u, step_max 2.5 ns, 104 s, 6780 saved points; all 17 clock edges in 133-143 us analysed",
+  "probe10": "tran 2.5n 260u saved from 130u, step_max 2.5 ns, 169 s; 252 clock edges analysed",
+  "steady_state": "not established; start-up transients, not a spec 0.4 settled test"
+ },
+ "observations": {
+  "drawdown_node": "the R15 monotonic drawdown (Update 5, 139.5-140.0 us) is two consecutive clock edges, 138.957 and 139.481 us, at which the PWM latch Q did not set. The PWM fall at 138.689 us is followed by the next rise at 140.006 us (gap 1.32 us against a 0.54 us clock period). Vout (referenced to gnd_d) goes 1.111 V at 139.45 us to 1.091 V at 140.01 us.",
+  "mechanism": "pwm_comp latch: Q = NOR(RST, QB), QB = NOR(CLK, Q), RST = NOR(CMP, OCPB-gated). Q can only set while CLK is high and RST is low. At each clock edge the ramp resets and CMP must switch before CLK falls. CLK high width 8.0-9.3 ns; RST clears 6.1-10.4 ns after the clock edge. The set is won or lost inside that 1-2 ns window.",
+  "set_vs_margin": "typical, 17 edges 133.5-142.7 us: Q set on 8 edges, not on 9. Every edge with vc minus ramp valley >= 0.293 V set Q (0.293-0.493 V); every edge <= 0.285 V missed (0.210-0.285 V). Alternate edges miss in the settled stretch, so PWM runs near half the clock rate (PWM rises 134.08, 135.16, 136.24, 137.34, 138.42 us) until two consecutive misses make the drawdown.",
+  "probe10_hot_corner": "typical / 4.5 V / 125 C / 3.6 ohm: Vout (gnd_d) holds 1.20 V from 180 to 260 us, never near the 1.62 V (90 percent) threshold; vc is at the rail (vc minus ramp valley about 2.0 V). I(L) at each of the 117 PWM falls after 200 us is 0.404-0.409 A. The trip net crossed 1.65 V once in the saved window, at 171.18 us with I(L) 0.407 A (16 saved points, spaced by the refined step; trip pulse sub-ns). At the later falls the trip pulse falls between saved points, so the chain at those falls is not resolved. The identical peak current at each fall and the 171.18 us trip are consistent with the ocp_sense comparator ending the on-time at about 0.407 A here (0.565 A at typical/5.0 V/27 C, Update 6). Inferred, not traced at the later falls."
+ },
+ "diagnosis": "TWO DESIGN DEFECTS, simulated. (1) pwm_comp set pulse (CLK high about 8.5 ns) is the same length as the comparator-to-RST clearing delay (6-10 ns), so Q misses the set on edges where vc is within about 0.29 V of the ramp valley; it skips cycles and produces the R15 monotonic drawdown. Decision record 0006 raised. (2) At typical / 4.5 V / 125 C the ocp_sense comparator appears to trip near 0.407 A, below the R16 0.70 A minimum: same defect as decision 0005, at a second corner, a lower trip point. R15 and R16 rows unchanged; no spec row relaxed.",
+ "not_done": "the trip point over the ss/fs/sf/ff corners and the cold end; the 0-load case; the trip chain resolved at the hot-corner falls; any check of the race on the adopted netlist with real (non-ideal) bias; the grid (#60)"
+}

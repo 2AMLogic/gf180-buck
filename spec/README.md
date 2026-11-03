@@ -9,6 +9,7 @@ The ratified specification and its decision records.
 | [`decision-records/0002-pdk-variant-pins.md`](decision-records/0002-pdk-variant-pins.md) | Relates the spec's `gf180mcuA` PDK pin to the simulation pin `gf180mcuD`: which results depend on which variant |
 | [`decision-records/0003-control-rail.md`](decision-records/0003-control-rail.md) | Fixes the 3.3 V control rail: a dedicated VIN-fed linear regulator, the supply range every adopted sibling sees, and the quiescent accounting against R9 |
 | [`decision-records/0004-error-amplifier-gbw.md`](decision-records/0004-error-amplifier-gbw.md) | Proposed (not ratified): error-amplifier GBW against the type-III compensator, options and the decision requested (issue #82) |
+| [`decision-records/0006-pwm-set-pulse-vs-comparator-delay.md`](decision-records/0006-pwm-set-pulse-vs-comparator-delay.md) | Proposed (not ratified): PWM latch set pulse as short as the comparator delay, options and the decision requested (issue #77) |
 | [`../reuse.lock.json`](../reuse.lock.json) | The pinned sibling references behind the adopt-or-keep table |
 
 A change to a ratified number needs a new decision record in
