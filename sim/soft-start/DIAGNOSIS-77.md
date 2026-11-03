@@ -130,3 +130,17 @@ Start-up transient only; spec 0.4 settled test not run.
   nets not saved), so the trip point at ff is **not** established. This corner is not a sign-off of anything.
 - **Not done:** R16 ramped-load trip test, the trip point over the other corners and temperature, the 0-load case, the
   monotonic drawdown node (the skipped cycle at 139.5-140 us), the grid (#60). Issue stays open.
+
+## Update 7 — R16 ramped-load trip probe, typical corner: trip at 0.554 A (simulated, pre-layout; not measured)
+Evidence: `sim/current-limit/records/20261103-issue77-probe8-ramp-trip.json`, `sim/current-limit/probe_ramp77.json` (request only;
+`bench.spice`, `design/` untouched). Typical, 5.0 V, 27 C, original R16 bench (ideal bias/rails, current-sink load), local backend,
+1 unit, 258 s. `tran 2.5n 420u` saved from 280 us, step_max 2.5 ns verified. The load ramp is shortened to 0 -> 1.5 A over 100 us
+starting at 300 us (the grid uses 300 us / 3 A starting at 600 us) so it fits one local job. Steady state **not** established
+(Vout 1.665 V at 280 us, I(L) still ringing to -1.07 A at 295 us): a start-up transient, not a settled test.
+
+- I(L) peaks are capped at 0.565-0.573 A from 285 us on, while the load is below that; as the ramp passes the cap Vout falls
+  (1.71 V at 330 us, 0.77 V at 360 us, about -0.1 V from 380 us because the bench load is an ideal current sink) and I(L) runs to 1.4-1.6 A.
+- The collect.py trip method (first rising 1.65 V crossing of `xtop.trip` after the ramp starts) gives t = 358.9 us, I(L) **0.554 A**,
+  load 0.88 A then. R16 requires 0.70-2.1 A. This **fails** the R16 minimum at this corner, matching the 0.5652 A comparator trip traced in Update 6.
+- Not done: the other corners and temperatures, the 0-load case, the monotonic drawdown node, a second originally failing corner
+  (the ff probe in Update 6 covers an ff regulation case but not the trip), the grid (#60). Decision 0005 still awaits an operator ruling.

@@ -17,7 +17,9 @@ At this corner the converter therefore cannot supply 500 mA: Vout holds 1.692 V 
 integrator winds `vc` to the 3.3 V rail. The same start is clean when the current stays below the threshold (no-load probe).
 
 Not established: the trip point at the other corners and temperatures (an ff probe regulated at I(L) peaks of 0.613 A, with the
-cause of its on-time end undetermined), the 0-load behaviour, and the R16 ramped-load trip test.
+cause of its on-time end undetermined) and the 0-load behaviour. The R16 ramped-load trip test, run once at the typical
+corner (`sim/current-limit/records/20261103-issue77-probe8-ramp-trip.json`, start-up transient, shortened ramp), reads a trip at 0.554 A,
+below the 0.70 A minimum, which agrees with the finding.
 
 ## 2. Options (none chosen)
 
