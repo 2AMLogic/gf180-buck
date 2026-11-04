@@ -19,8 +19,9 @@
 
 The controller runs from a **dedicated linear regulator, 3.3 V nominal, fed
 from VIN**. 5 V-class (thick-oxide) devices appear only where a node is VIN- or
-SW-referenced (the high-side level shifter, the current-limit sense input),
-which is where record 0001 §7 already puts them. The power-gate drivers are
+SW-referenced (the high-side level shifter, the current-limit sense input, the
+regulator's VIN-fed pass device, which drops up to 1.87 V, §2.2), which is
+where record 0001 §7 already puts the first two (pass device: see Errata E2). The power-gate drivers are
 not loads on this rail (§2.3).
 
 This record fixes the rail's **interface** only. The regulator is a separate
@@ -33,8 +34,8 @@ block, not designed or sized here.
 | Item | Value | Source |
 |---|---|---|
 | Input | VIN pad, source side of the bond-wire model: 4.5 – 5.5 V (target), 2.97 – 3.63 V (fallback) | spec R1 (both tiers) |
-| Output, target tier (Vin 4.5 – 5.5 V) | **2.97 – 3.63 V** at every sibling's supply pin, i.e. 3.3 V ±10 %. **Not guaranteed in the fallback tier**, see §2.2 | `gf180-bandgap` README, `gf180-opamp` / `gf180-comparator` scopes, `gf180-rcosc` README (record 0001 §7) |
-| Output current | the sum of the adopted siblings' supply currents plus the buck's own digital and level-shifter control current. **Not yet known**: only `gf180-rcosc`'s Iq (< 500 µA, at 48 MHz, not adopted) was read, and that block is kept, not adopted | record 0001 §7 |
+| Output, target tier (Vin 4.5 – 5.5 V) | **2.97 – 3.63 V** at every sibling's supply pin, i.e. 3.3 V ±10 %. **Not guaranteed in the fallback tier**, see §2.2 | `gf180-bandgap` README, `gf180-opamp` / `gf180-comparator` scopes (record 0001 §7); `gf180-rcosc` is not a source, see Errata E1 |
+| Output current | the sum of the adopted siblings' supply currents plus the buck's own digital and level-shifter control current. **Not yet known in full**: when written, only `gf180-rcosc`'s Iq (< 500 µA, at 48 MHz, not adopted) had been read. The three adopted siblings' rows were read afterward, see Errata E3 | record 0001 §7 |
 | Source of the current | VIN only. A linear regulator draws its load current from VIN, so every mA on the rail is a mA at the VIN pad | linear-regulator topology |
 
 The regulator's own accuracy, transient and noise contribution must fit
@@ -167,9 +168,59 @@ see §2.3) are not touched.
    needs a reference, so the rail and the reference have a mutual dependency
    at power-up. Not resolved here; it is a requirement on the regulator block.
 3. **Sibling supply currents** (§4), needed to close the quiescent accounting.
+   Partly closed by Errata E3: the three adopted siblings' rows are read.
+   Still open: instance counts, the comparator's dynamic current (clock rate
+   TBD in the sibling), the buck's own digital and level-shifter current, the
+   regulator's Iq, and the oscillator (`gf180-rcosc` is `kept`, not adopted).
 4. **Gate-driver and level-shifter supply** (§2.3): issues #33, #34.
 5. **Fallback-tier control rail** (§2.2). A series regulator cannot hold the
    siblings' 2.97 V floor at Vin 2.97 V. Resolving it needs one of: a sibling
    derate or characterization below 2.97 V, or a product-owner call on the
    fallback tier. If that forces a ratified-row change, it is routed per the
    issue's AC4, not made here.
+
+## Errata (2026-11-01, issue #45)
+
+Text and citation corrections only. The 3.3 V decision (§1), every ratified
+row of [`../target-spec.md`](../target-spec.md), and R9 are unchanged. In-place
+edits are limited to §1, the two §2.1 cells and §6 item 3, each pointing here.
+Sibling values below were read from each file at the commit pinned in
+[`../../reuse.lock.json`](../../reuse.lock.json).
+
+**E1. §2.1 cited `gf180-rcosc` for the 2.97 – 3.63 V window.** Its ratified
+Supply row reads "3.3 V core (3.0–3.6 V)" (`README.md` at
+`6e4c395198d28df57ecc1265f73ff8044e5c32ba`), which is narrower than 2.97 – 3.63 V.
+It is `kept`, not adopted, so it does not set the interface the adopted
+siblings do. It is removed from the source cell. The window rests on:
+`gf180-bandgap` Supply "3.3 V ±10%" and line regulation "2.97–3.63 V"
+(`README.md` @ `c68ccc6b0423344568df9506423ba2695f8b1b9b`); `gf180-opamp`
+"3.3 V ±10% → 2.97–3.63 V" (`spec/target-spec.md` @
+`cda7ff5ac3232049588e9315a0e5224433e18bc2`); `gf180-comparator` Supply "3.3 V
+±10%" (`README.md` @ `80402c061b639ed64289f8806f73456fe1abc1ea`). If an
+oscillator is later taken from rcosc, its 3.0 – 3.6 V row needs a derate or
+re-characterization against this rail; that is not decided here.
+
+**E2. §1 omitted the regulator pass device from the thick-oxide list.** The
+pass device is VIN-fed and drops up to 1.87 V at the 3.63 V ceiling (§2.2), so
+it is a VIN-referenced node like the others. §1 now lists it. It is a device
+class consequence of §2.2 (record 0001's DRM-based device-class verification);
+no device is sized here.
+
+**E3. §4 / open item 3 treated the sibling supply currents as unread.** Read
+at the pinned commits (values are the siblings' own, not measured here):
+
+| Sibling | Value | Conditions / status | Source |
+|---|---|---|---|
+| `gf180-bandgap` | Iq < 50 µA (stretch < 20 µA) | ratified target row; binds at FF / 125 °C / 3.63 V | `README.md` @ `c68ccc6` |
+| `gf180-opamp` | ≤ 350 µW worst case; 80.70 µA nominal at 3.3 V; worst measured 310.98 µW at FF / −40 °C / 3.63 V (≈ 85.7 µA) | ratified target, measured PASS at 45/45 PVT points, typical passives | `spec/target-spec.md` @ `cda7ff5`, Quiescent power row |
+| `gf180-comparator` | 28.5 µA mean static current (≈ 93.9 µW nominal) | static power only; average power is not fully scored, clock rate TBD in the sibling | `README.md` @ `80402c0`, Supply / power row |
+
+Arithmetic at one instance each, taking the opamp ceiling 350 µW / 3.63 V ≈
+96.4 µA: 50 + 96.4 + 28.5 ≈ 175 µA, i.e. ≈ 0.9 mW at the VIN pad at Vin 5.0 V
+(5.0 mW per mA, §4), ≈ 0.9 % of the ≈ 100 mW allowance. Adding the rcosc bound of 500 µA, if its topology were used, gives
+≈ 0.7 mA, ≈ 3.4 mW. These are bounds from sibling rows, not a closed
+accounting: instance counts (PWM and current-limit may need separate
+comparators), the comparator's dynamic current, the buck's digital and
+level-shifter current, and the regulator's own Iq are not in them, so open item 3
+stays open with those named. The §4 first-column rows (1, 2, 5 mA) remain
+valid as a scale; the sibling subtotal sits below the 1 mA row.
