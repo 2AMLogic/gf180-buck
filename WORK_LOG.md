@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-04
+
+- **PR #46**: docs: add errata to control-rail record for rcosc cite, pass device, sibling Iq
+- **Issue #45** (closed): spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device
+
 ### 2026-11-03
 
 - **PR #99**: docs: trace the R15 drawdown to a lost PWM latch set and read the OCP trip at 0.407 A at a hot corner
