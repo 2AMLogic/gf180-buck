@@ -20,7 +20,8 @@
 The controller runs from a **dedicated linear regulator, 3.3 V nominal, fed
 from VIN**. 5 V-class (thick-oxide) devices appear only where a node is VIN- or
 SW-referenced (the high-side level shifter, the current-limit sense input, the
-regulator's VIN-fed pass device, which drops up to 1.87 V, §2.2), which is
+regulator's VIN-fed pass device, which drops 1.87 V at the 3.63 V ceiling, §2.2;
+the drop is larger at lower rail voltages, see Errata E4), which is
 where record 0001 §7 already puts the first two (pass device: see Errata E2). The power-gate drivers are
 not loads on this rail (§2.3).
 
@@ -140,7 +141,7 @@ At Vin 5.5 V the cost is 5.5 mW per mA. Three consequences:
   existing ≈ 100 mW already includes controller quiescent; this record adds the
   conversion factor (Vin per mA) that the allocation must be read with.
 - **Whether the rail load fits is not established.** The siblings' quiescent
-  currents were not read here (record 0001 §7 notes the bandgap load row is
+  currents were not read here (see Errata E3; record 0001 §7 notes the bandgap load row is
   `TBD` and the op-amp GBW check is outstanding). The follow-up is to read each
   adopted sibling's supply current at 3.3 V and fill the first column; if the
   total pushes R9 out of reach, the response is a new record that changes R9
@@ -163,7 +164,9 @@ see §2.3) are not touched.
 
 1. **The regulator block** (output current, accuracy split inside ±10 %,
    transient on a switching die, start-up). Not designed here; it needs its own
-   issue. Interface in §2.1 – §2.2.
+   issue. Interface in §2.1 – §2.2. Carry from Errata E4: its Iq and the
+   comparator instance count can move the controller draw from sub-mA to mA,
+   about 5 mW per mA at Vin 5.0 V.
 2. **Start-up ordering.** The adopted bandgap is a 3.3 V part and the regulator
    needs a reference, so the rail and the reference have a mutual dependency
    at power-up. Not resolved here; it is a requirement on the regulator block.
@@ -213,14 +216,46 @@ at the pinned commits (values are the siblings' own, not measured here):
 |---|---|---|---|
 | `gf180-bandgap` | Iq < 50 µA (stretch < 20 µA) | ratified target row; binds at FF / 125 °C / 3.63 V | `README.md` @ `c68ccc6` |
 | `gf180-opamp` | ≤ 350 µW worst case; 80.70 µA nominal at 3.3 V; worst measured 310.98 µW at FF / −40 °C / 3.63 V (≈ 85.7 µA) | ratified target, measured PASS at 45/45 PVT points, typical passives | `spec/target-spec.md` @ `cda7ff5`, Quiescent power row |
-| `gf180-comparator` | 28.5 µA mean static current (≈ 93.9 µW nominal) | static power only; average power is not fully scored, clock rate TBD in the sibling | `README.md` @ `80402c0`, Supply / power row |
+| `gf180-comparator` | 29.7 µA worst-corner static current (27.7 – 29.7 µA across the grid; 28.5 µA mean, ≈ 93.9 µW nominal) | static power only; average power is not fully scored, clock rate TBD in the sibling; the sibling publishes no ratified current ceiling, so the worst grid corner is used as the bound (Errata E4) | `README.md` @ `80402c0`, Supply / power row (mean); `spec/evidence-ledger.md` @ `80402c0`, Supply / power (range) |
 
 Arithmetic at one instance each, taking the opamp ceiling 350 µW / 3.63 V ≈
-96.4 µA: 50 + 96.4 + 28.5 ≈ 175 µA, i.e. ≈ 0.9 mW at the VIN pad at Vin 5.0 V
+96.4 µA: 50 + 96.4 + 29.7 ≈ 176 µA (E4: was 28.5 µA mean, ≈ 175 µA), i.e. ≈ 0.9 mW at the VIN pad at Vin 5.0 V
 (5.0 mW per mA, §4), ≈ 0.9 % of the ≈ 100 mW allowance. Adding the rcosc bound of 500 µA, if its topology were used, gives
 ≈ 0.7 mA, ≈ 3.4 mW. These are bounds from sibling rows, not a closed
 accounting: instance counts (PWM and current-limit may need separate
 comparators), the comparator's dynamic current, the buck's digital and
 level-shifter current, and the regulator's own Iq are not in them, so open item 3
-stays open with those named. The §4 first-column rows (1, 2, 5 mA) remain
+stays open with those named (see also E4 for the carry to the regulator block). The §4 first-column rows (1, 2, 5 mA) remain
 valid as a scale; the sibling subtotal sits below the 1 mA row.
+
+## Errata (2026-11-04, issue #103)
+
+Text and accounting corrections from the EE and market key reviews of #46
+(`ratify:key` comments). The 3.3 V decision (§1), every ratified row of
+[`../target-spec.md`](../target-spec.md), and R9 are unchanged. In-place edits
+are limited to §1, the §4 third bullet and the E3 comparator row and sum, each
+pointing here.
+
+**E4. Pass-device drop, bound convention, carry.**
+
+1. *§1 pass-device wording.* "Drops up to 1.87 V" was not a maximum. §2.2 gives
+   1.87 V only at the 3.63 V ceiling (5.5 − 3.63). At 3.3 V nominal it is 2.20 V
+   (5.5 − 3.3) and at the 2.97 V rail floor ≈ 2.53 V (5.5 − 2.97), all at Vin
+   5.5 V. §1 now states the "at the 3.63 V ceiling" condition, as E2 does. The
+   thick-oxide reason is that the pass device is VIN-referenced (its terminal
+   potentials reach Vin), not the size of the drop.
+2. *Bound convention.* E3 mixed conventions: the bandgap and opamp terms are
+   ratified ceilings, the comparator term was the measured mean (28.5 µA). The
+   comparator has no ratified current ceiling, so E3 now uses its worst grid
+   corner, 29.7 µA (range 27.7 – 29.7 µA, `spec/evidence-ledger.md` of
+   `gf180-comparator` at the pinned `80402c0`, which confirms the figure quoted
+   in the review). Sum: 50 + 96.4 + 29.7 ≈ 176 µA, ≈ 0.88 mW at Vin 5.0 V (5.0 mW
+   per mA), still ≈ 0.9 mW and below the §4 1 mA row. It is a bound from
+   sibling rows, not a closed accounting.
+3. *§4 pointer.* The third bullet now says "see Errata E3".
+4. *Carry to the regulator-block issue (§6 item 1).* The regulator's own Iq and
+   the comparator instance count (PWM and current-limit may need separate
+   comparators) could move the controller draw from sub-mA to mA. At that scale
+   R9 accounting matters: ≈ 5 mW per mA at Vin 5.0 V (5.5 mW at 5.5 V), each mA
+   being ≈ 5 % of the ≈ 100 mW allowance. The regulator-block issue must carry
+   this; it is not opened here.
