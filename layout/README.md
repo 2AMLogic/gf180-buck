@@ -57,3 +57,7 @@ regenerate, not a redraw (#53 may change the divider, not these devices).
   geometry were taken from the PDK deck by hand and are unverified.
 - Die outline (999/0) keeps 400 µm from the nearest metal on every side,
   satisfying the 300 µm metal-to-corner rule by construction.
+
+## DRC evidence
+
+`layout/drc/` records the DRC run on `buck.gds`. T1 item 3 is not met: see `layout/drc/README.md`.
