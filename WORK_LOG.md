@@ -3,6 +3,13 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-05
+
+- **Issue #29** (closed): T1 item 9 (testbenches shipped): testbench inventory and klt signoff --attest 9 envelope
+- **PR #113**: feat: attest T1 item 9 testbenches with a single cold-start command
+- **PR #112**: docs(layout): record curated DRC run on buck.gds and blocked native 30 kA deck
+- **Issue #22** (closed): T1 item 2 (layout): buck GDS with power-path widths and via counts per the R18 electromigration budget
+
 ### 2026-11-04
 
 - **PR #107**: chore: remove unreferenced steady-state long-probe sim request
