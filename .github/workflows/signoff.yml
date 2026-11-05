@@ -14,6 +14,11 @@ name: klt signoff
 # manifests/item10-attestation.json is re-attested from
 # manifests/item10-inventory.json and must still reproduce and pass.
 #
+# T1 item 9 (testbenches shipped) is attested too: evidence/item9.json is
+# re-hashed against attest/item9.json. Its cold start (sim/cold-start.sh)
+# needs the PDK, ngspice and the batch fleet, so it is local_only: CI skips it
+# and carries the committed outcome (listed under skipped_checks, not a pass).
+#
 # See manifests/README.md for the convention.
 
 on:
@@ -37,7 +42,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install pinned klt
-        run: pip install klayout-tools==0.8.0
+        run: pip install klayout-tools==0.9.0
 
       - name: Re-run klt signoff and compare against the committed record
         run: |
@@ -93,5 +98,21 @@ jobs:
                  --check manifests/item1-attestation.json; then
             echo "::error::T1 item 1 attestation drifted or fails - a design source, a derived netlist or the inventory changed."
             echo "Run design/netlist.sh, then re-attest item 1 locally, regenerate the item-10 envelope and the verdict of record in this same PR (see manifests/README.md)."
+            exit 1
+          fi
+
+      - name: Re-attest T1 item 9 and compare against the committed envelope
+        run: |
+          set -uo pipefail
+          # The cold start is local_only, so --check skips it and carries the
+          # committed outcome (reported under skipped_checks). Every inventoried
+          # bench file is still re-hashed, so editing a listed bench without
+          # re-attesting fails this step. A bench added without being listed
+          # is NOT caught here: the PR that adds a bench must edit the inventory.
+          if ! klt signoff --attest 9 \
+                 --inventory attest/item9.json \
+                 --check evidence/item9.json; then
+            echo "::error::T1 item 9 attestation drifted or fails - a bench file or the inventory changed."
+            echo "Re-run sim/cold-start.sh via the attest command in sim/README.md and commit the envelope in this same PR."
             exit 1
           fi

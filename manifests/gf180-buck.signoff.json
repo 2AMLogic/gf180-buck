@@ -5,17 +5,17 @@
   "tier": null,
   "t1_item_count": 11,
   "build_t1_item_count": 11,
-  "t1_met_count": 3,
+  "t1_met_count": 4,
   "source_doc": "manifests/design-evidence-tiers.md",
   "source_doc_content_hash": "sha256:a26b90262320d0fbd32b3f549a02b6300832706041797a559d8bf6bdb62efdc7",
   "build": {
-    "version": "0.8.0",
-    "package_version": "0.8.0",
-    "git_commit": "c572046be644e0407f693f2410f3abb799d68a3a",
-    "git_tag": "v0.8.0",
+    "version": "0.9.0",
+    "package_version": "0.9.0",
+    "git_commit": "5dbbad05ff42265c92a6f3d2f20d1bbcd2957d49",
+    "git_tag": "v0.9.0",
     "dirty": false,
     "is_release": true,
-    "grading_ruleset_id": "sha256:46c446d84423b7399ee1cf957b3d49801ae4f42a0bda53da92f435776cf977c4"
+    "grading_ruleset_id": "sha256:22c42b66c4d1f99b5c00f6bf53d80b20fa8365860d857a921508ca5ab5f3771b"
   },
   "items": [
     {
@@ -33,17 +33,248 @@
         "command": null,
         "kind": "generic",
         "check_status": "pass",
-        "content_hash": "sha256:eac20f738125c4d337c6355c61ec0f590ecdd70227b2fa271ac866ec4cdb97c4",
+        "content_hash": "sha256:594909933b2fea42dae34c0bd379311dc62f6aa576e58311e9b3de3a0f6a98b5",
         "input_verified": true,
         "exit_status": 0,
         "artifact_binding": {
           "t1_item": 1,
-          "path": {
-            "path": "design/inventory-item1.json",
-            "scope": "repo"
-          },
-          "content_hash": "sha256:eac20f738125c4d337c6355c61ec0f590ecdd70227b2fa271ac866ec4cdb97c4",
+          "path": null,
+          "content_hash": "sha256:594909933b2fea42dae34c0bd379311dc62f6aa576e58311e9b3de3a0f6a98b5",
           "input_verified": true,
+          "members": [
+            {
+              "path": {
+                "path": "design/compensator.md",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:171fe69e02d3449a45b708934409b44a6ff81156e7b362c2350ea40862f47bb2",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/inventory-item1.json",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:eac20f738125c4d337c6355c61ec0f590ecdd70227b2fa271ac866ec4cdb97c4",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlist.sh",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:a2677fecac97496ade3bf795e130abfb135ccfe4e7398c36c4898c0fc9ea2503",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlists/buck_top.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:8600d7d34d8175ff5b7f979241fd8e5c873380c1bccdaf66b79309df652f28ff",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlists/compensator.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:9f789035ea6aba254990ff25bd72a4ae2f5f54cbd125a2943bdd8aa2edf88eda",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlists/gate_drive.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:ec35b95f34914e5a0a7f5e3d69dbb78acc62fd234950e2c860d6d6627b95cf60",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlists/ocp_sense.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:7ede53932af462e0a75b61d4aeaeb205a4486d3a1bc5cca25b547dd9b5e51d9d",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlists/osc_ramp.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:cf1a39d7796ddc9487ef91511449ac9c772c0678e959336faa6ffbbdae79fd1a",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlists/power_stage.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:120f80b747d6632e243b4545d6acee601148372e2c1e064a374c898578385fb1",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlists/pwm_comp.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:cb2750051d6476d1b698d128ae9e0059a1676e5159906c5f42d8ac01fb57c62f",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/netlists/soft_start.spice",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:2516c15cac704a1a05b3001dd9635050b53a07fc6c2c9040e91fd3dd20a57480",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/buck_top.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:2b9bfc5c8964ed3d742e457f80e7e30245499b6520ef121c99779f532eec9d32",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/compensator.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:80935d1feacc948629ad98cb06c77bf194dc17fbf6382e8f6e607431c1712bcc",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/compensator.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:a4196725674e25a9b8cab78bd97413fec83f37c13f26e680114e8b6a81f7d9a1",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/gate_drive.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:3f786d08b3cb9da33e19d57ccf0b51359e2bde6e92a2e72b973ce97e1a6ad181",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/gate_drive.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:e9861a2408733a7ed65244f9a381cb71e6b706967f3fefa64994b715ce3a6b18",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/gen_schematics.py",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:21911bbd3312bc3ecaaf6be0cb5cf15f0adddd72906a6b8ae80fdddb0385f9db",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/ocp_sense.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:da78d72ad490d1ef73da66d3261102937a1f3deb2faa0d32febdb8b30607cff0",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/ocp_sense.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:d874325166f2cba91abc0e35270b48ef6ee9ea18a2dfcd45f03af21b86e895d5",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/opamp_two_stage.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:1592c12dfd7c6a8a9b4b5fe5a1d8d812fa4c14c577939570952caa9d4a5e4841",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/osc_ramp.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:e70da1996ef242707d48eec85d9804ddf6d90d9edf165c33d357f6ca82478a14",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/osc_ramp.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:f62f3f244943063460b456641f2b557bbb1c8753d646eedcc43d337004b2dc05",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/power_stage.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:21a4935573fbc591dcd1b79320e582281a2fbb36c105057745b697623861c041",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/power_stage.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:4bb1cd0fb92893a37c51ceb9b07f9fc308a5ece0c5dcc77dcb7784d4e5318f71",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/pwm_comp.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:34d188b7aa6b1c2ae6097347f2fd5220855b46d7a69a16152dfe6d90fae4c3a0",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/pwm_comp.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:6d2db948256c04c494379cc5018ad9fb90e04e0eda1b6b6a0c863d3e15af5192",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/soft_start.sch",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:24e68b81171af9d9d13611f06a2df965caca9b13deb2dcb5d0f2fff2e24fdb4f",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/soft_start.sym",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:a83374ba544ab1b052dec7b9a05b2453d531327c240b27f0a5b1ef0ad2b5e044",
+              "status": "verified"
+            },
+            {
+              "path": {
+                "path": "design/schematics/xschemrc",
+                "scope": "repo"
+              },
+              "content_hash": "sha256:520d92a265a073327edd6f9e08961f2df8bac9b063620583602d4ccb2ae7f23b",
+              "status": "verified"
+            }
+          ],
           "summary": "T1 item 1 (Design sources): 36/36 attestation checks passed (klt signoff --attest)",
           "source": "design/inventory-item1.json",
           "attestation": {
@@ -180,10 +411,35 @@
       "partition": null,
       "text": "every claimed measurement's testbench committed, with a documented cold-start invocation a third party can run; pinned PDK revision.",
       "notes": [],
-      "status": "unmet",
-      "reason": "no_evidence",
+      "status": "met",
+      "reason": null,
       "graded_by_build": true,
-      "citation": null
+      "citation": {
+        "file": "evidence/item9.json",
+        "command": null,
+        "kind": "generic",
+        "check_status": "pass",
+        "content_hash": "sha256:27758d44ff488f97f5fe32fe1e094bd67f527586360321a46ae5d6817672fb51",
+        "input_verified": true,
+        "exit_status": 0,
+        "artifact_binding": {
+          "t1_item": 9,
+          "path": {
+            "path": "attest/item9.json",
+            "scope": "repo"
+          },
+          "content_hash": "sha256:27758d44ff488f97f5fe32fe1e094bd67f527586360321a46ae5d6817672fb51",
+          "input_verified": true,
+          "summary": "T1 item 9 (Testbenches shipped): 113/113 attestation checks passed (klt signoff --attest)",
+          "source": "attest/item9.json",
+          "attestation": {
+            "producer": "klt signoff --attest",
+            "inventory_schema_version": 1,
+            "check_count": 113,
+            "passed_count": 113
+          }
+        }
+      }
     },
     {
       "tier": "T1",
