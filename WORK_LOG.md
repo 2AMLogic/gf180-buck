@@ -5,6 +5,10 @@ Maintained by the Guide role.
 
 ### 2026-11-04
 
+- **PR #107**: chore: remove unreferenced steady-state long-probe sim request
+- **PR #105**: docs: add errata E4 to control-rail record 0003
+- **Issue #106** (closed): Remove orphan sim/steady-state/request_long_probe.json
+- **Issue #103** (closed): Control-rail record 0003: wording and accounting follow-ups from the #46 key reviews
 - **PR #46**: docs: add errata to control-rail record for rcosc cite, pass device, sibling Iq
 - **Issue #45** (closed): spec: §2.1 gf180-rcosc supply window cite (2.97-3.63 V) disagrees with rcosc's Supply row (3.0-3.6 V); §1 thick-oxide list omits the pass device
 
