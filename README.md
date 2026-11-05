@@ -108,7 +108,7 @@ yet reproducible and nothing in this repository claims them.
 The tier verdict itself is re-graded, not hand-read:
 
 ```
-uvx --from "klayout-tools==0.8.0" klt signoff \
+uvx --from "klayout-tools==0.9.0" klt signoff \
     --manifest manifests/gf180-buck.json \
     --tiers-doc manifests/design-evidence-tiers.md --format json
 ```
