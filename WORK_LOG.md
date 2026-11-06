@@ -3,6 +3,10 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-06
+
+- **Issue #23** (open, item 3 unmet): native 30 kA DRC re-run on klt 0.9.1 + KLayout 0.30.12 aborts in the PDK `mslot.rb` (`metal4_drawn` on a 3LM stack); evidence in `layout/drc/README.md`; friction filed as klayout-tools#5091
+
 ### 2026-11-05
 
 - **Issue #29** (closed): T1 item 9 (testbenches shipped): testbench inventory and klt signoff --attest 9 envelope
