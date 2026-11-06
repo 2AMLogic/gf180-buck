@@ -192,6 +192,33 @@ Regenerate and check (never raw `xschem`; `netlist.sh` wraps `klt netlist`):
 `netlist.sh --check` passes `--ignore-comments` because xschem writes the absolute `** sch_path:`
 of the checkout into the netlist; every non-comment line is still compared.
 
+### `check_geometry.py` — finger width and length pre-check (issue #116)
+
+    python3 design/check_geometry.py [NETLIST...]          # default: design/netlists/*.spice
+    python3 -I -m unittest discover -s design -p 'test_check_geometry.py'
+
+Stdlib only; needs no PDK and no klt. It joins `+` continuation lines and checks every
+`nfet/pfet_03v3/06v0` instance for finger width `W/nf` (`m` is a multiplier and does not
+change it) and gate length `L` against the minimums in the script's header, each with its
+rule id and source hash. Exit 0 = no new violation; 1 = a violation not on
+`KNOWN_VIOLATIONS`, or a stale entry; 2 = an unparseable instance.
+
+| Rule | Min | Applies to | Source |
+|---|---|---|---|
+| `comp.width.1` (DF.1a_LV) | 0.22 µm | `*_03v3` W/nf | klt 0.9.0 deck `sha256:cf44de63…97e1` |
+| `comp.width.mv.1` (DF.1a_MV) | 0.30 µm | `*_06v0` W/nf | same deck |
+| `PL.2_LV` | 0.28 µm | `*_03v3` L | PDK `rule_decks/poly2.rb` (not modelled by klt) |
+| `PL.2_MV` | 0.70 µm nfet / 0.55 µm pfet | `*_06v0` L | same PDK file |
+
+The `PL.2` file hash was read from the PDK revision installed on the writing host
+(`f6eeac7d…`), not the `sim/pdk.json` pin (`c6d73a35…`, not installed there); re-check those
+three numbers against the pin. The klt numbers come from the klt 0.9.0 package source, because
+`klt drc --list-rules` prints no thresholds (tool gap: 2AMLogic/klayout-tools#5059).
+
+On `main` it reports 306 instances and four known violations, all tied to #109 (not resized
+here): `XMP_HG5` and `XMP_LG5` (`pfet_06v0`, W/nf = 0.1887 µm against 0.30 µm), each in
+`gate_drive.spice` and in the flattened `buck_top.spice`. Not wired into CI.
+
 ### `power_stage` — sizing (R3, R9, R18)
 
 HS `pfet_06v0` (source and body on VIN, no bootstrap) and LS `nfet_06v0`
