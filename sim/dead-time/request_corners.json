@@ -1,0 +1,102 @@
+{
+  "netlist": "deadtime.spice",
+  "engine": "ngspice",
+  "models": {
+    "pdk": "gf180mcuD",
+    "lib": "libs.tech/ngspice/sm141064.ngspice"
+  },
+  "analysis": {
+    "kind": "tran",
+    "args": "20p 2.6u"
+  },
+  "corners": {
+    "process": [
+      {
+        "name": "typical",
+        "sections": [
+          "typical",
+          "mimcap_typical",
+          "cap_mim",
+          "res_typical"
+        ]
+      },
+      {
+        "name": "ff",
+        "sections": [
+          "ff",
+          "mimcap_ff",
+          "cap_mim",
+          "res_ff"
+        ]
+      },
+      {
+        "name": "ss",
+        "sections": [
+          "ss",
+          "mimcap_ss",
+          "cap_mim",
+          "res_ss"
+        ]
+      },
+      {
+        "name": "fs",
+        "sections": [
+          "fs",
+          "mimcap_typical",
+          "cap_mim",
+          "res_typical"
+        ]
+      },
+      {
+        "name": "sf",
+        "sections": [
+          "sf",
+          "mimcap_typical",
+          "cap_mim",
+          "res_typical"
+        ]
+      }
+    ],
+    "temperature_c": [
+      -40,
+      27,
+      125
+    ]
+  },
+  "measurements": [
+    {
+      "name": "overlap_max",
+      "spice": ".meas tran overlap_max MAX v(ov) FROM=1u TO=2.6u",
+      "unit": "1"
+    },
+    {
+      "name": "td_ls_off_to_hs_on",
+      "spice": ".meas tran td_ls_off_to_hs_on TRIG v(gl) VAL=0.5 FALL=3 TARG v(gh) VAL=4.5 FALL=3",
+      "unit": "s"
+    },
+    {
+      "name": "td_hs_off_to_ls_on",
+      "spice": ".meas tran td_hs_off_to_ls_on TRIG v(gh) VAL=4.5 RISE=3 TARG v(gl) VAL=0.5 RISE=3",
+      "unit": "s"
+    },
+    {
+      "name": "sw_max",
+      "spice": ".meas tran sw_max MAX v(sw) FROM=1u TO=2.6u",
+      "unit": "V"
+    },
+    {
+      "name": "sw_min",
+      "spice": ".meas tran sw_min MIN v(sw) FROM=1u TO=2.6u",
+      "unit": "V"
+    }
+  ],
+  "options": {
+    "keep_artifacts": true,
+    "timeout_s": 300
+  },
+  "batch": {
+    "max_units_per_job": 1,
+    "max_concurrent_jobs": 6,
+    "capacity_wait_s": 600
+  }
+}
