@@ -1,0 +1,40 @@
+{
+  "record": "simulated, not measured; ONE unit (sf, 125 C), gate-drive level; re-grades the sf/125 C flag of 20261107T215643Z-8b54bed5d40d-corners.json at the corner's own Vth (issue #123); not a claim against R14 or R2 at top level",
+  "environment": {
+    "utc": "20261107T223518Z",
+    "repo_commit": "a48bd644c3f3",
+    "simulator": "ngspice-46",
+    "klt": "klt 0.9.2.dev246+g2faba5dec206",
+    "models_lib_sha256": "6edba54d23b38a2c60f8ffdbaa3eb75a7568c615e4820808969bd1121b77b1aa",
+    "command": "klt sim <probe request> --backend local (a single unit; sf sections, 125 C); probe deck = sim/dead-time/deadtime.spice + the Vth replicas of sim/device-stress/bench.spice, detector thresholds v(vthn)/v(vthp) instead of 0.5 V",
+    "decks": {
+      "sim/dead-time/deadtime.spice (base of the probe)": "a15efb67e41a97f940a01be37a6683bbf48064c584b1624b20734d4dca3398ce",
+      "design/netlists/gate_drive.spice": "dd1d67a81dcb2b9f27bc3a5b1ed49b20d704647589e6dbe515fb789215f72a70",
+      "design/netlists/power_stage.spice": "120f80b747d6632e243b4545d6acee601148372e2c1e064a374c898578385fb1"
+    }
+  },
+  "operating_point": {
+    "process": "sf (mimcap_typical, res_typical)",
+    "temperature_c": 125,
+    "vin_v": 5.0,
+    "vdd3_v": 3.3,
+    "load": "0.5 A DC sink on SW",
+    "pwm": "500 ns period, 180 ns high (D = 0.36)",
+    "tran": "step 20 ps max, stop 2.6 us; measured 1.0-2.6 us (logic-only state, no slow node; no steady-state claim)"
+  },
+  "result": {
+    "vthn_v": 0.670915,
+    "vthp_v": 0.669592,
+    "vth_definition": "constant-current Vth of a 10 um replica of each power device at drawn L, 100 nA x W/L, same corner and temperature (sim/device-stress/README.md 'Threshold')",
+    "overlap_max_at_0p5v_detector": 1.0,
+    "overlap_max_at_corner_vth": 0.0,
+    "gl_bounce_peak_in_dead_time_v": 0.505,
+    "gl_bounce_margin_to_vthn_v": 0.166,
+    "td_ls_off_to_hs_on_s_waveform": 3.9e-09,
+    "td_hs_off_to_ls_on_s_waveform": 4.2e-09,
+    "td_meas_values_invalid": "td_* .meas edge #3 pairing artefact persists in the klt report (+504 ns / -675 ns); the dead times above are the waveform post-process from the 20261107T215643Z record, same deck and corner",
+    "sw_max_v": 4.91867,
+    "sw_min_v": -0.766785
+  },
+  "conclusion": "R14 grades overlap at |Vgs| = the device's Vth for the corner. At sf/125 C that is 0.671 V (N) / 0.670 V (P); the 0.505 V GL bounce is 166 mV below it, so overlap is 0 against R14. The 0.5 V detector in deadtime.spice is a conservative testbench choice, not a spec number. No spec row relaxed; no design change. See spec/decision-records/0007-deadtime-detector-vs-corner-vth.md. Not covered: the top-level (-top) dead-time record and the 135-unit device-stress grid, which remain open on #123."
+}
