@@ -24,6 +24,7 @@ _None._
 - **#60**: T1 item 5d: soft-start and current-limit benches (R15, R16) as klt sim envelopes
 - **#62**: Draw device-level layout for the control blocks (gate_drive, osc_ramp, pwm_comp, soft_start, ocp_sense, compensator)
 - **#69**: T1 item 5b remainder: run the R2 / R14 C-full grid (135 units at 100 ps) on the fleet
+- **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62)
 
 ## Ready
 
@@ -75,7 +76,7 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
-| Important | 4 |
+| Important | 5 |
 | Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
