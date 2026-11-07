@@ -223,7 +223,7 @@ C {lab_pin.sym} 618 -20 0 0 {name=l171 lab=hg3}
 C {lab_pin.sym} 658 -20 0 0 {name=l172 lab=GND}
 C {lab_pin.sym} 658 -50 0 0 {name=l173 lab=hg4}
 C {lab_pin.sym} 658 10 0 0 {name=l174 lab=GND}
-C {pfet_06v0.sym} 1035 -180 0 0 {name=MP_HG5 model=pfet_06v0 W=79.245u L=0.55u nf=420 m=53}
+C {pfet_06v0.sym} 1035 -180 0 0 {name=MP_HG5 model=pfet_06v0 W=79.245u L=0.55u nf=15 m=53}
 C {lab_pin.sym} 1015 -180 0 0 {name=l175 lab=hg4}
 C {lab_pin.sym} 1055 -180 0 0 {name=l176 lab=VIN}
 C {lab_pin.sym} 1055 -150 0 0 {name=l177 lab=GH}
@@ -283,7 +283,7 @@ C {lab_pin.sym} 618 380 0 0 {name=l219 lab=lg3}
 C {lab_pin.sym} 658 380 0 0 {name=l220 lab=GND}
 C {lab_pin.sym} 658 350 0 0 {name=l221 lab=lg4}
 C {lab_pin.sym} 658 410 0 0 {name=l222 lab=GND}
-C {pfet_06v0.sym} 1035 220 0 0 {name=MP_LG5 model=pfet_06v0 W=79.245u L=0.55u nf=420 m=53}
+C {pfet_06v0.sym} 1035 220 0 0 {name=MP_LG5 model=pfet_06v0 W=79.245u L=0.55u nf=15 m=53}
 C {lab_pin.sym} 1015 220 0 0 {name=l223 lab=lg4}
 C {lab_pin.sym} 1055 220 0 0 {name=l224 lab=VIN}
 C {lab_pin.sym} 1055 250 0 0 {name=l225 lab=GL}

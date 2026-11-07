@@ -540,7 +540,7 @@ XMP_HG4 hg4 hg3 VIN VIN pfet_06v0 L=0.55u W=78u nf=117 ad='int((nf+1)/2) * W/nf 
 XMN_HG4 hg4 hg3 GND GND nfet_06v0 L=0.7u W=78u nf=39 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
 + pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W'
 + sa=0 sb=0 sd=0 m=5
-XMP_HG5 GH hg4 VIN VIN pfet_06v0 L=0.55u W=79.245u nf=420 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
+XMP_HG5 GH hg4 VIN VIN pfet_06v0 L=0.55u W=79.245u nf=15 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
 + pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W'
 + sa=0 sb=0 sd=0 m=53
 XMN_HG5 GH hg4 GND GND nfet_06v0 L=0.7u W=77.778u nf=140 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
@@ -576,7 +576,7 @@ XMP_LG4 lg4 lg3 VIN VIN pfet_06v0 L=0.55u W=78u nf=117 ad='int((nf+1)/2) * W/nf 
 XMN_LG4 lg4 lg3 GND GND nfet_06v0 L=0.7u W=78u nf=39 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
 + pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W'
 + sa=0 sb=0 sd=0 m=5
-XMP_LG5 GL lg4 VIN VIN pfet_06v0 L=0.55u W=79.245u nf=420 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
+XMP_LG5 GL lg4 VIN VIN pfet_06v0 L=0.55u W=79.245u nf=15 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'
 + pd='2*int((nf+1)/2) * (W/nf + 0.18u)' ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W'
 + sa=0 sb=0 sd=0 m=53
 XMN_LG5 GL lg4 GND GND nfet_06v0 L=0.7u W=77.778u nf=140 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u'

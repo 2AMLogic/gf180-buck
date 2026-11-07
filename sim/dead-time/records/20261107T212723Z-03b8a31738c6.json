@@ -1,0 +1,35 @@
+{
+  "record": "simulated, not measured; ONE operating point, no corner grid, no claim against R14 or R2",
+  "environment": {
+    "utc": "20261107T212723Z",
+    "repo_commit": "03b8a31738c6",
+    "simulator": "ngspice-46",
+    "klt": "klt 0.9.2.dev244+g92e2b15a66f2",
+    "models_lib_sha256": "6edba54d23b38a2c60f8ffdbaa3eb75a7568c615e4820808969bd1121b77b1aa",
+    "command": "sim/dead-time/run.sh -> klt sim --backend local (typical, 27 C)",
+    "decks": {
+      "sim/dead-time/deadtime.spice": "a15efb67e41a97f940a01be37a6683bbf48064c584b1624b20734d4dca3398ce",
+      "sim/dead-time/control.spice": "1037ca30e6882d556369403d7ae4a356de16ee339378923c1068e5a3eae42894",
+      "design/netlists/gate_drive.spice": "dd1d67a81dcb2b9f27bc3a5b1ed49b20d704647589e6dbe515fb789215f72a70",
+      "design/netlists/power_stage.spice": "120f80b747d6632e243b4545d6acee601148372e2c1e064a374c898578385fb1"
+    }
+  },
+  "operating_point": {
+    "process": "typical",
+    "temperature_c": 27,
+    "vin_v": 5.0,
+    "vdd3_v": 3.3,
+    "load": "0.5 A DC sink on SW",
+    "pwm": "500 ns period, 180 ns high (D = 0.36)",
+    "overlap_thresholds": "GL > 0.5 V and (VIN - GH) > 0.5 V",
+    "tran": "step 20 ps max, stop 2.6 us; measured over 1.0-2.6 us (the third to fifth period; edges numbered 3 of the run); no steady-state claim: logic-only state, no slow node"
+  },
+  "result": {
+    "overlap_max": 0.0,
+    "overlap_max_negative_control": 1.0,
+    "dead_time_ls_off_to_hs_on_s": 2.9228E-9,
+    "dead_time_hs_off_to_ls_on_s": 3.13377E-9,
+    "sw_max_v": 4.94811,
+    "sw_min_v": -0.88119
+  }
+}
