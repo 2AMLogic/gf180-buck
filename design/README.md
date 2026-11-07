@@ -215,9 +215,10 @@ The `PL.2` file hash was read from the PDK revision installed on the writing hos
 three numbers against the pin. The klt numbers come from the klt 0.9.0 package source, because
 `klt drc --list-rules` prints no thresholds (tool gap: 2AMLogic/klayout-tools#5059).
 
-On `main` it reports 306 instances and four known violations, all tied to #109 (not resized
-here): `XMP_HG5` and `XMP_LG5` (`pfet_06v0`, W/nf = 0.1887 µm against 0.30 µm), each in
-`gate_drive.spice` and in the flattened `buck_top.spice`. Not wired into CI.
+It reports 306 instances and no known violations. The four that stood here (`XMP_HG5` and
+`XMP_LG5`, `pfet_06v0`, W/nf = 0.1887 µm against 0.30 µm, in `gate_drive.spice` and the flattened
+`buck_top.spice`) were cleared by #123: `nf` 420 → 15 per unit at unchanged `W` = 79.245 µm and `m` = 53
+(4200 µm total each), so W/nf = 5.283 µm. Not wired into CI.
 
 ### `power_stage` — sizing (R3, R9, R18)
 

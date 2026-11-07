@@ -77,12 +77,7 @@ RULE_SOURCE = {
 # Each is printed as a warning. A new violation fails the check; an entry that
 # no longer matches a violation also fails (stale entries must be removed).
 # ---------------------------------------------------------------------------
-KNOWN_VIOLATIONS = {
-    ("gate_drive.spice", "XMP_HG5", "comp.width.mv.1"): "#109",
-    ("gate_drive.spice", "XMP_LG5", "comp.width.mv.1"): "#109",
-    ("buck_top.spice", "XMP_HG5", "comp.width.mv.1"): "#109",
-    ("buck_top.spice", "XMP_LG5", "comp.width.mv.1"): "#109",
-}
+KNOWN_VIOLATIONS: dict[tuple[str, str, str], str] = {}
 
 DEVICE_RE = re.compile(r"^(?P<flavour>(?P<pol>nfet|pfet)_(?P<volt>03v3|06v0))$")
 SI = {"f": 1e-15, "p": 1e-12, "n": 1e-9, "u": 1e-6, "m": 1e-3, "": 1.0}
