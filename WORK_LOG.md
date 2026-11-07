@@ -3,6 +3,10 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-07
+
+- **PR #121**: Bump Repo Skills 0.25.1 -> 0.25.10
+
 ### 2026-11-06
 
 - **PR #118**: docs(layout): record native 30 kA DRC abort on klt 0.9.1 and KLayout 0.30.12
