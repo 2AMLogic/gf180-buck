@@ -1,0 +1,221 @@
+{
+  "record": "simulated, not measured; gate-drive-level dead-time PVT grid after the MP_HG5/MP_LG5 nf 420->15 change (issue #123); not a claim against R14 or R2 at top level",
+  "environment": {
+    "utc": "20261107T215643Z",
+    "repo_commit": "8b54bed5d40d",
+    "command": "klt sim sim/dead-time/request_corners.json --backend batch --wait-for-capacity 600",
+    "fleet_jobs": [
+      "klt-sim-56d8596bfd07",
+      "klt-sim-27fc2618cd79",
+      "klt-sim-e3897363fed2",
+      "klt-sim-f3aed7429f19",
+      "klt-sim-12694fa6bb08",
+      "klt-sim-cd3cee382d69",
+      "klt-sim-dbac17368ca0",
+      "klt-sim-d0ff58e367d0",
+      "klt-sim-ded4df399ad0",
+      "klt-sim-80f8b228addb",
+      "klt-sim-0482210a99d4",
+      "klt-sim-d612d94cca5e",
+      "klt-sim-205262a1b369",
+      "klt-sim-45ac028d7bea",
+      "klt-sim-b8e61e2f5d7d"
+    ],
+    "request_sha256": "27efd5525e838f66dc253bd493b515d434ddc92f8769955fac77b051c6cf215d",
+    "decks": {
+      "design/netlists/gate_drive.spice": "dd1d67a81dcb2b9f27bc3a5b1ed49b20d704647589e6dbe515fb789215f72a70",
+      "design/netlists/power_stage.spice": "120f80b747d6632e243b4545d6acee601148372e2c1e064a374c898578385fb1"
+    }
+  },
+  "grid": "process {typical,ff,ss,fs,sf} x T {-40,27,125 C} = 15 units; Vin 5.0 V, VDD3 3.3 V, 0.5 A DC sink on SW, 500 ns period, 180 ns high",
+  "tran": "step 20 ps max, stop 2.6 us; measured 1.0-2.6 us (logic-only state, no slow node; no steady-state claim)",
+  "units": [
+    {
+      "process": "typical",
+      "temperature_c": -40,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 2.31798E-9,
+        "td_hs_off_to_ls_on": 2.50011E-9,
+        "sw_max": 4.9776,
+        "sw_min": -0.95153
+      }
+    },
+    {
+      "process": "typical",
+      "temperature_c": 27,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 2.9228E-9,
+        "td_hs_off_to_ls_on": 3.13377E-9,
+        "sw_max": 4.94811,
+        "sw_min": -0.88119
+      }
+    },
+    {
+      "process": "typical",
+      "temperature_c": 125,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 3.81015E-9,
+        "td_hs_off_to_ls_on": 4.08561E-9,
+        "sw_max": 4.90434,
+        "sw_min": -0.759391
+      }
+    },
+    {
+      "process": "ff",
+      "temperature_c": -40,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 2.02849E-9,
+        "td_hs_off_to_ls_on": 2.20664E-9,
+        "sw_max": 4.99913,
+        "sw_min": -0.790628
+      }
+    },
+    {
+      "process": "ff",
+      "temperature_c": 27,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 2.56292E-9,
+        "td_hs_off_to_ls_on": 2.76866E-9,
+        "sw_max": 4.97512,
+        "sw_min": -0.825294
+      }
+    },
+    {
+      "process": "ff",
+      "temperature_c": 125,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 3.34266E-9,
+        "td_hs_off_to_ls_on": 3.6106E-9,
+        "sw_max": 4.93883,
+        "sw_min": -0.74151
+      }
+    },
+    {
+      "process": "ss",
+      "temperature_c": -40,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 2.76E-9,
+        "td_hs_off_to_ls_on": 2.94536E-9,
+        "sw_max": 4.94891,
+        "sw_min": -0.975863
+      }
+    },
+    {
+      "process": "ss",
+      "temperature_c": 27,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 3.46788E-9,
+        "td_hs_off_to_ls_on": 3.67137E-9,
+        "sw_max": 4.91211,
+        "sw_min": -0.896125
+      }
+    },
+    {
+      "process": "ss",
+      "temperature_c": 125,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 4.51645E-9,
+        "td_hs_off_to_ls_on": 4.76508E-9,
+        "sw_max": 4.8583,
+        "sw_min": -0.76667
+      }
+    },
+    {
+      "process": "fs",
+      "temperature_c": -40,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 2.3046E-9,
+        "td_hs_off_to_ls_on": 2.47055E-9,
+        "sw_max": 4.96531,
+        "sw_min": -0.844909
+      }
+    },
+    {
+      "process": "fs",
+      "temperature_c": 27,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 2.90545E-9,
+        "td_hs_off_to_ls_on": 3.09495E-9,
+        "sw_max": 4.93253,
+        "sw_min": -0.853134
+      }
+    },
+    {
+      "process": "fs",
+      "temperature_c": 125,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 3.80506E-9,
+        "td_hs_off_to_ls_on": 4.03179E-9,
+        "sw_max": 4.88368,
+        "sw_min": -0.746087
+      }
+    },
+    {
+      "process": "sf",
+      "temperature_c": -40,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 2.39143E-9,
+        "td_hs_off_to_ls_on": 2.58615E-9,
+        "sw_max": 4.98597,
+        "sw_min": -0.969562
+      }
+    },
+    {
+      "process": "sf",
+      "temperature_c": 27,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 0.0,
+        "td_ls_off_to_hs_on": 3.01045E-9,
+        "td_hs_off_to_ls_on": 3.22986E-9,
+        "sw_max": 4.95855,
+        "sw_min": -0.896025
+      }
+    },
+    {
+      "process": "sf",
+      "temperature_c": 125,
+      "klt_status": "pass",
+      "m": {
+        "overlap_max": 1.0,
+        "td_ls_off_to_hs_on": 5.039E-7,
+        "td_hs_off_to_ls_on": -6.75407E-7,
+        "sw_max": 4.91867,
+        "sw_min": -0.766785
+      }
+    }
+  ],
+  "anomaly_sf_125C": {
+    "klt_overlap_max": 1.0,
+    "klt_td_values_invalid": "td_* .meas edge #3 of GL and GH paired differently (extra GL crossing at start-up), reporting +504 ns / -675 ns; measurement-count artefact",
+    "waveform_postprocess_single_local_ngspice_run": "same deck and corner run once locally with wrdata; dead time at the 1.02 us edge: GL fall 0.5 V to GH fall 4.5 V = 3.9 ns; at the 1.20 us edge: GH rise 4.5 V to GL rise 0.5 V = 4.2 ns",
+    "overlap": "one 20 ps sample per period (t = 527.07, 1027.07 ... ns): GL bounces to 0.505 V (SW-coupled) while VIN-GH = 2.64 V; exceeds the conservative 0.5 V detector by 5 mV",
+    "pre_change_comparison": "same corner, design/netlists from 7d79d99^ (nf=420): GL bounce peak 0.4845 V, 0 overlap samples; the nf change raised this bounce by about 20 mV. Not waived; open item."
+  }
+}
