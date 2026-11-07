@@ -5,6 +5,10 @@ Maintained by the Guide role.
 
 ### 2026-11-06
 
+- **PR #118**: docs(layout): record native 30 kA DRC abort on klt 0.9.1 and KLayout 0.30.12
+- **PR #117**: feat: add netlist finger-width and gate-length pre-check
+- **Issue #116** (closed): Add a netlist geometry pre-check: finger width (W/nf) and L against gf180mcu minimums
+- **Issue #101** (closed): Remove 250-line literal PWL table from bench_ss77_dense.spice: a one-line PULSE does the same
 - **Issue #23** (open, item 3 unmet): native 30 kA DRC re-run on klt 0.9.1 + KLayout 0.30.12 aborts in the PDK `mslot.rb` (`metal4_drawn` on a 3LM stack); evidence in `layout/drc/README.md`; friction filed as klayout-tools#5091
 
 ### 2026-11-05

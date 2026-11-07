@@ -64,7 +64,6 @@ Issues carrying `loom:curated`.
 ## Proposed (Architect / Hermit)
 
 - **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)*
-- **#101**: Remove 250-line literal PWL table from bench_ss77_dense.spice: a one-line PULSE does the same *(hermit)*
 
 ## Epics
 
@@ -82,6 +81,6 @@ _None._
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
 | Curated | 7 |
-| Architect / Hermit proposals | 2 |
+| Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
