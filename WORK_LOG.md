@@ -5,6 +5,9 @@ Maintained by the Guide role.
 
 ### 2026-11-07
 
+- **PR #126**: sim(dead-time): re-grade sf/125 C overlap at the corner Vth, record decision 0007
+- **PR #125**: sim(dead-time): add PVT corner grid and record for MP_HG5/MP_LG5 finger change
+- **PR #124**: fix(gate_drive): split MP_HG5/MP_LG5 into 15 fingers to clear comp.width.mv.1
 - **PR #121**: Bump Repo Skills 0.25.1 -> 0.25.10
 
 ### 2026-11-06
