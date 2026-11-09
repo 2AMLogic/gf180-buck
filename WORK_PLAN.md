@@ -36,8 +36,7 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#60**: T1 item 5d: soft-start and current-limit benches (R15, R16) as klt sim envelopes
-- **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53)
+_None._
 
 ## PRs Awaiting Review
 
@@ -80,7 +79,7 @@ _None._
 | Very important | 1 |
 | Important | 5 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 2 |
+| In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
 | Curated | 8 |
