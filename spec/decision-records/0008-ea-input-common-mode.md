@@ -40,7 +40,7 @@ the soft-start follower's offset and its unmeasured PVT drift (the follower sits
 
 | `Vref` | Scale vs 1.20 V | Low-corner node | Margin to 1.20 V | Margin to `Vout`,min 1.728 V | `Rtop/Rbot` | Verdict |
 |---|---|---|---|---|---|---|
-| 1.25 V | 1.04 | 1.125 V | **−0.075 V (inside the dead zone)** | +0.603 V (node-high 1.125 V) | 0.44 | rejected: fails floor |
+| 1.25 V | 1.04 | 1.125 V | **−0.075 V (inside the dead zone)** | +0.353 V (node-high 1.375 V) | 0.44 | rejected: fails floor |
 | **1.50 V** | **1.25** | **1.370 V** | **+0.170 V** | **+0.098 V** (node-high 1.630 V) | **0.20** | **chosen** |
 | 1.62 V | 1.35 | 1.488 V | +0.288 V | **−0.025 V** (node-high 1.753 V) | 0.11 | rejected: ceiling collides with Vout |
 | 1.20 V | 1.00 | — | edge | — | — | rejected (issue: edge not acceptable) |
@@ -48,6 +48,11 @@ the soft-start follower's offset and its unmeasured PVT drift (the follower sits
 (Node-high = `Vref·(1 + 2 %) + 0.10 V`: 1.50 V → 1.630 V, 1.728 − 1.630 = 0.098 V; 1.62 V → 1.753 V, over 1.728 V.)
 Margin to 2.70 V at 1.50 V: **1.07 V** at node-high. The 0.10 V allowance is an assumption of this record, not a
 characterised spread; §7 item 2 closes it.
+
+*Erratum (2026-11-11, #133):* the 1.25 V row originally read "+0.603 V (node-high 1.125 V)", which repeated the
+low-corner node. By the definition above, node-high = 1.25 V·1.02 + 0.10 V = 1.375 V, so the margin to `Vout`,min
+1.728 V is +0.353 V. Only that cell changed; the verdict (rejected: fails the 1.20 V floor) and the 1.50 V choice are
+unchanged.
 
 ## 4. What 1.50 V does to R4
 
