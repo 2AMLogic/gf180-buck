@@ -302,13 +302,22 @@ def crosscheck(switched, predicted, tol=0.30):
             "verdict": "pass" if abs(rel) <= tol else "fail"}
 
 
-def rising_crossings(t, v, level, t_from=None):
-    """Linearly interpolated rising crossings of `level` at or after t_from."""
+def crossings(t, y, level, rising=True, t_from=None):
+    """Linearly interpolated crossing times of y through `level` (rising or
+    falling) at or after t_from. Rising: y[i-1] < level <= y[i]; falling:
+    y[i-1] >= level > y[i]. The one edge-timing definition for R7, R14, R15, R16."""
     out = []
     for i in range(1, len(t)):
-        if v[i - 1] < level <= v[i] and (t_from is None or t[i] >= t_from):
-            out.append(t[i - 1] + (level - v[i - 1]) / (v[i] - v[i - 1]) * (t[i] - t[i - 1]))
+        if (t_from is not None and t[i] < t_from):
+            continue
+        if (rising and y[i - 1] < level <= y[i]) or (not rising and y[i - 1] >= level > y[i]):
+            out.append(lerp_crossing(t[i - 1], t[i], y[i - 1], y[i], level))
     return out
+
+
+def lerp_crossing(t0, t1, a, b, level):
+    """Time at which the segment (t0, a) -> (t1, b) passes `level` (a != b)."""
+    return t0 + (level - a) / (b - a) * (t1 - t0)
 
 
 def cycle_means(t, y, edges):
@@ -360,7 +369,7 @@ def soft_start(t, vout, il, edges, *, t_en, v_target, v_reg_max, frac=0.9,
 def trip_event(t, trip, il, level, *, t_from=None):
     """R16: inductor current at the first rising crossing of `level` on the
     trip net. Not asserted -> engaged False and no trip value."""
-    xs = rising_crossings(t, trip, level, t_from)
+    xs = crossings(t, trip, level, True, t_from)
     res = {"engaged": False, "trip_il_a": None, "t_start_s": t[0], "t_end_s": t[-1],
            "t_from_s": t_from, "level_v": level, "n_assertions": len(xs),
            "il_max_a": max(il)}
@@ -388,7 +397,16 @@ def analyze(wrdata_path, *, f_sw, vin, tier_params, step_max, t_settle_end=None,
     bench (i_load is required; duty, dcr, r_wire, wires, ron_hs, ron_ls enable
     the ideal-value comparison). `load_step_spec` = {t_step, band_v[, v_ref]}."""
     d = read_wrdata(wrdata_path)
-    t, vout, il, vsw, pin = (d[k] for k in WRDATA_COLUMNS)
+    return analyze_columns(*(d[k] for k in WRDATA_COLUMNS), f_sw=f_sw, vin=vin,
+                           tier_params=tier_params, step_max=step_max,
+                           t_settle_end=t_settle_end, load_step_spec=load_step_spec,
+                           t_clk0=t_clk0, fc_ripple=fc_ripple)
+
+
+def analyze_columns(t, vout, il, vsw, pin, *, f_sw, vin, tier_params, step_max,
+                    t_settle_end=None, load_step_spec=None, t_clk0=0.0,
+                    fc_ripple=RIPPLE_LP_HZ):
+    """`analyze` on already-parsed columns (same arguments, same result)."""
     T = 1.0 / f_sw
     max_dt = max(b - a for a, b in zip(t, t[1:]))
     run = {
