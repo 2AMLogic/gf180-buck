@@ -12,6 +12,11 @@ turn-off of one device and the turn-on of the other, measured at |Vgs| = the dev
 corner (the replica level), zero overlap = never both |Vgs| above their Vth.
 """
 import bisect
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from buckmeas import crossings  # noqa: E402
 
 R2_SW_MIN = -0.7      # V
 R2_TERM_MAX = 6.0     # V
@@ -51,16 +56,6 @@ def r2_verdict(peaks):
     sw_ok = peaks["sw_min_v"] >= R2_SW_MIN
     term_ok = max(peaks["terminal_max"]["abs_v"], peaks["sw_max_v"]) <= R2_TERM_MAX
     return sw_ok, term_ok
-
-
-def crossings(t, y, level, rising):
-    """Linear-interpolated crossing times of y through `level`, rising or falling."""
-    out = []
-    for i in range(1, len(t)):
-        a, b = y[i - 1], y[i]
-        if (rising and a < level <= b) or (not rising and a >= level > b):
-            out.append(t[i - 1] + (level - a) / (b - a) * (t[i] - t[i - 1]))
-    return out
 
 
 def edge_resolution(t, sw, vin_level, gh, gl):

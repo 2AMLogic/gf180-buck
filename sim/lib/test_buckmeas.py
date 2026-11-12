@@ -206,6 +206,26 @@ class LoadStepPairTest(unittest.TestCase):
         self.assertIn("not settled", r["up"]["reason"])
 
 
+class CrossingsTest(unittest.TestCase):
+    T = [0.0, 1.0, 2.0, 3.0, 4.0]
+    Y = [0.0, 2.0, 0.0, 2.0, 0.0]
+
+    def test_rising_and_falling_interpolated(self):
+        self.assertEqual(bm.crossings(self.T, self.Y, 1.0), [0.5, 2.5])
+        self.assertEqual(bm.crossings(self.T, self.Y, 1.0, rising=False), [1.5, 3.5])
+
+    def test_t_from_filters_on_the_segment_end(self):
+        self.assertEqual(bm.crossings(self.T, self.Y, 1.0, t_from=1.0), [0.5, 2.5])
+        self.assertEqual(bm.crossings(self.T, self.Y, 1.0, t_from=2.0), [2.5])
+
+    def test_level_hit_exactly_counts_once_rising(self):
+        self.assertEqual(bm.crossings([0.0, 1.0, 2.0], [0.0, 1.0, 2.0], 1.0), [1.0])
+
+    def test_flat_segment_never_divides_by_zero(self):
+        self.assertEqual(bm.crossings([0.0, 1.0], [1.0, 1.0], 1.0), [])
+        self.assertEqual(bm.crossings([0.0, 1.0], [1.0, 1.0], 1.0, rising=False), [])
+
+
 class CrosscheckTest(unittest.TestCase):
     def test_within_and_outside_30_percent(self):
         self.assertEqual(bm.crosscheck(0.060, 0.050)["verdict"], "pass")     # +20 %
@@ -274,6 +294,21 @@ class AnalyzeTest(unittest.TestCase):
         self.assertAlmostEqual(res["R9_R10_efficiency"]["eta"], 0.9, delta=1e-3)
         for key in ("R4_vout_mean", "R8_il_pp", "R9_R10_efficiency", "R11_ripple"):
             self.assertEqual(res[key]["cycles"], 20.0)
+
+    def test_analyze_columns_matches_analyze(self):
+        t = grid(130, T / 200)
+        vout = [1.8 + 0.002 * math.sin(2 * math.pi * F * x) for x in t]
+        il = [0.25 + triangle(x, pp=0.17) for x in t]
+        vsw = [5.0 if (x * F) % 1.0 < 0.36 else 0.0 for x in t]
+        pin = [0.5] * len(t)
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "w.dat")
+            with open(path, "w") as fh:
+                for row in zip(t, vout, il, vsw, pin):
+                    fh.write(" ".join(repr(x) for x in row) + "\n")
+            kw = dict(f_sw=F, vin=5.0, tier_params={"i_load": 0.25}, step_max=T / 200)
+            via_file = bm.analyze(path, **kw)
+        self.assertEqual(bm.analyze_columns(t, vout, il, vsw, pin, **kw), via_file)
 
     def test_short_run_reports_not_settled_and_no_values(self):
         t = grid(30, T / 200)

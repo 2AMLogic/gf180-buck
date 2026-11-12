@@ -13,7 +13,6 @@ import argparse
 import json
 import os
 import sys
-import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import buckmeas  # noqa: E402
@@ -56,7 +55,7 @@ def sw_rising_crossings(t, vsw, vin):
         if vsw[i - 1] < vlo:
             armed = True
         if armed and vsw[i - 1] < vth <= vsw[i]:
-            out.append(t[i - 1] + (vth - vsw[i - 1]) / (vsw[i] - vsw[i - 1]) * (t[i] - t[i - 1]))
+            out.append(buckmeas.lerp_crossing(t[i - 1], t[i], vsw[i - 1], vsw[i], vth))
             armed = False
     return out
 
@@ -69,15 +68,9 @@ def grade(raw_path, vin, iload, step_max):
         return {"graded": False, "reason": "fewer than 41 switching cycles in the saved tail (%d)" % len(xs)}
     f_sw = (len(xs) - 1) / (xs[-1] - xs[0])
     pin = [-v * i for v, i in zip(c["v(vsrc)"], c["i(vsrc)"])]
-    with tempfile.NamedTemporaryFile("w", suffix=".dat", delete=False) as fh:
-        for row in zip(t, c["v(out)"], c["i(lind)"], c["v(sw_d)"], pin):
-            fh.write(" ".join("%.9e" % x for x in row) + "\n")
-        tmp = fh.name
-    try:
-        res = buckmeas.analyze(tmp, f_sw=f_sw, vin=vin, tier_params={"i_load": iload},
-                               step_max=step_max, t_clk0=xs[0])
-    finally:
-        os.unlink(tmp)
+    res = buckmeas.analyze_columns(t, c["v(out)"], c["i(lind)"], c["v(sw_d)"], pin, f_sw=f_sw,
+                                   vin=vin, tier_params={"i_load": iload}, step_max=step_max,
+                                   t_clk0=xs[0])
     res["clock"] = {"source": "rising crossings of Vin/2 on V(sw) over the whole saved tail",
                     "f_hz": f_sw, "t_clk0_s": xs[0], "crossings": len(xs)}
     # R6 evidence: forced PWM means a rising SW edge every period (no skipped pulse, no burst
