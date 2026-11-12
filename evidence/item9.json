@@ -276,7 +276,7 @@
         "role": "testbench",
         "path": "sim/lib/buckmeas.py",
         "passed": true,
-        "content_hash": "sha256:27b66965de2e9ce1a443a8772bed49d37f46a05b2d01df8163b008471875fdd2"
+        "content_hash": "sha256:3e87bf976a9b5bebf3cac2cc983d8c673bc14512d526e31857f5733089bb0c53"
       },
       {
         "check": "present",
@@ -297,7 +297,7 @@
         "role": "testbench",
         "path": "sim/lib/rawgrade.py",
         "passed": true,
-        "content_hash": "sha256:fe481f94a9ca1a263f9ef937980df5ab6f978619d5b7ac54fdecccae54ed59fc"
+        "content_hash": "sha256:84b3b2295ec144e5cd6b2d50fcef9fd7cee3893cda86a0a4c6bc6a0321b27ece"
       },
       {
         "check": "present",
@@ -311,14 +311,14 @@
         "role": "testbench",
         "path": "sim/lib/stressmeas.py",
         "passed": true,
-        "content_hash": "sha256:6ef01536b2cdc82732042f08f7c0096aadc9177a9c11a3fdfcbd54aae4a5824a"
+        "content_hash": "sha256:6fe8000e3c9df742628edabccd98645c8b4a4c760d3dd1df6258a6dd477c640e"
       },
       {
         "check": "present",
         "role": "testbench",
         "path": "sim/lib/test_buckmeas.py",
         "passed": true,
-        "content_hash": "sha256:6467c84ce7a782fe2fe0e716b73366fe9c0f369d1efc478fa28e78bf277ee51d"
+        "content_hash": "sha256:a7a3eee916ade31deac2d96c885e0388973d4af84083d82815a4a69844ee2ac4"
       },
       {
         "check": "present",
@@ -816,7 +816,7 @@
     ]
   },
   "provenance": {
-    "klt_version": "0.9.0",
+    "klt_version": "0.9.2.dev682+g7d676aa2b583",
     "klayout_version": null,
     "pdk": null,
     "deck": null,
