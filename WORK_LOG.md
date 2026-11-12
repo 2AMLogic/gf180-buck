@@ -3,8 +3,15 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-12
+
+- **PR #137**: refactor: share one threshold-crossing helper, drop rawgrade temp-file round trip
+- **Issue #135** (closed): Consolidate three duplicate threshold-crossing helpers in sim/lib and drop rawgrade temp-file round trip
+
 ### 2026-11-11
 
+- **PR #136**: docs: correct DR-0008 1.25 V node-high margin and add errata
+- **Issue #133** (closed): DR-0008 §3 table: 1.25 V row quotes the low-corner node as node-high
 - **PR #132**: docs: add DR-0008 moving error-amplifier common mode to 1.50 V
 - **Issue #131** (closed): Move the error amplifier's input common mode into the op-amp's 1.20-2.70 V range (reference and divider change)
 
