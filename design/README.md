@@ -37,10 +37,15 @@ GM >= 10 dB. Failing points are reported as failures.
 
 `run.sh` regenerates the request and submits it with `klt sim`; on a dispatch
 worker `KLT_SIM_BACKEND=batch` sends the grid to the Spot batch fleet, and
-`run.sh` defaults to `batch` otherwise. It never loops `ngspice` locally; a
-failed submit exits non-zero. The record carries fc, PM and GM for every point
-with per-bound pass/fail, the ngspice version, the deck sha256, the request
-sha256, the batch job id and `results_sha256` (hash of the rounded results).
+`run.sh` defaults to `batch` otherwise. On that backend it passes
+`--wait-for-capacity 600`, so a launch the vCPU-budgeted fleet refuses
+(`batch_no_capacity` / `batch_concurrency_cap`) is re-launched with jittered
+backoff for up to 600 s rather than failing at once; klt rejects the flag on
+any other backend, so `run.sh` passes it only when the backend is `batch`. It
+never loops `ngspice` locally; a submit that still fails exits non-zero. The
+record carries fc, PM and GM for every point with per-bound pass/fail, the
+ngspice version, the deck sha256, the request sha256, the batch job id and
+`results_sha256` (hash of the rounded results).
 Printed precision: fc 0.001 kHz, PM 0.01 deg, GM 0.01 dB; a re-run reproduces
 the same `results_sha256`.
 
