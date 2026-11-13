@@ -1,0 +1,51 @@
+* gf180-buck shared closed-loop bench harness (issue #151): the package, the die
+* decoupling, the control-domain sources, the buck_top instance, and the external
+* inductor and output capacitor with their parasitics. Kept once here and included by
+* sim/{steady-state,current-limit,device-stress,load-step,soft-start}/bench.spice.
+*
+* Each including deck keeps its own header, its .include lines, its request-axis and
+* fixed-assumption .param lines, Vsrc (klt rescales that PWL per corner, so it must stay
+* in the top-level deck -- see sim/device-stress/README.md) and its own load card.
+*
+* Parameters the including deck must define before this file:
+*   r_wire l_wire wires c_die esr_die          (package / die decoupling)
+*   vdd3 vbg osc_k t_en                        (control domain; osc_k = 1 unless swept)
+*   l_ind dcr c_wind r_wind c_out esr esl      (external inductor and output capacitor)
+* Nodes it must supply: vsrc (board side of the package), out (output / load node).
+*
+* Package: VIN / SW / GND nets, N parallel wires each. 0.5 pF pad capacitance omitted
+* (same reason as sim/buck-ideal/buck.spice); die-side Vin decoupling is a bench assumption.
+Rwv vsrc nv1 {r_wire/wires}
+Lwv nv1 vin_d {l_wire/wires}
+Rws sw_d nsw1 {r_wire/wires}
+Lws nsw1 sw_p {l_wire/wires}
+Rwg gnd_d ng1 {r_wire/wires}
+Lwg ng1 0 {l_wire/wires}
+Cdie vin_d nd1 {c_die}
+Rdie nd1 gnd_d {esr_die}
+
+* Control-domain ports (no bandgap / regulator / bias block in this design yet: ideal
+* sources, fixed over corners; see README.md "Bench assumptions"). All up before EN.
+Vdd33 vdd33 gnd_d PWL(0 0 5u {vdd3})
+Vbg vbg gnd_d PWL(0 0 5u {vbg})
+Iosc gnd_d ib_osc PWL(0 0 5u {12u*osc_k})
+Ipwm gnd_d ib_pwm PWL(0 0 5u 10u)
+Iss gnd_d ib_ss PWL(0 0 5u 10u)
+Iocp gnd_d ib_ocp PWL(0 0 5u 10u)
+Iea gnd_d ib_ea PWL(0 0 5u 10u)
+Vt0 tr0 gnd_d {vdd3}
+Vt1 tr1 gnd_d 0
+Vt2 tr2 gnd_d {vdd3}
+Ven en gnd_d PWL(0 0 {t_en} 0 {t_en+10n} {vdd3})
+
+Xtop vin_d vdd33 gnd_d sw_d out en vbg ib_osc ib_pwm ib_ss ib_ocp ib_ea tr0 tr1 tr2 vc pwm vref_ss buck_top
+
+* External inductor L + DCR, parallel winding capacitance (r_wind in series, as in buck-ideal)
+Lind sw_p nl {l_ind}
+Rdcr nl out {dcr}
+Cwind sw_p nw {c_wind}
+Rwind nw out {r_wind}
+* External capacitor C + ESR + ESL; `out` is the capacitor terminal
+Cout out nc {c_out}
+Resr nc nd {esr}
+Lesl nd gnd_d {esl}

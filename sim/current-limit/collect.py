@@ -142,7 +142,7 @@ def main(argv=None):
         "environment": {**hdr, "reports": [env("ramp", a.ramp), env("min", a.mn)],
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "request_ramp.json", "request_min.json", "gen_requests.py"),
-                            ("design/netlists/buck_top.spice",), ("buckmeas.py", "rawgrade.py"))},
+                            ("design/netlists/buck_top.spice",), ("bench_harness.spice", "buckmeas.py", "rawgrade.py"))},
         "method": {
             "analysis_ramp": ".tran 2.5n 920u, saved from 600 us; max step 2.5 ns = T/200 at 2 MHz; soft start done by 520 us (R15 max), "
                              "load 0 -> 3 A linear over 300 us from 600 us (10 mA/us, ~5 mA per cycle)",

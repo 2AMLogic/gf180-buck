@@ -126,6 +126,34 @@ typical process, 27 °C, Vin 5.0 V, 0.5 A DC sink on SW. Writes a new append-onl
 `sim/dead-time/records/<UTC>-<sha>.json`. Simulated, not measured; not a corner
 run. See `design/README.md`.
 
+## Shared bench harness
+
+The five closed-loop benches -- `steady-state`, `current-limit`, `device-stress`, `load-step`,
+`soft-start` -- are the same circuit with different loads, so they share one copy of it:
+[`lib/bench_harness.spice`](lib/bench_harness.spice), which each `bench.spice` pulls in with
+`.include ../lib/bench_harness.spice`. It holds the §0.3 package (VIN / SW / GND, 2 wires per net),
+the die decoupling, the control-domain sources, the `Xtop ... buck_top` instance and the external
+inductor and output capacitor with their parasitics (spec §0.2 P-T parts).
+
+Each deck keeps what is its own: the header, its `.include` lines, the request-axis and
+fixed-assumption `.param` lines, `Vsrc`, and the load card. `Vsrc` stays in the top-level deck
+because `klt` rescales that PWL per corner and can only do so there (the reason
+`sim/device-stress/README.md` recorded when that deck was a copy). The harness reads `osc_k`, which
+the current-limit bench sweeps and the other four fix at 1.
+
+The `.param` lines stay in the decks, deliberately. `c_out` and `esr` are request axes in
+`load-step/request_{tol,full}.json` and `c_wind` in `soft-start/probe_single3.json`, while the same
+names are fixed assumptions elsewhere, so a deck's own axis defaults belong to that deck. This is
+not a tool limit: a `klt sim` `corners.params` override does reach a `.param` declared in an
+included file (probed for issue #151 -- `lfac=0.8` against `.param l_ind={3.3u*lfac}` in an include
+gave 2.64 uH, not 3.3).
+
+`sim/lib/test_device_stress.py` is the guard: it fails if a deck stops including the harness,
+re-declares one of its element cards, drops its own `Vsrc`, stops defining a parameter the harness
+reads, or lets any shared P-T part / package / rail value drift between the five decks. Every record
+written after this change pins `sim/lib/bench_harness.spice` in its `files_sha256`; records written
+before it pin the deck hashes of the day and are not edited.
+
 ## Steady-state bench (rows R4, R6, R7, R8, R9/R10 pre-layout, R11)
 
 ```
@@ -150,7 +178,7 @@ klt sim --batch-set sim/load-step/request_tol.json sim/load-step/request_full.js
 python3 -I sim/load-step/collect.py --tol TOL.json --full FULL.json --avg AVG.json    # grade + write records/<UTC>-<sha>.json
 ```
 
-`bench.spice` is the steady-state deck with the load replaced by 50 -> 450 -> 50 mA at 1 A/us
+`bench.spice` is the shared harness with a 50 -> 450 -> 50 mA load at 1 A/us
 (steps at 600 / 680 us, `.tran` to 760 us, last 280 us saved). Each edge is graded by
 `buckmeas.load_step_pair` only if the spec §0.4 settled test passes on the cycles just before it;
 otherwise that step has no value. Requests: `request_tol` = C-typ x all 18 P-T tolerance
@@ -172,7 +200,8 @@ python3 -I sim/soft-start/collect.py --report <soft-start report>.json
 python3 -I sim/current-limit/collect.py --ramp <ramp report>.json --min <min report>.json
 ```
 
-Both benches wrap `buck_top.spice` like `sim/steady-state/bench.spice` (same external parts and package).
+Both benches include the same shared harness as `sim/steady-state/bench.spice`, so the external parts and
+package are the same file, not a copy of it (see "Shared bench harness" below).
 `TRIP` is internal to `buck_top`; it is saved hierarchically as `v(xtop.trip)`. Measurement code is
 `buckmeas.soft_start` (0 -> 90 % of 1.8 V from EN on per-cycle means, monotonicity with a 1 mV floor,
 overshoot above R4 max after the 20 MHz low-pass, peak I(L)) and `buckmeas.trip_event` (I(L) at the first

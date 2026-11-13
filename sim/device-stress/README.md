@@ -17,13 +17,17 @@ replace the gate-drive bench; the two answer different questions.
 
 ## Bench
 
-`bench.spice` is `sim/steady-state/bench.spice` line for line (a unit test fails if they drift; `Vsrc`
-must live in the top-level deck for `klt` to rescale it per corner, so it is copied, not included) plus two
-**Vth replicas** at the end: a 10 um copy of each power device (`nfet_06v0` L 0.7 u, `pfet_06v0` L 0.55 u)
+`bench.spice` is the shared closed-loop harness `sim/lib/bench_harness.spice` -- the package, die
+decoupling, control-domain sources, `buck_top` instance and external L/C that all five closed-loop benches
+include, kept in one file (issue #151; a unit test fails if a deck stops including it or re-declares one of
+its cards) -- with the steady-state load card and two **Vth replicas** at the end: a 10 um copy of each power device (`nfet_06v0` L 0.7 u, `pfet_06v0` L 0.55 u)
 diode-connected at 100 nA x W/L. The node level is that corner's constant-current Vth (typical, 27 C, 5 V:
 Vthn 0.686 V, Vthp 0.889 V in the probe), read as the `vthn` / `vthp` measurements. It is the
 threshold the spec asks for (the minimum Vth over the corner is the corner point's own Vth, the corner
 axes being process x T). Netlists are not changed.
+
+`Vsrc` is the one shared card the harness does not own: `klt` rescales that PWL per corner, which it can do
+only in the top-level deck, so every bench keeps its own copy of it (the unit test asserts this).
 
 ## Run length, step, steady state
 

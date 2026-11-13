@@ -133,7 +133,7 @@ def main(argv=None):
                                    "remote": recordkit.remote_subset(rep, ("provider", "job_id", "instance_type", "state"))},
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "request_grid.json", "gen_requests.py"),
-                            ("design/netlists/buck_top.spice",), ("buckmeas.py", "rawgrade.py"))},
+                            ("design/netlists/buck_top.spice",), ("bench_harness.spice", "buckmeas.py", "rawgrade.py"))},
         "method": {
             "analysis": ".tran 2.5n 700u, saved from 20 us (EN); max step 2.5 ns = T/200 at 2 MHz (unit.step_ok)",
             "startup": "Vin ramps 0 -> Vin over 10 us, control rails / bias over 5 us, EN at 20 us; load resistor present from t = 0",

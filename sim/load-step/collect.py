@@ -198,7 +198,7 @@ def main(argv=None):
     files = recordkit.files_sha256(
         HERE, ("bench.spice", "avg_step.spice", "request_tol.json", "request_full.json", "request_avg.json", "gen_requests.py"),
         root_files=("design/netlists/buck_top.spice", "design/averaged/buck_avg.spice", "sim/steady-state/opamp_two_stage.spice"),
-        lib_files=("buckmeas.py", "rawgrade.py"))
+        lib_files=("bench_harness.spice", "buckmeas.py", "rawgrade.py"))
     rec = {
         "record": "simulated, not measured; pre-layout; target tier (5 V -> 1.8 V, 50 -> 450 -> 50 mA); rows R12, R13(b), R13(c)",
         "environment": {**hdr,
