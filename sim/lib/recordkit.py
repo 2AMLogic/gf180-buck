@@ -21,6 +21,8 @@ LIB = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(LIB, "..", ".."))
 IDRE = re.compile(r"^(?P<proc>[a-z]+)/(?P<vin>[0-9.]+)V/(?P<temp>-?[0-9.]+)C/params:(?P<params>.*)$")
 REMOTE_FIELDS = ("provider", "job_id", "instance_type", "lifecycle", "elapsed_seconds", "state")
+GRADEABLE_STATUS = ("pass", "fail")  # a klt corner grades only once it reached a verdict
+DIAG_MSG_TAIL = 90  # chars of a diagnostic message kept in a no-waveform reason
 
 
 def parse_corner(cid):
@@ -42,6 +44,22 @@ def parse_id(cid, lfac_default=None):
     elif lfac_default is not None:
         key["lfac"] = lfac_default
     return key
+
+
+def waveform_or_reason(corner, msg_tail=DIAG_MSG_TAIL):
+    """(raw path, None) when a klt corner has a gradeable waveform, else (None, reason).
+
+    A unit carries a value only if klt ran its corner to a verdict (`pass` or `fail`) and
+    the `waveform.raw` it named is on disk; a corner that timed out, errored, or never wrote
+    its raw carries none, and the record says why instead. The reason names the klt status and
+    the first diagnostic as (code, last `msg_tail` chars of its message) -- the code alone does
+    not distinguish, say, two different `spice_error`s. One format for every bench.
+    """
+    raw = (corner.get("artifacts") or {}).get("raw")
+    if corner.get("status") in GRADEABLE_STATUS and raw and os.path.exists(raw):
+        return raw, None
+    diag = [(d.get("code"), (d.get("message") or "")[-msg_tail:]) for d in corner.get("diagnostics") or []][:1]
+    return None, "no waveform: klt status %s %s" % (corner.get("status"), diag)
 
 
 def sha256(path):

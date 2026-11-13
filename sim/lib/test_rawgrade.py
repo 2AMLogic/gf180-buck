@@ -102,5 +102,59 @@ class RawGradeTest(unittest.TestCase):
             rg.read_ascii_raw(self.path)
 
 
+class ClockFromCrossingsTest(unittest.TestCase):
+    """The one crossings-to-clock step, shared by rawgrade.grade and the collectors."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.path_for_grade = os.path.join(self.tmp.name, "waveform.raw")
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    @staticmethod
+    def xs(n, period=T, t0=0.0):
+        return [t0 + k * period for k in range(n)]
+
+    def test_known_clock(self):
+        clk = rg.clock_from_crossings(self.xs(101, t0=3e-6))
+        self.assertAlmostEqual(clk["f_hz"], F, delta=1.0)
+        self.assertAlmostEqual(clk["t_clk0_s"], 3e-6)
+        self.assertEqual(clk["crossings"], 101)
+        self.assertIsNone(clk["reason"])
+
+    def test_41_crossings_is_the_boundary(self):
+        # exactly the minimum grades ...
+        clk = rg.clock_from_crossings(self.xs(41))
+        self.assertIsNotNone(clk["f_hz"])
+        self.assertAlmostEqual(clk["f_hz"], F, delta=1.0)
+        # ... one fewer carries no value, and says why
+        clk = rg.clock_from_crossings(self.xs(40))
+        self.assertIsNone(clk["f_hz"])
+        self.assertIsNone(clk["t_clk0_s"])
+        self.assertEqual(clk["crossings"], 40)
+        self.assertEqual(clk["reason"], "fewer than 41 switching cycles in the saved tail (40)")
+
+    def test_default_minimum_is_the_module_constant(self):
+        self.assertEqual(rg.MIN_CLOCK_CROSSINGS, 41)
+
+    def test_current_limit_minimum_of_3(self):
+        # the current-limit bench reads f_sw on a short hold, so it passes its own minimum
+        self.assertIsNone(rg.clock_from_crossings(self.xs(2), min_crossings=3)["f_hz"])
+        clk = rg.clock_from_crossings(self.xs(3), min_crossings=3)
+        self.assertAlmostEqual(clk["f_hz"], F, delta=1.0)
+        self.assertEqual(clk["reason"], None)
+        self.assertEqual(rg.clock_from_crossings([], min_crossings=3)["crossings"], 0)
+
+    def test_reason_names_the_minimum_it_used(self):
+        self.assertEqual(rg.clock_from_crossings([1.0], min_crossings=3)["reason"],
+                         "fewer than 3 switching cycles in the saved tail (1)")
+
+    def test_grade_reports_the_shared_reason(self):
+        write_raw(self.path_for_grade, 30)
+        r = rg.grade(self.path_for_grade, VIN, ILOAD, step_max=T / 100 * 1.001)
+        self.assertFalse(r["graded"])
+        self.assertTrue(r["reason"].startswith("fewer than 41 switching cycles in the saved tail"))
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,3527 @@
+{
+ "bounds_note": "pass/fail per point: fc in [100,250] kHz, PM >= 45 deg, GM >= 10 dB (GM 'none' = no -180 crossing in band)",
+ "deck_sha256": "1b953b6413df6078408022472a9ba1b7443e9ed64d7c130465b283d5d4ba1eed",
+ "errored_corners": [],
+ "expected_point_count": 162,
+ "generated_utc": "20261113T174647Z",
+ "kind": "averaged-loop-gain-sweep (simulated, not measured)",
+ "ngspice": "47",
+ "ngspice_banner": [
+  "** ngspice-47 : Circuit level simulation program"
+ ],
+ "point_count": 162,
+ "points": [
+  {
+   "fc_khz": 207.072,
+   "gm_db": 24.05,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.05
+  },
+  {
+   "fc_khz": 207.072,
+   "gm_db": 24.05,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.05
+  },
+  {
+   "fc_khz": 207.072,
+   "gm_db": 24.05,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.05
+  },
+  {
+   "fc_khz": 207.302,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.88
+  },
+  {
+   "fc_khz": 207.302,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.88
+  },
+  {
+   "fc_khz": 207.302,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.88
+  },
+  {
+   "fc_khz": 167.091,
+   "gm_db": 29.04,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.59
+  },
+  {
+   "fc_khz": 167.091,
+   "gm_db": 29.04,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.59
+  },
+  {
+   "fc_khz": 167.091,
+   "gm_db": 29.04,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.59
+  },
+  {
+   "fc_khz": 167.283,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.5
+  },
+  {
+   "fc_khz": 167.283,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.5
+  },
+  {
+   "fc_khz": 167.283,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.5
+  },
+  {
+   "fc_khz": 91.424,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.31
+  },
+  {
+   "fc_khz": 91.424,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.31
+  },
+  {
+   "fc_khz": 91.424,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.31
+  },
+  {
+   "fc_khz": 91.521,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 65.5
+  },
+  {
+   "fc_khz": 91.521,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 65.5
+  },
+  {
+   "fc_khz": 91.521,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 65.5
+  },
+  {
+   "fc_khz": 170.39,
+   "gm_db": 25.96,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.39
+  },
+  {
+   "fc_khz": 170.39,
+   "gm_db": 25.96,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.39
+  },
+  {
+   "fc_khz": 170.39,
+   "gm_db": 25.96,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.39
+  },
+  {
+   "fc_khz": 170.516,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.92
+  },
+  {
+   "fc_khz": 170.516,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.92
+  },
+  {
+   "fc_khz": 170.516,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.92
+  },
+  {
+   "fc_khz": 137.439,
+   "gm_db": 30.93,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.63
+  },
+  {
+   "fc_khz": 137.439,
+   "gm_db": 30.93,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.63
+  },
+  {
+   "fc_khz": 137.439,
+   "gm_db": 30.93,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.63
+  },
+  {
+   "fc_khz": 137.54,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.22
+  },
+  {
+   "fc_khz": 137.54,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.22
+  },
+  {
+   "fc_khz": 137.54,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.22
+  },
+  {
+   "fc_khz": 76.112,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.81
+  },
+  {
+   "fc_khz": 76.112,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.81
+  },
+  {
+   "fc_khz": 76.112,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.81
+  },
+  {
+   "fc_khz": 76.159,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.66
+  },
+  {
+   "fc_khz": 76.159,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.66
+  },
+  {
+   "fc_khz": 76.159,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.66
+  },
+  {
+   "fc_khz": 145.214,
+   "gm_db": 27.52,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.66
+  },
+  {
+   "fc_khz": 145.214,
+   "gm_db": 27.52,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.66
+  },
+  {
+   "fc_khz": 145.214,
+   "gm_db": 27.52,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.66
+  },
+  {
+   "fc_khz": 145.289,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.98
+  },
+  {
+   "fc_khz": 145.289,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.98
+  },
+  {
+   "fc_khz": 145.289,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.98
+  },
+  {
+   "fc_khz": 117.302,
+   "gm_db": 32.48,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.84
+  },
+  {
+   "fc_khz": 117.302,
+   "gm_db": 32.48,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.84
+  },
+  {
+   "fc_khz": 117.302,
+   "gm_db": 32.48,
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.84
+  },
+  {
+   "fc_khz": 117.361,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.22
+  },
+  {
+   "fc_khz": 117.361,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.22
+  },
+  {
+   "fc_khz": 117.361,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.22
+  },
+  {
+   "fc_khz": 65.858,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 56.27
+  },
+  {
+   "fc_khz": 65.858,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 56.27
+  },
+  {
+   "fc_khz": 65.858,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 56.27
+  },
+  {
+   "fc_khz": 65.883,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.9
+  },
+  {
+   "fc_khz": 65.883,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.9
+  },
+  {
+   "fc_khz": 65.883,
+   "gm_db": "none",
+   "lf_t0_db": 52.1,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 4.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.9
+  },
+  {
+   "fc_khz": 226.02,
+   "gm_db": 23.13,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 58.81
+  },
+  {
+   "fc_khz": 226.02,
+   "gm_db": 23.13,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 58.81
+  },
+  {
+   "fc_khz": 226.02,
+   "gm_db": 23.13,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 58.81
+  },
+  {
+   "fc_khz": 226.325,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.79
+  },
+  {
+   "fc_khz": 226.325,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.79
+  },
+  {
+   "fc_khz": 226.325,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.79
+  },
+  {
+   "fc_khz": 182.442,
+   "gm_db": 28.12,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.88
+  },
+  {
+   "fc_khz": 182.442,
+   "gm_db": 28.12,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.88
+  },
+  {
+   "fc_khz": 182.442,
+   "gm_db": 28.12,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.88
+  },
+  {
+   "fc_khz": 182.702,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.94
+  },
+  {
+   "fc_khz": 182.702,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.94
+  },
+  {
+   "fc_khz": 182.702,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.94
+  },
+  {
+   "fc_khz": 99.236,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.88
+  },
+  {
+   "fc_khz": 99.236,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.88
+  },
+  {
+   "fc_khz": 99.236,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.88
+  },
+  {
+   "fc_khz": 99.375,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 66.22
+  },
+  {
+   "fc_khz": 99.375,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 66.22
+  },
+  {
+   "fc_khz": 99.375,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 66.22
+  },
+  {
+   "fc_khz": 186.051,
+   "gm_db": 25.04,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.66
+  },
+  {
+   "fc_khz": 186.051,
+   "gm_db": 25.04,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.66
+  },
+  {
+   "fc_khz": 186.051,
+   "gm_db": 25.04,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.66
+  },
+  {
+   "fc_khz": 186.219,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.3
+  },
+  {
+   "fc_khz": 186.219,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.3
+  },
+  {
+   "fc_khz": 186.219,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.3
+  },
+  {
+   "fc_khz": 149.924,
+   "gm_db": 30.0,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.41
+  },
+  {
+   "fc_khz": 149.924,
+   "gm_db": 30.0,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.41
+  },
+  {
+   "fc_khz": 149.924,
+   "gm_db": 30.0,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.41
+  },
+  {
+   "fc_khz": 150.063,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.13
+  },
+  {
+   "fc_khz": 150.063,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.13
+  },
+  {
+   "fc_khz": 150.063,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.13
+  },
+  {
+   "fc_khz": 82.297,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.79
+  },
+  {
+   "fc_khz": 82.297,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.79
+  },
+  {
+   "fc_khz": 82.297,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.79
+  },
+  {
+   "fc_khz": 82.367,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.76
+  },
+  {
+   "fc_khz": 82.367,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.76
+  },
+  {
+   "fc_khz": 82.367,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.76
+  },
+  {
+   "fc_khz": 158.462,
+   "gm_db": 26.6,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.34
+  },
+  {
+   "fc_khz": 158.462,
+   "gm_db": 26.6,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.34
+  },
+  {
+   "fc_khz": 158.462,
+   "gm_db": 26.6,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.34
+  },
+  {
+   "fc_khz": 158.564,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.76
+  },
+  {
+   "fc_khz": 158.564,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.76
+  },
+  {
+   "fc_khz": 158.564,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.76
+  },
+  {
+   "fc_khz": 127.754,
+   "gm_db": 31.56,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.02
+  },
+  {
+   "fc_khz": 127.754,
+   "gm_db": 31.56,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.02
+  },
+  {
+   "fc_khz": 127.754,
+   "gm_db": 31.56,
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.02
+  },
+  {
+   "fc_khz": 127.836,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.5
+  },
+  {
+   "fc_khz": 127.836,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.5
+  },
+  {
+   "fc_khz": 127.836,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.5
+  },
+  {
+   "fc_khz": 70.955,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.56
+  },
+  {
+   "fc_khz": 70.955,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.56
+  },
+  {
+   "fc_khz": 70.955,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.56
+  },
+  {
+   "fc_khz": 70.994,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.28
+  },
+  {
+   "fc_khz": 70.994,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.28
+  },
+  {
+   "fc_khz": 70.994,
+   "gm_db": "none",
+   "lf_t0_db": 53.0,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.28
+  },
+  {
+   "fc_khz": 244.65,
+   "gm_db": 22.3,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.51
+  },
+  {
+   "fc_khz": 244.65,
+   "gm_db": 22.3,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.51
+  },
+  {
+   "fc_khz": 244.65,
+   "gm_db": 22.3,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 57.51
+  },
+  {
+   "fc_khz": 245.042,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.64
+  },
+  {
+   "fc_khz": 245.042,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.64
+  },
+  {
+   "fc_khz": 245.042,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.64
+  },
+  {
+   "fc_khz": 197.67,
+   "gm_db": 27.28,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.06
+  },
+  {
+   "fc_khz": 197.67,
+   "gm_db": 27.28,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.06
+  },
+  {
+   "fc_khz": 197.67,
+   "gm_db": 27.28,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.06
+  },
+  {
+   "fc_khz": 198.008,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.27
+  },
+  {
+   "fc_khz": 198.008,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.27
+  },
+  {
+   "fc_khz": 198.008,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.27
+  },
+  {
+   "fc_khz": 107.104,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.3
+  },
+  {
+   "fc_khz": 107.104,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.3
+  },
+  {
+   "fc_khz": 107.104,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 64.3
+  },
+  {
+   "fc_khz": 107.292,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 66.8
+  },
+  {
+   "fc_khz": 107.292,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 66.8
+  },
+  {
+   "fc_khz": 107.292,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 0.8,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 66.8
+  },
+  {
+   "fc_khz": 201.578,
+   "gm_db": 24.2,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.81
+  },
+  {
+   "fc_khz": 201.578,
+   "gm_db": 24.2,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.81
+  },
+  {
+   "fc_khz": 201.578,
+   "gm_db": 24.2,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 59.81
+  },
+  {
+   "fc_khz": 201.797,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.58
+  },
+  {
+   "fc_khz": 201.797,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.58
+  },
+  {
+   "fc_khz": 201.797,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.58
+  },
+  {
+   "fc_khz": 162.391,
+   "gm_db": 29.17,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.05
+  },
+  {
+   "fc_khz": 162.391,
+   "gm_db": 29.17,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.05
+  },
+  {
+   "fc_khz": 162.391,
+   "gm_db": 29.17,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.05
+  },
+  {
+   "fc_khz": 162.574,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.89
+  },
+  {
+   "fc_khz": 162.574,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.89
+  },
+  {
+   "fc_khz": 162.574,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.89
+  },
+  {
+   "fc_khz": 88.544,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.6
+  },
+  {
+   "fc_khz": 88.544,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.6
+  },
+  {
+   "fc_khz": 88.544,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 61.6
+  },
+  {
+   "fc_khz": 88.641,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.69
+  },
+  {
+   "fc_khz": 88.641,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.69
+  },
+  {
+   "fc_khz": 88.641,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.69
+  },
+  {
+   "fc_khz": 171.675,
+   "gm_db": 25.77,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.87
+  },
+  {
+   "fc_khz": 171.675,
+   "gm_db": 25.77,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.87
+  },
+  {
+   "fc_khz": 171.675,
+   "gm_db": 25.77,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.87
+  },
+  {
+   "fc_khz": 171.808,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.39
+  },
+  {
+   "fc_khz": 171.808,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.39
+  },
+  {
+   "fc_khz": 171.808,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 4.7e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.39
+  },
+  {
+   "fc_khz": 138.235,
+   "gm_db": 30.72,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.04
+  },
+  {
+   "fc_khz": 138.235,
+   "gm_db": 30.72,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.04
+  },
+  {
+   "fc_khz": 138.235,
+   "gm_db": 30.72,
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 2,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 62.04
+  },
+  {
+   "fc_khz": 138.345,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.62
+  },
+  {
+   "fc_khz": 138.345,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.62
+  },
+  {
+   "fc_khz": 138.345,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 6e-06,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": true,
+    "fc": true,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 63.62
+  },
+  {
+   "fc_khz": 76.111,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 58.66
+  },
+  {
+   "fc_khz": 76.111,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 58.66
+  },
+  {
+   "fc_khz": 76.111,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.005,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 58.66
+  },
+  {
+   "fc_khz": 76.166,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.48
+  },
+  {
+   "fc_khz": 76.166,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.25,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.48
+  },
+  {
+   "fc_khz": 76.166,
+   "gm_db": "none",
+   "lf_t0_db": 53.8,
+   "n_180_crossings": 0,
+   "n_unity_crossings": 1,
+   "params": {
+    "ceff": 1.2e-05,
+    "esr": 0.01,
+    "iload": 0.5,
+    "lfac": 1.2,
+    "vin": 5.5
+   },
+   "pass": {
+    "all": false,
+    "fc": false,
+    "gm": true,
+    "pm": true
+   },
+   "pm_deg": 60.48
+  }
+ ],
+ "precision": {
+  "fc": "kHz, 3 decimals",
+  "gm": "dB, 2 decimals",
+  "pm": "deg, 2 decimals"
+ },
+ "remote": {
+  "ami_id": "ami-0f6bb304291339ed0",
+  "availability_zone": "us-east-1c",
+  "client_collected_at": "2026-11-13T17:46:46.736626Z",
+  "client_klt_version": "0.9.2.dev887+gec7400b7d8e5",
+  "client_launched_at": "2026-11-13T17:46:10.566639Z",
+  "client_status_terminal_at": "2026-11-13T17:46:42.079403Z",
+  "client_submitted_at": "2026-11-13T17:45:06.954546Z",
+  "concurrency": "1",
+  "elapsed_seconds": 15,
+  "exit_code": "0",
+  "instance_id": "i-05e9f51fb63a55e01",
+  "instance_type": "m6i.4xlarge",
+  "job_ceiling": {
+   "basis": "conservative_serial_bound",
+   "check": "warn",
+   "exceeds_ceiling": true,
+   "job_bound_s": 19560.0,
+   "max_job_seconds": 3600.0,
+   "max_job_seconds_source": "fleet_config",
+   "max_units_per_job": 29,
+   "overhead_s": 120.0,
+   "per_unit_timeout_s": 120,
+   "recommended_hosts": 6,
+   "unit_count": 162,
+   "warning": "batch job bound 19560s (options.timeout_s 120s x 162 units + 120s; a conservative fully-serial upper bound, not a runtime estimate) exceeds the fleet's whole-job ceiling of 3600s (max_job_seconds from fleet_config); a job still running at the ceiling is killed and every unit is reported batch_job_timeout. Set request.remote.hosts to at least 6 to run one job per shard of at most 29 units, each within the ceiling"
+  },
+  "job_id": "klt-sim-5496e52315a5",
+  "lifecycle": "spot",
+  "models_lib_comparison": {
+   "reason": "runner_hash_unavailable",
+   "status": "not_comparable"
+  },
+  "physical_cores": "8",
+  "provider": "aws-batch-fleet",
+  "region": "us-east-1",
+  "runner_compatibility": "match",
+  "runner_klt_version": "0.9.0",
+  "runner_model_inputs": null,
+  "runner_models_lib_sha256": null,
+  "runner_request_features": {
+   "missing": [],
+   "required": [
+    "transfer",
+    "complex_vectors",
+    "corners.params"
+   ],
+   "status": "supported"
+  },
+  "spot": true,
+  "state": "done",
+  "worker_environment": {
+   "capture": "ok",
+   "cpu_model": "Intel(R) Xeon(R) Platinum 8375C CPU @ 2.90GHz",
+   "diagnostics": [
+    "pdk root or variant unknown on worker"
+   ],
+   "engine_build_comparison": {
+    "status": "match"
+   },
+   "image_manifest": null,
+   "model_inputs": null,
+   "omp_num_threads": null,
+   "pdk": {
+    "models_staged": false,
+    "root": "/opt/pdk",
+    "stamp_scheme": null,
+    "stamp_scope": "executed",
+    "stamp_sha256": null,
+    "stamp_text": null,
+    "variant": null
+   },
+   "pdk_stamp_comparison": {
+    "reason": "worker_stamp_unavailable",
+    "status": "not_comparable"
+   },
+   "simulator": {
+    "binary_source": "PATH",
+    "requested_binary": "ngspice",
+    "selected_path": "/usr/local/bin/ngspice",
+    "version_banner": "******\n** ngspice-47 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2026, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Thu Nov 12 22:47:40 UTC 2026\n******\n",
+    "version_probe": "ok"
+   }
+  }
+ },
+ "request_sha256": "41eea10aa550aed4f26cc3d5b9c22dd29077f86e373f5349adb3795f43ef4c31",
+ "results_sha256": "781e1a29003df4052dc3933819b80252dcb8328acd1695f37987b25dbfec3edb",
+ "schema": 1,
+ "summary": {
+  "fail_any": 48,
+  "fail_fc": 48,
+  "fail_gm": 0,
+  "fail_pm": 0,
+  "fc_khz_max": 245.042,
+  "fc_khz_min": 65.858,
+  "gm_db_min": 22.3,
+  "pass_all": 114,
+  "pm_deg_min": 56.27
+ },
+ "target": {
+  "fc_hz_max": 250000.0,
+  "fc_hz_min": 100000.0,
+  "gm_db_min": 10.0,
+  "pm_deg_min": 45.0
+ }
+}

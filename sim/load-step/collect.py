@@ -61,9 +61,9 @@ def grade_unit(corner, bench, tm):
     key = parse_id(corner["corner_id"])
     u = {"id": corner["corner_id"], "bench": bench, **key, "klt_status": corner.get("status"),
          "klt_diagnostics": [d.get("code") for d in corner.get("diagnostics") or []]}
-    raw = (corner.get("artifacts") or {}).get("raw")
-    if corner.get("status") not in ("pass", "fail") or not raw or not os.path.exists(raw):
-        u.update(graded=False, reason="no waveform: klt status %s %s" % (corner.get("status"), u["klt_diagnostics"]))
+    raw, reason = recordkit.waveform_or_reason(corner)
+    if reason:
+        u.update(graded=False, reason=reason)
         return u
     avg = bench == "avg"
     need = ("time", "v(vo)", "i(l1)") if avg else rawgrade.NEEDED
@@ -73,14 +73,14 @@ def grade_unit(corner, bench, tm):
         vout, il, f_sw, t_clk0 = c["v(vo)"], c["i(l1)"], F_AVG, 0.0
         u["clock"] = {"source": "commanded %g Hz (the averaged model has no clock)" % F_AVG}
     else:
-        xs = rawgrade.sw_rising_crossings(t, c["v(sw_d)"], key["vin_v"])
-        if len(xs) < 41:
-            u.update(graded=False, reason="fewer than 41 switching cycles in the saved tail (%d)" % len(xs))
+        clk = rawgrade.clock_from_crossings(rawgrade.sw_rising_crossings(t, c["v(sw_d)"], key["vin_v"]))
+        if clk["f_hz"] is None:
+            u.update(graded=False, reason=clk["reason"])
             return u
-        f_sw, t_clk0, vout, il = (len(xs) - 1) / (xs[-1] - xs[0]), xs[0], c["v(out)"], c["i(lind)"]
-        u["clock"] = {"source": "rising crossings of Vin/2 on V(sw) over the saved tail", "f_hz": f_sw, "crossings": len(xs)}
-    max_dt = max(b - a for a, b in zip(t, t[1:]))
-    u["run"] = {"t_first_s": t[0], "t_last_s": t[-1], "step_max_observed_s": max_dt, "step_ok": max_dt <= 2.5e-9 * 1.001}
+        f_sw, t_clk0, vout, il = clk["f_hz"], clk["t_clk0_s"], c["v(out)"], c["i(lind)"]
+        u["clock"] = {"source": "rising crossings of Vin/2 on V(sw) over the saved tail", "f_hz": f_sw, "crossings": clk["crossings"]}
+    max_dt, step_ok = buckmeas.step_check(t)
+    u["run"] = {"t_first_s": t[0], "t_last_s": t[-1], "step_max_observed_s": max_dt, "step_ok": step_ok}
     pair = buckmeas.load_step_pair(t, vout, il, f_sw, tm["t_up"], tm["t_dn"], BAND, t_clk0=t_clk0)
     u["graded"] = True
     for name, r in pair.items():
