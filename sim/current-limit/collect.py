@@ -29,21 +29,22 @@ TRIP_LEVEL = 1.65                     # V, VDD33 / 2
 T_R0 = 600e-6                         # s, bench.spice: load ramp starts
 MIN_SETTLE_S = 10e-6                  # min case: peak I(L) and f read from 10 us after the 1 us load step
 V_REG_MIN = 0.9 * 1.8                 # V: Vout at the start of the load must be >= 90 % of target (start-up done)
-STEP_MAX = 2.5e-9
 NEEDED = ("time", "v(out)", "i(lind)", "v(sw_d)", "v(xtop.trip)")
 
 
 def unit_base(c):
     key, p = recordkit.parse_corner(c["corner_id"])
     u = {"id": c["corner_id"], **key, "params": p, "klt_status": c.get("status")}
-    raw = (c.get("artifacts") or {}).get("raw")
-    if c.get("status") not in ("pass", "fail") or not raw or not os.path.exists(raw):
-        u.update(graded=False, reason="no waveform: klt status %s %s" % (c.get("status"), [(d.get("code"), (d.get("message") or "")[-90:]) for d in c.get("diagnostics") or []][:1]))
+    raw, reason = recordkit.waveform_or_reason(c)
+    if reason:
+        u.update(graded=False, reason=reason)
         return u, None
     d = rawgrade.read_ascii_raw(raw, NEEDED)
     t = d["time"]
-    u.update(graded=True, window_s=[t[0], t[-1]], step_max_s=max(b - a for a, b in zip(t, t[1:])))
-    u["step_ok"] = u["step_max_s"] <= STEP_MAX * (1 + 1e-3)
+    step_max_s, step_ok = buckmeas.step_check(t)
+    u.update(graded=True, window_s=[t[0], t[-1]], step_max_s=step_max_s)
+    # R16's verdicts do not read step_ok (see judge()); it is recorded per unit as §0.4 evidence.
+    u["step_ok"] = step_ok
     return u, d
 
 
@@ -73,7 +74,9 @@ def min_unit(c):
     t0 = T_R0 + MIN_SETTLE_S
     ev = buckmeas.trip_event(t, trip, il, TRIP_LEVEL, t_from=T_R0)
     xs = [x for x in rawgrade.sw_rising_crossings(t, d["v(sw_d)"], u["vin_v"]) if x >= t0]
-    f_sw = (len(xs) - 1) / (xs[-1] - xs[0]) if len(xs) > 2 else None
+    # this bench reads f_sw on a deliberately short hold after the load step, so it keeps its
+    # own minimum (3 crossings) rather than the 41 a graded steady-state tail needs
+    f_sw = rawgrade.clock_from_crossings(xs, min_crossings=3)["f_hz"]
     tt, (ii,) = buckmeas.window(t, [il], t0, t[-1])
     u.update(vout_at_load_start_v=d["v(out)"][0], in_regulation_at_load_start=d["v(out)"][0] >= V_REG_MIN)
     u.update(trip=ev, n_trip_assertions=ev["n_assertions"], peak_il_a=max(ii), f_sw_hz=f_sw,
@@ -142,7 +145,7 @@ def main(argv=None):
         "environment": {**hdr, "reports": [env("ramp", a.ramp), env("min", a.mn)],
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "request_ramp.json", "request_min.json", "gen_requests.py"),
-                            ("design/netlists/buck_top.spice",), ("buckmeas.py", "rawgrade.py"))},
+                            ("design/netlists/buck_top.spice",), ("bench_harness.spice", "buckmeas.py", "rawgrade.py"))},
         "method": {
             "analysis_ramp": ".tran 2.5n 920u, saved from 600 us; max step 2.5 ns = T/200 at 2 MHz; soft start done by 520 us (R15 max), "
                              "load 0 -> 3 A linear over 300 us from 600 us (10 mA/us, ~5 mA per cycle)",

@@ -37,6 +37,9 @@ LOAD_STEP_MIN_CYCLES = 100  # §0.4: run >= 100 cycles after the step ...
 BAND_CYCLES = 20  # ... or 20 consecutive in-band cycles, whichever is longer
 RIPPLE_LP_HZ = 20e6  # R11
 STEP_DIVISOR = 200  # §0.4: max step T/200
+F_SW_SPEC_HZ = 2.0e6  # §0.4: the commanded switching clock every bench of this block is run at
+STEP_MAX_S = 1.0 / (STEP_DIVISOR * F_SW_SPEC_HZ)  # 2.5 ns: the §0.4 max step at F_SW_SPEC_HZ
+STEP_TOL = 1e-3  # §0.4: the max step is met to 0.1 %
 MONO_EPS_V = 1e-3  # R15: a per-cycle mean may sag this far (1 mV) before "monotonic" fails
 _EPS_CYCLES = 1e-6  # a time this close to a cycle boundary is on it
 
@@ -106,6 +109,17 @@ def _integral(tt, yy):
 def window_mean(t, y, t0, t1):
     tt, (yy,) = window(t, [y], t0, t1)
     return _integral(tt, yy) / (t1 - t0)
+
+
+def step_check(t, step_max=STEP_MAX_S):
+    """§0.4 max-step rule on a time column -> (largest observed step [s], within the rule).
+
+    The rule is met to STEP_TOL (0.1 %), so a run whose largest step is exactly
+    `step_max * (1 + STEP_TOL)` still passes. One implementation for every bench:
+    `analyze_columns` and the collectors all grade the step this way.
+    """
+    max_dt = max(b - a for a, b in zip(t, t[1:]))
+    return max_dt, max_dt <= step_max * (1 + STEP_TOL)
 
 
 def cycle_floor(t_x, f_sw, t_clk0=0.0):
@@ -408,13 +422,13 @@ def analyze_columns(t, vout, il, vsw, pin, *, f_sw, vin, tier_params, step_max,
                     fc_ripple=RIPPLE_LP_HZ):
     """`analyze` on already-parsed columns (same arguments, same result)."""
     T = 1.0 / f_sw
-    max_dt = max(b - a for a, b in zip(t, t[1:]))
+    max_dt, step_ok = step_check(t, step_max)
     run = {
         "t_first_s": t[0], "t_last_s": t[-1], "run_length_s": t[-1] - t[0],
         "n_points": len(t), "f_sw_commanded_hz": f_sw, "period_s": T,
         "run_cycles": (t[-1] - t[0]) * f_sw,
         "step_max_spec_s": step_max, "step_max_observed_s": max_dt,
-        "step_ok": max_dt <= step_max * (1 + 1e-3),
+        "step_ok": step_ok,
         "analysis": "ngspice .tran (no periodic steady state), settled per spec §0.4",
     }
     if t_settle_end is None:

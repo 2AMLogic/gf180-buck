@@ -28,7 +28,6 @@ IL_TRIP_MIN = 0.70                    # A, R16 min trip: the peak I(L) during st
 T_EN = 20e-6                          # s, bench.spice EN rise
 TRIP_LEVEL = 1.65                     # V, VDD33 / 2 on the digital TRIP net
 R6_TAIL_S = 100e-6                    # R6 clause is read on the last 100 us (~200 cycles) at 0 load
-STEP_MAX = 2.5e-9
 NEEDED = ("time", "v(out)", "i(lind)", "v(sw_d)", "v(xtop.trip)")
 
 
@@ -36,9 +35,9 @@ def unit_record(c):
     key, params = recordkit.parse_corner(c["corner_id"])
     u = {"id": c["corner_id"], **key, "rload_ohm": params["rload"], "klt_status": c.get("status")}
     u["load"] = "none" if u["rload_ohm"] > 1e6 else "%g ohm" % u["rload_ohm"]
-    raw = (c.get("artifacts") or {}).get("raw")
-    if c.get("status") not in ("pass", "fail") or not raw or not os.path.exists(raw):
-        u.update(graded=False, reason="no waveform: klt status %s %s" % (c.get("status"), [(d.get("code"), (d.get("message") or "")[-90:]) for d in c.get("diagnostics") or []][:1]))
+    raw, reason = recordkit.waveform_or_reason(c)
+    if reason:
+        u.update(graded=False, reason=reason)
         return u
     d = rawgrade.read_ascii_raw(raw, NEEDED)
     t = d["time"]
@@ -46,9 +45,10 @@ def unit_record(c):
     if not edges or edges[0] <= t[0] or abs(d["v(out)"][0]) > 0.05 * V_TARGET:
         u.update(graded=False, reason="switching already under way at the start of the saved window (EN): start-up not captured")
         return u
-    u.update(graded=True, step_max_s=max(b - a for a, b in zip(t, t[1:])), window_s=[t[0], t[-1]],
+    step_max_s, step_ok = buckmeas.step_check(t)
+    u.update(graded=True, step_max_s=step_max_s, window_s=[t[0], t[-1]],
              run_cycles_saved=len(edges) - 1)
-    u["step_ok"] = u["step_max_s"] <= STEP_MAX * (1 + 1e-3)
+    u["step_ok"] = step_ok
     ss = buckmeas.soft_start(t, d["v(out)"], d["i(lind)"], edges, t_en=T_EN, v_target=V_TARGET, v_reg_max=V_REG_MAX)
     u["soft_start"] = ss
     tail = buckmeas.trip_event(t, d["v(xtop.trip)"], d["i(lind)"], TRIP_LEVEL, t_from=t[-1] - R6_TAIL_S)
@@ -133,7 +133,7 @@ def main(argv=None):
                                    "remote": recordkit.remote_subset(rep, ("provider", "job_id", "instance_type", "state"))},
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "request_grid.json", "gen_requests.py"),
-                            ("design/netlists/buck_top.spice",), ("buckmeas.py", "rawgrade.py"))},
+                            ("design/netlists/buck_top.spice",), ("bench_harness.spice", "buckmeas.py", "rawgrade.py"))},
         "method": {
             "analysis": ".tran 2.5n 700u, saved from 20 us (EN); max step 2.5 ns = T/200 at 2 MHz (unit.step_ok)",
             "startup": "Vin ramps 0 -> Vin over 10 us, control rails / bias over 5 us, EN at 20 us; load resistor present from t = 0",

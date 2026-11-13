@@ -79,6 +79,74 @@ class EnvTest(unittest.TestCase):
             self.assertEqual(h["sim/lib/recordkit.py"], recordkit.sha256(recordkit.__file__))
 
 
+class WaveformOrReasonTest(unittest.TestCase):
+    """The one no-waveform guard: which klt corners carry a value, and what the others record."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.raw = os.path.join(self.tmp.name, "waveform.raw")
+        with open(self.raw, "w") as fh:
+            fh.write("x")
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def corner(self, status="pass", raw="?", diagnostics=None):
+        c = {"corner_id": CID, "status": status,
+             "artifacts": {"raw": self.raw if raw == "?" else raw}}
+        if diagnostics is not None:
+            c["diagnostics"] = diagnostics
+        return c
+
+    def test_pass_and_fail_with_a_raw_on_disk_grade(self):
+        for status in ("pass", "fail"):
+            raw, reason = recordkit.waveform_or_reason(self.corner(status=status))
+            self.assertEqual(raw, self.raw)
+            self.assertIsNone(reason)
+
+    def test_other_statuses_carry_no_value(self):
+        for status in ("timeout", "error", "skipped", None):
+            raw, reason = recordkit.waveform_or_reason(self.corner(status=status))
+            self.assertIsNone(raw)
+            self.assertEqual(reason, "no waveform: klt status %s []" % status)
+
+    def test_pass_but_the_raw_file_is_missing(self):
+        raw, reason = recordkit.waveform_or_reason(
+            self.corner(raw=os.path.join(self.tmp.name, "gone.raw")))
+        self.assertIsNone(raw)
+        self.assertEqual(reason, "no waveform: klt status pass []")
+
+    def test_pass_but_no_raw_named_at_all(self):
+        for corner in ({"status": "pass"},                    # no artifacts key
+                       {"status": "pass", "artifacts": {}},   # artifacts, no raw
+                       self.corner(raw="")):                  # raw named as an empty string
+            raw, reason = recordkit.waveform_or_reason(corner)
+            self.assertIsNone(raw)
+            self.assertEqual(reason, "no waveform: klt status pass []")
+
+    def test_reason_carries_the_first_diagnostic_code_and_message(self):
+        _, reason = recordkit.waveform_or_reason(self.corner(
+            status="timeout",
+            diagnostics=[{"code": "sim_timeout", "message": "ngspice exceeded the 900 s wall clock"},
+                         {"code": "ignored", "message": "second diagnostic is not recorded"}]))
+        self.assertEqual(
+            reason,
+            "no waveform: klt status timeout "
+            "[('sim_timeout', 'ngspice exceeded the 900 s wall clock')]")
+
+    def test_long_message_is_truncated_to_its_tail(self):
+        msg = "A" * 50 + "B" * 120
+        _, reason = recordkit.waveform_or_reason(
+            self.corner(status="error", diagnostics=[{"code": "spice_error", "message": msg}]))
+        self.assertIn("B" * recordkit.DIAG_MSG_TAIL, reason)
+        self.assertNotIn("A", reason)
+
+    def test_diagnostic_without_a_message(self):
+        _, reason = recordkit.waveform_or_reason(
+            self.corner(status="error", diagnostics=[{"code": "spice_error"}]))
+        self.assertEqual(reason, "no waveform: klt status error [('spice_error', '')]")
+
+
 class GenkitTest(unittest.TestCase):
     def test_process_bundles(self):
         by = {p["name"]: p["sections"] for p in genkit.PROCESS}
