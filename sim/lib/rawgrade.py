@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import buckmeas  # noqa: E402
 
 NEEDED = ("time", "i(lind)", "v(out)", "v(sw_d)", "v(vsrc)", "i(vsrc)")
+MIN_CLOCK_CROSSINGS = 41  # a graded tail carries at least 40 whole switching cycles
 
 
 def read_ascii_raw(path, needed=NEEDED):
@@ -60,13 +61,30 @@ def sw_rising_crossings(t, vsw, vin):
     return out
 
 
+def clock_from_crossings(xs, min_crossings=MIN_CLOCK_CROSSINGS):
+    """Rising V(sw) crossings -> the free-running clock of the saved tail.
+
+    The bench oscillator free-runs, so period and phase are taken from the run itself:
+    `f_hz` is the mean rate over the whole span and `t_clk0_s` is the first crossing.
+    Fewer than `min_crossings` crossings is not a clock: `f_hz` and `t_clk0_s` come back
+    None with `reason` saying so, and the caller gives the unit no value. One
+    implementation for every bench that reads a clock off V(sw).
+    """
+    n = len(xs)
+    if n < min_crossings:
+        return {"crossings": n, "f_hz": None, "t_clk0_s": None,
+                "reason": "fewer than %d switching cycles in the saved tail (%d)" % (min_crossings, n)}
+    return {"crossings": n, "f_hz": (n - 1) / (xs[-1] - xs[0]), "t_clk0_s": xs[0], "reason": None}
+
+
 def grade(raw_path, vin, iload, step_max):
     c = read_ascii_raw(raw_path)
     t = c["time"]
     xs = sw_rising_crossings(t, c["v(sw_d)"], vin)
-    if len(xs) < 41:
-        return {"graded": False, "reason": "fewer than 41 switching cycles in the saved tail (%d)" % len(xs)}
-    f_sw = (len(xs) - 1) / (xs[-1] - xs[0])
+    clk = clock_from_crossings(xs)
+    if clk["f_hz"] is None:
+        return {"graded": False, "reason": clk["reason"]}
+    f_sw = clk["f_hz"]
     pin = [-v * i for v, i in zip(c["v(vsrc)"], c["i(vsrc)"])]
     res = buckmeas.analyze_columns(t, c["v(out)"], c["i(lind)"], c["v(sw_d)"], pin, f_sw=f_sw,
                                    vin=vin, tier_params={"i_load": iload}, step_max=step_max,
@@ -91,7 +109,7 @@ def main(argv=None):
     ap.add_argument("raw")
     ap.add_argument("--vin", type=float, required=True, help="board-side Vin of this corner [V]")
     ap.add_argument("--iload", type=float, required=True, help="load current [A]")
-    ap.add_argument("--step-max", type=float, default=2.5e-9, help="spec 0.4 max step [s]")
+    ap.add_argument("--step-max", type=float, default=buckmeas.STEP_MAX_S, help="spec 0.4 max step [s]")
     ap.add_argument("--out")
     a = ap.parse_args(argv)
     try:

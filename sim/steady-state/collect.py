@@ -17,6 +17,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
+import buckmeas  # noqa: E402
 import rawgrade  # noqa: E402
 import recordkit  # noqa: E402
 from recordkit import parse_id as _parse_id  # noqa: E402
@@ -38,12 +39,11 @@ def unit_record(corner, bench):
     key = parse_id(corner["corner_id"])
     u = {"id": corner["corner_id"], **key, "bench": bench, "klt_status": corner.get("status"),
          "klt_diagnostics": [d.get("code") for d in corner.get("diagnostics") or []]}
-    raw = (corner.get("artifacts") or {}).get("raw")
-    if corner.get("status") not in ("pass", "fail") or not raw or not os.path.exists(raw):
-        u.update(graded=False, settled=False, reason="no waveform: klt status %s %s" % (
-            corner.get("status"), u["klt_diagnostics"]))
+    raw, reason = recordkit.waveform_or_reason(corner)
+    if reason:
+        u.update(graded=False, settled=False, reason=reason)
         return u
-    g = rawgrade.grade(raw, key["vin_v"], key["iload_a"], 2.5e-9)
+    g = rawgrade.grade(raw, key["vin_v"], key["iload_a"], buckmeas.STEP_MAX_S)
     u["graded"] = g["graded"]
     if not g["graded"]:
         u.update(settled=False, reason=g["reason"])
