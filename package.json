@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "worktree:return": "./.loom/scripts/worktree-return.sh",
-    "check:ci": "echo 'No CI checks configured. Customize this script for your project.' && exit 0",
-    "check:all": "echo 'No checks configured. Customize this script for your project.' && exit 0",
-    "test": "echo 'No tests configured. Customize this script for your project.' && exit 0",
+    "check:ci": "npm run --silent test",
+    "check:all": "npm run --silent test",
+    "test": "python3 -I -m unittest discover sim/lib && python3 -I -m unittest discover -s design -p 'test_*.py' && python3 -I -m unittest discover -s design/averaged -p 'test_*.py' && python3 -I manifests/check_readme.py",
     "lint": "echo 'No linter configured. Customize this script for your project.' && exit 0"
   }
 }
