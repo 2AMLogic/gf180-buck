@@ -76,6 +76,13 @@ python3 -m unittest discover sim/lib     # unit tests on synthetic waveforms
 sim/buck-ideal/run.sh                    # one local ngspice run + module + JSON record
 ```
 
+`npm run test` (equivalently `pnpm -s test`) from the repository root runs these
+unit tests together with the `design` netlist geometry check, the
+`design/averaged` extraction tests and the README structure check. It needs only
+`python3` — no PDK, no ngspice, no `klt` — and is the same entry point CI runs on
+every pull request, so it is the quickest way to tell whether a change broke a
+grader.
+
 `sim/lib/buckmeas.py` (PDK-free, stdlib only) grades a switching-converter
 `.tran` the way spec §0.4 says: the settled-window test (two consecutive
 20-cycle windows, < 0.1 % in mean Vout and < 1 % in peak I(L)), then on the
