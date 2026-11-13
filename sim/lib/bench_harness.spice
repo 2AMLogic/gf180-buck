@@ -4,14 +4,21 @@
 * sim/{steady-state,current-limit,device-stress,load-step,soft-start}/bench.spice.
 *
 * Each including deck keeps its own header, its .include lines, its request-axis and
-* fixed-assumption .param lines, Vsrc (klt rescales that PWL per corner, so it must stay
-* in the top-level deck -- see sim/device-stress/README.md) and its own load card.
+* fixed-assumption .param lines, its load card, and the two source cards below.
+*
+* Vsrc  -- klt rescales that PWL per corner, which it can only do in the top-level deck
+*          (sim/device-stress/README.md).
+* Iosc  -- current-limit sweeps the oscillator bias as osc_k, and `{12u*osc_k}` does NOT
+*          re-parse to the same double as the literal `12u`, so one shared expression form
+*          would change every other deck's trajectory in its last bit. Each deck writes the
+*          card it needs (sim/README.md, "Shared bench harness").
 *
 * Parameters the including deck must define before this file:
 *   r_wire l_wire wires c_die esr_die          (package / die decoupling)
-*   vdd3 vbg osc_k t_en                        (control domain; osc_k = 1 unless swept)
+*   vdd3 vbg t_en                              (control domain)
 *   l_ind dcr c_wind r_wind c_out esr esl      (external inductor and output capacitor)
-* Nodes it must supply: vsrc (board side of the package), out (output / load node).
+* Nodes it must supply: vsrc (board side of the package), ib_osc (oscillator bias, driven
+* by the deck's own Iosc), out (output / load node).
 *
 * Package: VIN / SW / GND nets, N parallel wires each. 0.5 pF pad capacitance omitted
 * (same reason as sim/buck-ideal/buck.spice); die-side Vin decoupling is a bench assumption.
@@ -28,7 +35,6 @@ Rdie nd1 gnd_d {esr_die}
 * sources, fixed over corners; see README.md "Bench assumptions"). All up before EN.
 Vdd33 vdd33 gnd_d PWL(0 0 5u {vdd3})
 Vbg vbg gnd_d PWL(0 0 5u {vbg})
-Iosc gnd_d ib_osc PWL(0 0 5u {12u*osc_k})
 Ipwm gnd_d ib_pwm PWL(0 0 5u 10u)
 Iss gnd_d ib_ss PWL(0 0 5u 10u)
 Iocp gnd_d ib_ocp PWL(0 0 5u 10u)

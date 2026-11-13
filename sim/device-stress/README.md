@@ -26,8 +26,11 @@ is that corner's constant-current Vth (typical, 27 C, 5 V: Vthn 0.686 V, Vthp 0.
 as the `vthn` / `vthp` measurements. It is the threshold the spec asks for (the minimum Vth over the
 corner is the corner point's own Vth, the corner axes being process x T). Netlists are not changed.
 
-`Vsrc` is the one shared card the harness does not own: `klt` rescales that PWL per corner, which it can do
-only in the top-level deck, so every bench keeps its own copy of it (the unit test asserts this).
+`Vsrc` and `Iosc` are the two cards the harness does not own, so every bench keeps its own copy of each
+(the unit test asserts this). `klt` rescales the `Vsrc` PWL per corner, which it can only do in the
+top-level deck; `Iosc` stays out because the current-limit bench sweeps the oscillator bias as `osc_k` and
+a shared `{12u*osc_k}` card does not re-parse to the same double as the literal `12u` -- see
+`sim/README.md`, "Shared bench harness".
 
 ## Run length, step, steady state
 

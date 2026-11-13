@@ -22,14 +22,15 @@
 .param c_out=6u esr=5m esl=0.5n
 .param r_wire=0.10 l_wire=2n wires=2
 .param c_die=1u esr_die=20m
-.param osc_k=1
 .param t_en=20u t_load=260u t_load_ramp=0.5u
 
 * Board side: ideal source (Vin), ramped from 0; klt rescales this PWL per corner
 Vsrc vsrc 0 PWL(0 0 10u 5)
+* Oscillator bias: each deck writes its own card rather than the shared harness (sim/README.md)
+Iosc gnd_d ib_osc PWL(0 0 5u 12u)
 * ---- shared bench harness: package, control domain, buck_top, external L and C ----
 * Kept once in sim/lib/bench_harness.spice (issue #151) and included by every closed-loop
-* bench; Vsrc above and the load card below stay here, in the top-level deck.
+* bench; Vsrc and Iosc above and the load card below stay here, in the top-level deck.
 .include ../lib/bench_harness.spice
 * Load: ideal current sink, 0 until soft start is done, then iload
 Iload out gnd_d PWL(0 0 {t_load} 0 {t_load+t_load_ramp} {iload})

@@ -136,10 +136,17 @@ the die decoupling, the control-domain sources, the `Xtop ... buck_top` instance
 inductor and output capacitor with their parasitics (spec §0.2 P-T parts).
 
 Each deck keeps what is its own: the header, its `.include` lines, the request-axis and
-fixed-assumption `.param` lines, `Vsrc`, and the load card. `Vsrc` stays in the top-level deck
-because `klt` rescales that PWL per corner and can only do so there (the reason
-`sim/device-stress/README.md` recorded when that deck was a copy). The harness reads `osc_k`, which
-the current-limit bench sweeps and the other four fix at 1.
+fixed-assumption `.param` lines, the load card, and two source cards:
+
+- **`Vsrc`** -- `klt` rescales that PWL per corner and can only do so in the top-level deck (the
+  reason `sim/device-stress/README.md` recorded when that deck was a copy).
+- **`Iosc`** -- the current-limit bench sweeps the oscillator bias as `osc_k`, but writing one
+  shared `{12u*osc_k}` card is *not* behaviour-preserving for the other four: ngspice evaluates the
+  brace expression and re-parses the printed decimal, which lands one ulp away from the literal
+  `12u`. Measured on issue #151, that one-bit change moved a 30 us single-unit probe's `V(out)`
+  from -45.0 mV to -125.8 mV and its peak I(L) from 523.5 mA to 467.8 mA -- the startup transient
+  amplifies it. Each deck therefore writes the card it needs, and the unit test below pins the
+  four non-sweeping decks to the identical literal.
 
 The `.param` lines stay in the decks, deliberately. `c_out` and `esr` are request axes in
 `load-step/request_{tol,full}.json` and `c_wind` in `soft-start/probe_single3.json`, while the same
@@ -149,8 +156,9 @@ included file (probed for issue #151 -- `lfac=0.8` against `.param l_ind={3.3u*l
 gave 2.64 uH, not 3.3).
 
 `sim/lib/test_device_stress.py` is the guard: it fails if a deck stops including the harness,
-re-declares one of its element cards, drops its own `Vsrc`, stops defining a parameter the harness
-reads, or lets any shared P-T part / package / rail value drift between the five decks. Every record
+re-declares one of its element cards, drops its own `Vsrc` or `Iosc`, lets the oscillator-bias card
+drift between the four decks that do not sweep it, stops defining a parameter the harness reads, or
+lets any shared P-T part / package / rail value drift between the five decks. Every record
 written after this change pins `sim/lib/bench_harness.spice` in its `files_sha256`; records written
 before it pin the deck hashes of the day and are not edited.
 

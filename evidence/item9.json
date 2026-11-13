@@ -129,7 +129,7 @@
         "role": "testbench",
         "path": "sim/current-limit/bench.spice",
         "passed": true,
-        "content_hash": "sha256:9508a2db49ef0d8532d55a3e8ffdbfef18664c853f27e9ab860605e026a1d8c3"
+        "content_hash": "sha256:9f34b749d87f32de8d6ce34287e0062ef7eca5a4fd245ccc28a8020b0b5fa189"
       },
       {
         "check": "present",
@@ -220,7 +220,7 @@
         "role": "testbench",
         "path": "sim/device-stress/bench.spice",
         "passed": true,
-        "content_hash": "sha256:b244ce632f0751d3f22c75e85ae9e68cf541cef9439d95c95f47fa5c4a5e4b96"
+        "content_hash": "sha256:6b2d21aeebf850898238b550819ca1990f76081bebed5098ea4a06ba22dac7c8"
       },
       {
         "check": "present",
@@ -276,7 +276,7 @@
         "role": "testbench",
         "path": "sim/lib/bench_harness.spice",
         "passed": true,
-        "content_hash": "sha256:198d93c17c5a5effbda1fe8c198822161164170912690a6547402780b0d44bfb"
+        "content_hash": "sha256:f4d4b5b89064e122bf65ed7d953df9a3e7333a41b85d02a144df024e337d3385"
       },
       {
         "check": "present",
@@ -332,7 +332,7 @@
         "role": "testbench",
         "path": "sim/lib/test_device_stress.py",
         "passed": true,
-        "content_hash": "sha256:7bfdd93c5bbabc2aedb0f22f6ca7f372674e7432398d8853c7bea934ab1c8bb3"
+        "content_hash": "sha256:e5966c9214748a6399a22ab43324d09ad17c367456c3840f8564d79c64e7b6f6"
       },
       {
         "check": "present",
@@ -367,7 +367,7 @@
         "role": "testbench",
         "path": "sim/load-step/bench.spice",
         "passed": true,
-        "content_hash": "sha256:3d381e056f7f198a6f10177ca87a1faafd604015d6073cd26dc4bb80c92cd8af"
+        "content_hash": "sha256:39b10c7a7df875a5b4837256122ea078967c81bd20b899e7c803743af95f9937"
       },
       {
         "check": "present",
@@ -472,7 +472,7 @@
         "role": "testbench",
         "path": "sim/soft-start/bench.spice",
         "passed": true,
-        "content_hash": "sha256:436b4f42c7e0ed6d4a0072c06fda0328a5bfc66e6e84039c53503eb4b367229d"
+        "content_hash": "sha256:773965eb57fc907b2ba2b7e445f00cd164017d5a71bb4405b5801f141cebb13d"
       },
       {
         "check": "present",
@@ -633,7 +633,7 @@
         "role": "testbench",
         "path": "sim/steady-state/bench.spice",
         "passed": true,
-        "content_hash": "sha256:207541f26805c3f336e189a8f782013401d6fd97928fcc7aa6a3b3e4141e79fb"
+        "content_hash": "sha256:95557fe54d3ce6d2336f05b074da0f08e67544725bec58cad6b4d0a7636b94ab"
       },
       {
         "check": "present",

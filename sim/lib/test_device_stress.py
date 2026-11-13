@@ -105,7 +105,7 @@ CLOSED_LOOP_BENCHES = ("steady-state", "current-limit", "device-stress", "load-s
 
 # What the shared harness reads from the deck that includes it.
 HARNESS_PARAMS = ("r_wire", "l_wire", "wires", "c_die", "esr_die", "vdd3", "vbg",
-                  "osc_k", "t_en", "l_ind", "dcr", "c_wind", "r_wind", "c_out", "esr", "esl")
+                  "t_en", "l_ind", "dcr", "c_wind", "r_wind", "c_out", "esr", "esl")
 
 # Values that must mean the same thing in every closed-loop bench: the spec 0.2 external parts,
 # the spec 0.3 package, the control-domain rails, and the inlined design.ngspice switches.
@@ -152,7 +152,7 @@ class DriftTest(unittest.TestCase):
         names = element_cards(HARNESS)
         self.assertEqual(sorted(names), sorted(set(names)), "duplicate element name in the harness")
         for card in ("rwv", "lwv", "rws", "lws", "rwg", "lwg", "cdie", "rdie",
-                     "vdd33", "vbg", "iosc", "ipwm", "iss", "iocp", "iea",
+                     "vdd33", "vbg", "ipwm", "iss", "iocp", "iea",
                      "vt0", "vt1", "vt2", "ven", "xtop",
                      "lind", "rdcr", "cwind", "rwind", "cout", "resr", "lesl"):
             self.assertIn(card, names, "shared harness lost element card %r" % card)
@@ -170,13 +170,32 @@ class DriftTest(unittest.TestCase):
                 self.assertNotIn(name, shared,
                                  "%s bench re-declares harness card %r: the copy is back" % (bench, name))
 
-    def test_vsrc_stays_in_every_top_level_deck(self):
-        # sim/device-stress/README.md: klt rescales Vsrc per corner, so it must be a
-        # top-level card. It is the one shared card the harness deliberately does not own.
-        self.assertNotIn("vsrc", element_cards(HARNESS))
+    def test_vsrc_and_iosc_stay_in_every_top_level_deck(self):
+        """The two cards the harness deliberately does not own.
+
+        Vsrc: klt rescales that PWL per corner, which it can only do in the top-level deck
+        (sim/device-stress/README.md). Iosc: current-limit sweeps the oscillator bias as
+        osc_k, and ngspice does not re-parse `{12u*osc_k}` to the same double as the literal
+        `12u`, so a single shared expression form would move every other deck's trajectory.
+        """
+        harness = element_cards(HARNESS)
+        for card in ("vsrc", "iosc"):
+            self.assertNotIn(card, harness, "%r does not belong in the shared harness" % card)
+            for bench in CLOSED_LOOP_BENCHES:
+                self.assertIn(card, element_cards(os.path.join(ROOT, "sim", bench, "bench.spice")),
+                              "%s bench has no top-level %r" % (bench, card))
+
+    def test_the_osc_bias_card_is_the_same_wherever_it_is_not_swept(self):
+        """Only current-limit sweeps osc_k; the other four must write the identical literal."""
+        cards = {}
         for bench in CLOSED_LOOP_BENCHES:
-            self.assertIn("vsrc", element_cards(os.path.join(ROOT, "sim", bench, "bench.spice")),
-                          "%s bench has no top-level Vsrc" % bench)
+            for line in open(os.path.join(ROOT, "sim", bench, "bench.spice")).read().splitlines():
+                if line.strip().lower().startswith("iosc "):
+                    cards[bench] = line.strip()
+        self.assertEqual(cards["current-limit"], "Iosc gnd_d ib_osc PWL(0 0 5u {12u*osc_k})")
+        fixed = {b: c for b, c in cards.items() if b != "current-limit"}
+        self.assertEqual(set(fixed.values()), {"Iosc gnd_d ib_osc PWL(0 0 5u 12u)"},
+                         "the oscillator-bias card has drifted between decks: %r" % fixed)
 
     def test_every_bench_defines_the_params_the_harness_reads(self):
         # The harness is pure element cards; each deck declares the values it reads.
