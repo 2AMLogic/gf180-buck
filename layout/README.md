@@ -10,6 +10,20 @@ PDK variant `gf180mcuA` (3LM, 30 kÅ MetalTop; MetalTop is Metal3, 42/0).
 | `buck.info.json` | Generator's own bookkeeping (rows, trunk heights, die, pads). |
 | `check_layout.py` | Recomputes widths (net of `Metal3_Slot`), cuts per level, fingers and pad counts **from the GDS** and compares with the 500 mA row. Exit 0 only if all pass. `--write` rewrites `record.md`. |
 | `record.md` | The per-net table with the GDS hash. Never hand-written. |
+| `test_layout.py` | Drift guard, run by CI (`.github/workflows/signoff.yml`): regenerates the GDS and byte-compares it with `buck.gds`, then asserts `check_layout.py` exits 0. Catches a generator that has drifted from the GDS it is cited as producing, which re-hashing the committed GDS cannot. |
+
+## Test
+
+From the repository root (needs the `klayout` Python module; no host installs).
+About 30 s — the first test regenerates the whole layout:
+
+```
+python3 -m unittest discover -s layout -p 'test_*.py'
+```
+
+Not `python3 -I`: that drops the user site-packages directory, which is where a
+no-host-install `klayout` usually lives. CI runs the same command after
+installing the pinned `klayout-tools`, which requires `klayout>=0.30`.
 
 ## Regenerate
 
@@ -25,9 +39,11 @@ klt signoff --attest 2 --input layout/buck.gds \
     -o manifests/item2-attestation.json    # needs a klt newer than 0.8.0
 ```
 
-Then update `evidence["2"].content_hash` and regenerate the verdict of record
-(`manifests/README.md`). A `design/` change that alters `MHS`/`MLS` is a
-regenerate, not a redraw (#53 may change the divider, not these devices).
+Then re-run the tests above (`test_generator_output_matches_committed_gds`
+compares against the newly committed GDS), update `evidence["2"].content_hash`
+and regenerate the verdict of record (`manifests/README.md`). A `design/` change
+that alters `MHS`/`MLS` is a regenerate, not a redraw (#53 may change the
+divider, not these devices).
 
 ## What is drawn
 

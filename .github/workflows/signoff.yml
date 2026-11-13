@@ -19,6 +19,12 @@ name: klt signoff
 # needs the PDK, ngspice and the batch fleet, so it is local_only: CI skips it
 # and carries the committed outcome (listed under skipped_checks, not a pass).
 #
+# A last step runs layout/test_layout.py. The attestation steps above re-hash
+# the committed layout/buck.gds, which catches an edited GDS but not a
+# layout/gen_layout.py that has drifted from the GDS it is cited as producing,
+# so that test regenerates the GDS and byte-compares it. It needs only the
+# klayout Python module, which the pinned klayout-tools pulls in.
+#
 # See manifests/README.md for the convention.
 
 on:
@@ -116,3 +122,14 @@ jobs:
             echo "Re-run sim/cold-start.sh via the attest command in sim/README.md and commit the envelope in this same PR."
             exit 1
           fi
+
+      - name: Run the layout tests (generator vs committed GDS, 500 mA EM row)
+        run: |
+          set -euo pipefail
+          # layout/gen_layout.py and layout/check_layout.py import klayout.db.
+          # The pinned klayout-tools==0.9.0 requires klayout>=0.30, so the
+          # install step above already provides it; assert that rather than
+          # letting an import error read as a layout failure.
+          python3 -c "import klayout; print('klayout', klayout.__version__)"
+          # Not python3 -I: that drops the user site-packages directory.
+          python3 -m unittest discover -s layout -p 'test_*.py' -v
