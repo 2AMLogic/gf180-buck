@@ -5,6 +5,12 @@ Maintained by the Guide role.
 
 ### 2026-11-13
 
+- **PR #158**: refactor(sim): share one closed-loop bench harness across the five benches
+- **Issue #151** (closed): Extract the bench harness copied into five sim bench.spice decks into one shared include
+- **PR #156**: docs: scope the sim/README cold-start claim to the three benches it runs
+- **Issue #153** (closed): Correct the cold-start 'every shipped bench' claim: sim/cold-start.sh runs 3 of the 6 attested runners
+- **Issue #157** (closed): Correct the sim/cold-start.sh header comment at the next item 9 re-attestation
+
 - **PR #150**: test: run layout/test_layout.py in CI as a generator-vs-GDS drift guard
 - **Issue #143** (closed): Wire or remove orphan layout/test_layout.py: no CI, script, or doc runs it
 - **PR #147**: refactor: drop unread assignments and no-op statements from layout scripts
