@@ -160,7 +160,7 @@ def main(argv=None):
                                    "jobs": ((rep.get("environment") or {}).get("remote") or {}).get("jobs") or None},
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "../steady-state/opamp_two_stage.spice", "request_%s.json" % a.set, "gen_requests.py"),
-                            ("design/netlists/buck_top.spice",), ("stressmeas.py", "rawgrade.py"))},
+                            ("design/netlists/buck_top.spice",), ("bench_harness.spice", "stressmeas.py", "rawgrade.py"))},
         "method": {
             "analysis": ".tran 100p 600u, waveforms saved from 540u (a 60 us tail); max step 100 ps over the WHOLE run (spec 0.4 edge-window step)",
             "edge_window": "[-2 ns, +10 ns] around every mid-swing crossing of SW and both gates; the unit's largest step inside them is units[].edge.max_step_s, "

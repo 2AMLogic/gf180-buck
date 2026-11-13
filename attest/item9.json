@@ -41,6 +41,7 @@
     "sim/device-stress/request_ctyp.json",
     "sim/device-stress/request_grid.json",
     "sim/env.sh",
+    "sim/lib/bench_harness.spice",
     "sim/lib/buckmeas.py",
     "sim/lib/genkit.py",
     "sim/lib/pdk_env.sh",

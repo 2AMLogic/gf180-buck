@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 9,
-  "summary": "T1 item 9 (Testbenches shipped): 113/113 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 9 (Testbenches shipped): 114/114 attestation checks passed (klt signoff --attest)",
   "source": "attest/item9.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 113,
-    "passed_count": 113,
+    "check_count": 114,
+    "passed_count": 114,
     "checks": [
       {
         "check": "present",
@@ -129,14 +129,14 @@
         "role": "testbench",
         "path": "sim/current-limit/bench.spice",
         "passed": true,
-        "content_hash": "sha256:36dd87bc1511b1bfd5eed6fe17be7f512cd545954074751b741d3f3e16c1d6c5"
+        "content_hash": "sha256:9f34b749d87f32de8d6ce34287e0062ef7eca5a4fd245ccc28a8020b0b5fa189"
       },
       {
         "check": "present",
         "role": "testbench",
         "path": "sim/current-limit/collect.py",
         "passed": true,
-        "content_hash": "sha256:0e15bd903d35c34c60b2fc3bd28878586117e9147175077050dcabbe20d7ac00"
+        "content_hash": "sha256:bee5e19e843f9c733224815f2e1a412dafaf0ab0fa09c4ca36ab609d72274e0b"
       },
       {
         "check": "present",
@@ -220,14 +220,14 @@
         "role": "testbench",
         "path": "sim/device-stress/bench.spice",
         "passed": true,
-        "content_hash": "sha256:5b511c58ea84b6fe5c2c26339277a37ccd04aa9dda155728de553e1bd05084a9"
+        "content_hash": "sha256:6b2d21aeebf850898238b550819ca1990f76081bebed5098ea4a06ba22dac7c8"
       },
       {
         "check": "present",
         "role": "testbench",
         "path": "sim/device-stress/collect.py",
         "passed": true,
-        "content_hash": "sha256:7a7715301fa4a7801bff62e336b1e3ff5952eebb6bbfe7b0b7813f8c4832a78b"
+        "content_hash": "sha256:09481c2602aa600c7c1e64b8bd70351bc6f564fa4c8a1f092f68020656b7f638"
       },
       {
         "check": "present",
@@ -270,6 +270,13 @@
         "path": "sim/env.sh",
         "passed": true,
         "content_hash": "sha256:ea9180c9b1b9e7e59fa932e1c2f7b6c13e20d37cd932d529c624c01c25922692"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/lib/bench_harness.spice",
+        "passed": true,
+        "content_hash": "sha256:f4d4b5b89064e122bf65ed7d953df9a3e7333a41b85d02a144df024e337d3385"
       },
       {
         "check": "present",
@@ -325,7 +332,7 @@
         "role": "testbench",
         "path": "sim/lib/test_device_stress.py",
         "passed": true,
-        "content_hash": "sha256:d7f28bf516751e35860348ca7e85c5720f27240ba73053b449995aab0a411ab3"
+        "content_hash": "sha256:e5966c9214748a6399a22ab43324d09ad17c367456c3840f8564d79c64e7b6f6"
       },
       {
         "check": "present",
@@ -360,14 +367,14 @@
         "role": "testbench",
         "path": "sim/load-step/bench.spice",
         "passed": true,
-        "content_hash": "sha256:063f1a8c12d16bed90ddeb51228f8787946e52e4204a8161520e71e55fc01ce3"
+        "content_hash": "sha256:39b10c7a7df875a5b4837256122ea078967c81bd20b899e7c803743af95f9937"
       },
       {
         "check": "present",
         "role": "testbench",
         "path": "sim/load-step/collect.py",
         "passed": true,
-        "content_hash": "sha256:27e44598c989b248d0aca272041b589c7ffe7fde1427f8a6b165a2d97d5f7d35"
+        "content_hash": "sha256:f52d30562483d95e4b56ece8de4976972fb16fd746776f52fdc6bd879012a2ad"
       },
       {
         "check": "present",
@@ -465,7 +472,7 @@
         "role": "testbench",
         "path": "sim/soft-start/bench.spice",
         "passed": true,
-        "content_hash": "sha256:cb6571b30f79b4efaa490db8d80f68273a3cae59e46b7c2511b14070b8884078"
+        "content_hash": "sha256:773965eb57fc907b2ba2b7e445f00cd164017d5a71bb4405b5801f141cebb13d"
       },
       {
         "check": "present",
@@ -493,7 +500,7 @@
         "role": "testbench",
         "path": "sim/soft-start/collect.py",
         "passed": true,
-        "content_hash": "sha256:291d32a786e2a6f0894c286b746611ce4faf3a7fb4a965300885374b334f7c55"
+        "content_hash": "sha256:ec5fccbf32e7189b3c86d001a312c98c9ee30503d603ecc9d6d03ef4fb055888"
       },
       {
         "check": "present",
@@ -626,7 +633,7 @@
         "role": "testbench",
         "path": "sim/steady-state/bench.spice",
         "passed": true,
-        "content_hash": "sha256:3093c4f6ca211e344f3967de03c953ad760711b4b1a4a341dde3a9ce07be7302"
+        "content_hash": "sha256:95557fe54d3ce6d2336f05b074da0f08e67544725bec58cad6b4d0a7636b94ab"
       },
       {
         "check": "present",
@@ -647,7 +654,7 @@
         "role": "testbench",
         "path": "sim/steady-state/collect.py",
         "passed": true,
-        "content_hash": "sha256:637388b66c3b4b336f0800e1b8a7729b0fb38520000af23cd4fc4ed46b6fe146"
+        "content_hash": "sha256:8f339209205406e7cf0cd8743ad847923e8f3a63b43f3d22eb81ded1cacbb3b4"
       },
       {
         "check": "present",
@@ -816,7 +823,7 @@
     ]
   },
   "provenance": {
-    "klt_version": "0.9.2.dev682+g7d676aa2b583",
+    "klt_version": "0.9.2.dev887+gec7400b7d8e5",
     "klayout_version": null,
     "pdk": null,
     "deck": null,
@@ -825,7 +832,7 @@
         "path": "attest/item9.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:27758d44ff488f97f5fe32fe1e094bd67f527586360321a46ae5d6817672fb51"
+      "content_hash": "sha256:abfe1291b1019aefdef20e067c7f4405ebcc04e1904eb59355bb21d0a683e6cf"
     }
   }
 }

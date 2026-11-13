@@ -4,6 +4,7 @@ Run: python3 -m unittest discover sim/lib
 """
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -98,17 +99,135 @@ class VerdictTest(unittest.TestCase):
         self.assertEqual((k["process"], k["vin_v"], k["temp_c"], k["iload_a"]), ("sf", 5.5, -40.0, 0.05))
 
 
+HARNESS = os.path.join(ROOT, "sim", "lib", "bench_harness.spice")
+CLOSED_LOOP_BENCHES = ("steady-state", "current-limit", "device-stress", "load-step", "soft-start")
+
+
+# What the shared harness reads from the deck that includes it.
+HARNESS_PARAMS = ("r_wire", "l_wire", "wires", "c_die", "esr_die", "vdd3", "vbg",
+                  "t_en", "l_ind", "dcr", "c_wind", "r_wind", "c_out", "esr", "esl")
+
+# Values that must mean the same thing in every closed-loop bench: the spec 0.2 external parts,
+# the spec 0.3 package, the control-domain rails, and the inlined design.ngspice switches.
+SHARED_ASSUMPTIONS = HARNESS_PARAMS + (
+    "sw_stat_global", "sw_stat_mismatch", "mc_skew", "res_mc_skew", "cap_mc_skew", "fnoicor")
+
+PARAM_ASSIGN = re.compile(r"(\w+)\s*=\s*(\S+)")
+
+
+def params(path):
+    """{name: value-as-written} over every .param line of a SPICE deck, continuations included."""
+    out = {}
+    for line in open(path).read().splitlines():
+        s = line.strip()
+        if not (s.startswith(".param") or s.startswith("+")):
+            continue
+        s = s[len(".param"):] if s.startswith(".param") else s[1:]
+        out.update(PARAM_ASSIGN.findall(s))
+    return out
+
+
+def element_cards(path):
+    """Lower-cased instance names of the element cards in a SPICE file (no directives,
+    no comments, no continuations)."""
+    names = []
+    for line in open(path).read().splitlines():
+        s = line.strip()
+        if not s or s[0] in "*.+":
+            continue
+        names.append(s.split()[0].lower())
+    return names
+
+
 class DriftTest(unittest.TestCase):
-    def test_bench_is_the_steady_state_bench(self):
-        ss = open(os.path.join(ROOT, "sim", "steady-state", "bench.spice")).read().splitlines()
-        ds = open(os.path.join(DS, "bench.spice")).read().splitlines()
-        for line in ss:
-            if line.startswith("* gf180-buck steady-state bench") or line.startswith(".include opamp_two_stage"):
-                continue
-            if line.startswith("* external P-T parts") or line.startswith("* Body for"):
-                pass
-            self.assertIn(line, ds, "steady-state bench line missing from device-stress bench: %r" % line)
+    """Every closed-loop bench shares one harness instead of copying it (issue #151).
+
+    This replaces the line-for-line comparison of the device-stress deck against the
+    steady-state deck: the package, die decoupling, control-domain sources, buck_top
+    instance and external L/C now live once in sim/lib/bench_harness.spice, and the
+    guard covers all five decks rather than device-stress alone.
+    """
+
+    def test_harness_holds_the_shared_element_cards(self):
+        names = element_cards(HARNESS)
+        self.assertEqual(sorted(names), sorted(set(names)), "duplicate element name in the harness")
+        for card in ("rwv", "lwv", "rws", "lws", "rwg", "lwg", "cdie", "rdie",
+                     "vdd33", "vbg", "ipwm", "iss", "iocp", "iea",
+                     "vt0", "vt1", "vt2", "ven", "xtop",
+                     "lind", "rdcr", "cwind", "rwind", "cout", "resr", "lesl"):
+            self.assertIn(card, names, "shared harness lost element card %r" % card)
+
+    def test_every_closed_loop_bench_includes_the_harness(self):
+        for bench in CLOSED_LOOP_BENCHES:
+            deck = open(os.path.join(ROOT, "sim", bench, "bench.spice")).read()
+            self.assertIn(".include ../lib/bench_harness.spice", deck,
+                          "%s bench does not include the shared harness" % bench)
+
+    def test_no_bench_redeclares_a_harness_card(self):
+        shared = set(element_cards(HARNESS))
+        for bench in CLOSED_LOOP_BENCHES:
+            for name in element_cards(os.path.join(ROOT, "sim", bench, "bench.spice")):
+                self.assertNotIn(name, shared,
+                                 "%s bench re-declares harness card %r: the copy is back" % (bench, name))
+
+    def test_vsrc_and_iosc_stay_in_every_top_level_deck(self):
+        """The two cards the harness deliberately does not own.
+
+        Vsrc: klt rescales that PWL per corner, which it can only do in the top-level deck
+        (sim/device-stress/README.md). Iosc: current-limit sweeps the oscillator bias as
+        osc_k, and ngspice does not re-parse `{12u*osc_k}` to the same double as the literal
+        `12u`, so a single shared expression form would move every other deck's trajectory.
+        """
+        harness = element_cards(HARNESS)
+        for card in ("vsrc", "iosc"):
+            self.assertNotIn(card, harness, "%r does not belong in the shared harness" % card)
+            for bench in CLOSED_LOOP_BENCHES:
+                self.assertIn(card, element_cards(os.path.join(ROOT, "sim", bench, "bench.spice")),
+                              "%s bench has no top-level %r" % (bench, card))
+
+    def test_the_osc_bias_card_is_the_same_wherever_it_is_not_swept(self):
+        """Only current-limit sweeps osc_k; the other four must write the identical literal."""
+        cards = {}
+        for bench in CLOSED_LOOP_BENCHES:
+            for line in open(os.path.join(ROOT, "sim", bench, "bench.spice")).read().splitlines():
+                if line.strip().lower().startswith("iosc "):
+                    cards[bench] = line.strip()
+        self.assertEqual(cards["current-limit"], "Iosc gnd_d ib_osc PWL(0 0 5u {12u*osc_k})")
+        fixed = {b: c for b, c in cards.items() if b != "current-limit"}
+        self.assertEqual(set(fixed.values()), {"Iosc gnd_d ib_osc PWL(0 0 5u 12u)"},
+                         "the oscillator-bias card has drifted between decks: %r" % fixed)
+
+    def test_every_bench_defines_the_params_the_harness_reads(self):
+        # The harness is pure element cards; each deck declares the values it reads.
+        for bench in CLOSED_LOOP_BENCHES:
+            declared = params(os.path.join(ROOT, "sim", bench, "bench.spice"))
+            for name in HARNESS_PARAMS:
+                self.assertIn(name, declared,
+                              "%s bench does not define %r, which the shared harness reads" % (bench, name))
+
+    def test_the_shared_assumptions_agree_across_every_bench(self):
+        """The P-T part and package values stay in each top-level deck, so guard them by value.
+
+        They are not moved into the harness on purpose: `c_out` and `esr` are request axes in
+        sim/load-step/request_{tol,full}.json and `c_wind` in sim/soft-start/probe_single3.json,
+        while the same names are fixed assumptions in the other decks -- a deck's own axis
+        defaults belong to that deck. (A `klt sim` corners.params override does reach a .param
+        declared in an included file: probed on issue #151 with lfac=0.8, which gave l_ind
+        2.64 uH. The mechanism is not the reason these lines stayed put.)
+        """
+        ref = params(os.path.join(ROOT, "sim", CLOSED_LOOP_BENCHES[0], "bench.spice"))
+        for bench in CLOSED_LOOP_BENCHES[1:]:
+            other = params(os.path.join(ROOT, "sim", bench, "bench.spice"))
+            for name in SHARED_ASSUMPTIONS:
+                self.assertEqual(ref[name], other[name],
+                                 "%s bench has drifted on %r: %r vs %r in %s"
+                                 % (bench, name, other[name], ref[name], CLOSED_LOOP_BENCHES[0]))
+
+    def test_device_stress_keeps_its_own_includes_and_replicas(self):
+        ds = open(os.path.join(DS, "bench.spice")).read()
         self.assertIn(".include ../steady-state/opamp_two_stage.spice", ds)
+        for card in ("Xvthn", "Ithn", "Xvthp", "Vthp_s", "Ithp", "Bvthp"):
+            self.assertIn(card, ds, "device-stress bench lost Vth replica card %r" % card)
 
     def test_generated_requests_match_committed_files(self):
         with tempfile.TemporaryDirectory() as tmp:
