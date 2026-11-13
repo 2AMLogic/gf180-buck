@@ -367,6 +367,38 @@ class SoftStartTest(unittest.TestCase):
         self.assertNotIn("t_90_s", r)
 
 
+class StepCheckTest(unittest.TestCase):
+    """The §0.4 max-step rule, which every collector grades through this one helper."""
+
+    def test_constant_is_the_spec_2p5ns(self):
+        self.assertAlmostEqual(bm.STEP_MAX_S, 2.5e-9, places=15)
+        self.assertEqual(bm.STEP_MAX_S, 1.0 / (bm.STEP_DIVISOR * bm.F_SW_SPEC_HZ))
+
+    def test_uniform_run_reports_its_step(self):
+        t = [k * 2e-9 for k in range(11)]
+        max_dt, ok = bm.step_check(t)
+        self.assertAlmostEqual(max_dt, 2e-9)
+        self.assertTrue(ok)
+
+    def test_tolerance_edge_passes_at_exactly_0p1_percent_over(self):
+        # §0.4 is met to STEP_TOL, so a run at exactly step_max*(1+STEP_TOL) still passes ...
+        dt = bm.STEP_MAX_S * (1 + bm.STEP_TOL)
+        self.assertTrue(bm.step_check([0.0, dt])[1])
+        # ... and anything above it does not
+        self.assertFalse(bm.step_check([0.0, dt * (1 + 1e-9)])[1])
+
+    def test_largest_step_governs(self):
+        t = [0.0, 1e-9, 2e-9, 2e-9 + 4e-9, 2e-9 + 5e-9]  # one 4 ns step among 1 ns ones
+        max_dt, ok = bm.step_check(t)
+        self.assertAlmostEqual(max_dt, 4e-9)
+        self.assertFalse(ok)
+
+    def test_explicit_step_max_overrides_the_default(self):
+        t = [0.0, 4e-9]
+        self.assertFalse(bm.step_check(t)[1])
+        self.assertTrue(bm.step_check(t, 5e-9)[1])
+
+
 class TripEventTest(unittest.TestCase):
     def test_trip_reports_current_at_assertion(self):
         t = grid(50)

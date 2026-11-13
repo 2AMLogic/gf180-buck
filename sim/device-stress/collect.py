@@ -23,6 +23,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
+import buckmeas  # noqa: E402
 import rawgrade  # noqa: E402
 import recordkit  # noqa: E402
 import stressmeas as sm  # noqa: E402
@@ -46,9 +47,9 @@ def unit_record(corner):
     u = {"id": corner["corner_id"], **key, "klt_status": corner.get("status"),
          "klt_diagnostics": [d.get("code") for d in corner.get("diagnostics") or []],
          "vth_n_v": meas(corner, "vthn"), "vth_p_v": meas(corner, "vthp")}
-    raw = (corner.get("artifacts") or {}).get("raw")
-    if corner.get("status") not in ("pass", "fail") or not raw or not os.path.exists(raw):
-        u.update(graded=False, settled=False, reason="no waveform: klt status %s %s" % (corner.get("status"), u["klt_diagnostics"]))
+    raw, reason = recordkit.waveform_or_reason(corner)
+    if reason:
+        u.update(graded=False, settled=False, reason=reason)
         return u
     try:
         c = rawgrade.read_ascii_raw(raw)
@@ -64,7 +65,7 @@ def unit_record(corner):
     u["peaks"] = p
     u["sw_ok"], u["term_ok"] = sm.r2_verdict(p)
     u["edge"] = sm.edge_resolution(t, c["v(sw_d)"], key["vin_v"], c["v(xtop.gh)"], c["v(xtop.gl)"])
-    g = rawgrade.grade(raw, key["vin_v"], key["iload_a"], 2.5e-9)
+    g = rawgrade.grade(raw, key["vin_v"], key["iload_a"], buckmeas.STEP_MAX_S)
     u["graded"] = g["graded"]
     if not g["graded"]:
         u.update(settled=False, reason=g["reason"])
