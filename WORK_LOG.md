@@ -5,6 +5,7 @@ Maintained by the Guide role.
 
 ### 2026-11-12
 
+- **PR #140**: Bump Repo Skills 0.25.10 -> 0.26.1
 - **PR #137**: refactor: share one threshold-crossing helper, drop rawgrade temp-file round trip
 - **Issue #135** (closed): Consolidate three duplicate threshold-crossing helpers in sim/lib and drop rawgrade temp-file round trip
 
