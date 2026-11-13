@@ -303,8 +303,6 @@ class Gen:
         W = n_per * PERIOD
         # rows: local origin (0,0) is COMP bottom-left; row bottom (gate rail) is g['ybot']
         base = y0 - g["ybot"]
-        if tag == "LS":
-            base = y0 - g["ybot"]
         for r in range(nrows):
             top.insert(db.DCellInstArray(row.cell_index(), db.DTrans(0.0, snap(base + r * pitch))))
         rows_bot = base + g["ybot"]
@@ -312,8 +310,6 @@ class Gen:
         gate_bus_y = (rows_bot - 3.0, rows_bot - 1.5) if tag == "HS" else (rows_top + 1.5, rows_top + 3.0)
         # Metal2 straps span the rows only
         s_net = grp["A"]; d_net = grp["B"]
-        def strap_cut_counts(net, key, n):
-            cnt[net][key] += n
         for k in range(n_per):
             x0 = k * PERIOD
             for gi, net, typ in ((0, s_net, "S"), (1, d_net, "D")):
@@ -355,7 +351,7 @@ class Gen:
     def body_ties(self, top, tag, y0, y1, W, y_trunk, net):
         """Body tie strips at both array ends, Metal2 up/down to the trunk (not counted as power-path cuts)."""
         kind = "N" if tag == "HS" else "P"
-        for side, x in (("L", -7.0), ("R", W + 5.0)):
+        for x in (-7.0, W + 5.0):
             self.box(top, "COMP", x, y0, x + 1.2, y1)
             self.box(top, "NPLUS" if kind == "N" else "PPLUS", x - 0.3, y0 - 0.3, x + 1.5, y1 + 0.3)
             ct = self.via_cell("CONTACT", CT)
@@ -370,8 +366,7 @@ class Gen:
 
 
 # -------------------------------------------------------------- output
-def write_gds(gen, top, path):
-    gen.ly.top_cell().name if False else None
+def write_gds(gen, path):
     opts = db.SaveLayoutOptions()
     opts.format = "GDS2"
     opts.gds2_write_timestamps = False
@@ -388,8 +383,8 @@ def main():
     ap.add_argument("--info", default=os.path.join(HERE, "buck.info.json"))
     a = ap.parse_args()
     g = Gen(a.current / 1000.0)
-    top = g.build()
-    write_gds(g, top, a.out)
+    g.build()
+    write_gds(g, a.out)
     g.info["generator"] = "layout/gen_layout.py"
     g.info["current_ma"] = a.current
     g.info["requirement"] = g.req
