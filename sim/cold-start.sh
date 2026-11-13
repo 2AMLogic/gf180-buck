@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-# The one cold-start command for T1 item 9: every shipped bench and its unit
-# tests, in order. Usage: sim/cold-start.sh
+# The one cold-start command for T1 item 9: the smoke bench, the ideal-buck
+# bench, the sim/lib and design/averaged unit tests and the averaged-model
+# grid, in order. Usage: sim/cold-start.sh
+# Not every attested bench: the rest are hashed in
+# manifests/item9-inventory.json but not run here (see sim/README.md).
 # Each bench appends a new record under its records/ (append-only evidence).
 # design/averaged/run.sh sends its grid through `klt sim` (batch fleet); a
 # batch submit failure fails this script. There is no local-grid fallback.

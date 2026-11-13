@@ -20,8 +20,8 @@ Simulation environment and benches. Results are **simulated**, never measured.
 
 The one cold-start command (T1 item 9) runs three of the benches the attestation
 covers and their unit tests, and exits 0 only if all of those pass. It is not a
-pass of every attested bench: the rest are hashed in `attest/item9.json` but not
-run by the cold start (see below).
+pass of every attested bench: the rest are hashed in
+`manifests/item9-inventory.json` but not run by the cold start (see below).
 
 ```
 source sim/env.sh && sim/cold-start.sh
@@ -40,19 +40,22 @@ intends and never delete one.
 Attest it (needs the PDK, ngspice and the fleet, so this is local-only):
 
 ```
-klt signoff --attest 9 --inventory attest/item9.json -o evidence/item9.json
+klt signoff --attest 9 --inventory manifests/item9-inventory.json \
+    -o manifests/item9-attestation.json
 ```
 
-CI cannot run the cold start (no PDK, no ngspice). `attest/item9.json` marks it
-`local_only`, so CI's `klt signoff --attest 9 --inventory attest/item9.json --check
-evidence/item9.json` skips it, lists it under `skipped_checks`, and still re-hashes
-every inventoried file. That skip is not a pass of the cold start. A bench added
-without being listed in the inventory is not caught: the PR adding it must edit
-`attest/item9.json` and re-attest. The inventory hashes every bench file under
-`sim/`, `design/averaged/` and `design/smoke/`; the cold start itself runs only
-the smoke, ideal-buck and averaged benches, and the other benches' evidence is their
-own append-only `records/`. The envelope assumes the pins in the inventory
-(ngspice-46, as on the dispatch hosts; the smoke record of 2026-10-17 used ngspice-42).
+CI cannot run the cold start (no PDK, no ngspice). `manifests/item9-inventory.json`
+marks it `local_only`, so CI's `klt signoff --attest 9 --inventory
+manifests/item9-inventory.json --check manifests/item9-attestation.json` skips
+it, lists it under `skipped_checks`, and still re-hashes every inventoried file.
+That skip is not a pass of the cold start. A bench added without being listed in
+the inventory is not caught: the PR adding it must edit
+`manifests/item9-inventory.json` and re-attest. The inventory hashes every bench
+file under `sim/`, `design/averaged/` and `design/smoke/`; the cold start itself
+runs only the smoke, ideal-buck and averaged benches, and the other benches'
+evidence is their own append-only `records/`. The envelope assumes the pins in
+the inventory (ngspice-46, as on the dispatch hosts; the smoke record of
+2026-10-17 used ngspice-42).
 
 The smoke bench alone:
 
