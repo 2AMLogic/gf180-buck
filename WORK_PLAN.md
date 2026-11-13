@@ -32,7 +32,7 @@ _None._
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-_None._
+- **#151**: Extract the bench harness copied into five sim bench.spice decks into one shared include
 
 ## In Progress
 
@@ -69,9 +69,9 @@ Issues carrying `loom:curated`.
 ## Proposed (Architect / Hermit)
 
 - **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)*
-- **#143**: Wire or remove orphan layout/test_layout.py: no CI, script, or doc runs it *(hermit)*
-- **#144**: Remove dead statements from layout/check_layout.py and layout/gen_layout.py (~25 lines, GDS unchanged) *(hermit)*
-- **#145**: Wire package.json test/check:ci to the real unit tests: placeholders echo 'No tests configured' and exit 0 *(hermit)*
+- **#152**: Single-source the spec 0.4 step rule, the 41-cycle clock guard and the no-waveform unit guard in sim/lib (hand-copied into 3-5 collectors) *(hermit)*
+- **#153**: Correct the cold-start 'every shipped bench' claim: sim/cold-start.sh runs 3 of the 6 attested runners *(hermit)*
+- **#154**: Move the item 9 inventory and envelope into manifests/: attest/ and evidence/ are one-file top-level directories *(hermit)*
 
 ## Epics
 
@@ -84,7 +84,7 @@ _None._
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
 | Important | 7 |
-| Ready (`loom:issue`) | 0 |
+| Ready (`loom:issue`) | 1 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |

@@ -3,6 +3,15 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-13
+
+- **PR #150**: test: run layout/test_layout.py in CI as a generator-vs-GDS drift guard
+- **Issue #143** (closed): Wire or remove orphan layout/test_layout.py: no CI, script, or doc runs it
+- **PR #147**: refactor: drop unread assignments and no-op statements from layout scripts
+- **Issue #144** (closed): Remove dead statements from layout/check_layout.py and layout/gen_layout.py (~25 lines, GDS unchanged)
+- **PR #148**: feat: run the real unit tests from package.json test/check:ci and in CI
+- **Issue #145** (closed): Wire package.json test/check:ci to the real unit tests: placeholders echo 'No tests configured' and exit 0
+
 ### 2026-11-12
 
 - **PR #140**: Bump Repo Skills 0.25.10 -> 0.26.1
