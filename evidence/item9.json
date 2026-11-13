@@ -38,7 +38,7 @@
         "role": "testbench",
         "path": "design/averaged/run.sh",
         "passed": true,
-        "content_hash": "sha256:c9e7472bb6ea1d08781a2f31e8505ce52ae96147ebdfaf22bf237dddfe46b47b"
+        "content_hash": "sha256:72f82904551f80a308fff9caaec347da36fc266fe702bb7bb8fce45937c7b9b2"
       },
       {
         "check": "present",
@@ -122,7 +122,7 @@
         "role": "testbench",
         "path": "sim/cold-start.sh",
         "passed": true,
-        "content_hash": "sha256:ae0462d2d776952f0aecd61af431fc9be46a602bb7ae5e71fc79a2e6e4302a7d"
+        "content_hash": "sha256:0e7667694536ef3c5ffa5b363a005bda85de71b1edf1c53cb71226383d48cde2"
       },
       {
         "check": "present",
@@ -823,7 +823,7 @@
     ]
   },
   "provenance": {
-    "klt_version": "0.9.2.dev887+gec7400b7d8e5",
+    "klt_version": "0.9.0",
     "klayout_version": null,
     "pdk": null,
     "deck": null,
