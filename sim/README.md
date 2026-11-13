@@ -116,6 +116,16 @@ commented in `buck.spice`.
 - The smoke bench is a toolchain check, not a device choice.
 - Grids (corners, Monte Carlo) are not run by hand here; express them as
   `klt sim` requests so they go to the batch fleet.
+- Every batch submit below passes `--wait-for-capacity 600`: the fleet is
+  vCPU-budgeted, so a burst is refused (`batch_no_capacity` /
+  `batch_concurrency_cap`) and the flag re-launches with jittered backoff for
+  up to 600 s instead of failing at once. The pinned client takes it only on
+  backend `batch`. `--batch-set` is itself always backend `batch` ("Always
+  backend `batch`; never falls back to local ngspice", `klt sim --help` on
+  0.9.0), so those blocks take the flag with no `--backend batch` and no
+  `KLT_SIM_BACKEND=batch` prefix; a single-request block states `--backend
+  batch` (or runs with `KLT_SIM_BACKEND=batch`, as on a dispatch worker) for
+  the flag to be accepted.
 - `lib/pdk_env.sh` is adopted from `2AMLogic/gf180-sram` by pinned reference;
   see [`../reuse.lock.json`](../reuse.lock.json).
 
