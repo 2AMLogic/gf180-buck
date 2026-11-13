@@ -69,6 +69,9 @@ Issues carrying `loom:curated`.
 ## Proposed (Architect / Hermit)
 
 - **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)*
+- **#143**: Wire or remove orphan layout/test_layout.py: no CI, script, or doc runs it *(hermit)*
+- **#144**: Remove dead statements from layout/check_layout.py and layout/gen_layout.py (~25 lines, GDS unchanged) *(hermit)*
+- **#145**: Wire package.json test/check:ci to the real unit tests: placeholders echo 'No tests configured' and exit 0 *(hermit)*
 
 ## Epics
 
@@ -86,6 +89,6 @@ _None._
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
 | Curated | 9 |
-| Architect / Hermit proposals | 1 |
+| Architect / Hermit proposals | 4 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
