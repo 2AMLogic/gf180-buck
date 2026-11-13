@@ -18,8 +18,10 @@ Simulation environment and benches. Results are **simulated**, never measured.
 
 ## Cold start
 
-The one cold-start command (T1 item 9) runs every shipped bench the attestation
-covers and their unit tests, and exits 0 only if all pass:
+The one cold-start command (T1 item 9) runs three of the benches the attestation
+covers and their unit tests, and exits 0 only if all of those pass. It is not a
+pass of every attested bench: the rest are hashed in `attest/item9.json` but not
+run by the cold start (see below).
 
 ```
 source sim/env.sh && sim/cold-start.sh
