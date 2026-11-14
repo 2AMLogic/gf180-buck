@@ -415,7 +415,7 @@
       "reason": null,
       "graded_by_build": true,
       "citation": {
-        "file": "evidence/item9.json",
+        "file": "manifests/item9-attestation.json",
         "command": null,
         "kind": "generic",
         "check_status": "pass",
@@ -425,13 +425,13 @@
         "artifact_binding": {
           "t1_item": 9,
           "path": {
-            "path": "attest/item9.json",
+            "path": "manifests/item9-inventory.json",
             "scope": "repo"
           },
           "content_hash": "sha256:abfe1291b1019aefdef20e067c7f4405ebcc04e1904eb59355bb21d0a683e6cf",
           "input_verified": true,
           "summary": "T1 item 9 (Testbenches shipped): 114/114 attestation checks passed (klt signoff --attest)",
-          "source": "attest/item9.json",
+          "source": "manifests/item9-inventory.json",
           "attestation": {
             "producer": "klt signoff --attest",
             "inventory_schema_version": 1,

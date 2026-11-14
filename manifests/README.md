@@ -9,7 +9,8 @@ Block manifest and tier verdict of record, graded by `klt signoff`.
 | `item2-attestation.json` | Envelope from `klt signoff --attest 2 --input layout/buck.gds`; cited with the GDS sha256. Never hand-written. Needs a `klt` newer than the pinned 0.9.0 (klayout-tools#4767), so CI does not re-attest it; the manifest grade does re-hash the GDS. |
 | `item10-inventory.json` | T1 item 10 attestation inventory: hygiene files plus the audit commands whose exit status is attested. |
 | `item10-attestation.json` | Envelope from `klt signoff --attest 10`. Never hand-written. |
-| `../attest/item9.json`, `../evidence/item9.json` | T1 item 9 inventory (every bench file, the `sim/cold-start.sh` cold start, PDK and tool pins) and its envelope from `klt signoff --attest 9`. Never hand-written; see [`../sim/README.md`](../sim/README.md#cold-start). The manifest cites the envelope with the sha256 of the inventory. |
+| `item9-inventory.json` | T1 item 9 attestation inventory: every bench file, the `sim/cold-start.sh` cold start, PDK and tool pins. |
+| `item9-attestation.json` | Envelope from `klt signoff --attest 9`. Never hand-written; the cold start needs the PDK, ngspice and the batch fleet, so it is written locally, see [`../sim/README.md`](../sim/README.md#cold-start). The manifest cites it with the sha256 of `item9-inventory.json`. |
 | `check_readme.py` | The README structure and relative-link check the inventory runs. |
 | `design-evidence-tiers.md` | Vendored, byte-identical copy of klayout-tools `docs/design-evidence-tiers.md` at commit `44cc42323184a2f3a440b89789bf174488a6b1e4`. Do not edit. |
 | `gf180-buck.signoff.json` | Verdict of record: raw `klt signoff` output. Never hand-written. |
