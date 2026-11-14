@@ -2,8 +2,9 @@
 # The one documented command: regenerate the request, run the 162-point grid
 # through `klt sim` (batch fleet by default), extract fc/PM/GM, write a record.
 # Usage: design/averaged/run.sh [--fail-on-violation]
-# The grid is never run as a local ngspice loop. A batch submit failure exits
-# non-zero; report it, do not fall back to --backend local.
+# The grid is never run as a local ngspice loop. A batch launch refused for
+# fleet capacity waits up to 600 s with jittered backoff first; a submit that
+# still fails exits non-zero — report it, do not fall back to --backend local.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 build="$here/build"; rm -rf "$build"; mkdir -p "$build"
@@ -11,8 +12,14 @@ command -v klt >/dev/null || { echo "run.sh: MISSING_TOOL: klt not on PATH" >&2;
 
 python3 -I "$here/gen_request.py"
 backend="${KLT_SIM_BACKEND:-batch}"
+# The fleet is vCPU-budgeted, so a burst gets batch_no_capacity; wait with
+# backoff rather than failing the submit (and the cold start) at once. klt
+# refuses the flag on any other backend: "klt sim: --wait-for-capacity
+# requires backend 'batch'" (checked on the pinned klayout-tools 0.9.0).
+sim_args=(--backend "$backend")
+if [[ "$backend" == batch ]]; then sim_args+=(--wait-for-capacity 600); fi
 set +e
-klt sim "$here/sweep_request.json" --backend "$backend" -o "$build/out" \
+klt sim "$here/sweep_request.json" "${sim_args[@]}" -o "$build/out" \
   --report-out "$build/report.json" --format json >"$build/stdout.json" 2>"$build/stderr.log"
 rc=$?
 set -e

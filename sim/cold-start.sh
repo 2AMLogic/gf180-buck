@@ -6,7 +6,8 @@
 # manifests/item9-inventory.json but not run here (see sim/README.md).
 # Each bench appends a new record under its records/ (append-only evidence).
 # design/averaged/run.sh sends its grid through `klt sim` (batch fleet); a
-# batch submit failure fails this script. There is no local-grid fallback.
+# launch refused for fleet capacity waits up to 600 s with backoff first, and
+# a submit that still fails fails this script. There is no local-grid fallback.
 # Needs the pinned PDK (sim/pdk.json), ngspice, jq, python3, and klt on PATH.
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

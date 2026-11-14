@@ -38,7 +38,7 @@
         "role": "testbench",
         "path": "design/averaged/run.sh",
         "passed": true,
-        "content_hash": "sha256:c9e7472bb6ea1d08781a2f31e8505ce52ae96147ebdfaf22bf237dddfe46b47b"
+        "content_hash": "sha256:72f82904551f80a308fff9caaec347da36fc266fe702bb7bb8fce45937c7b9b2"
       },
       {
         "check": "present",
@@ -122,7 +122,7 @@
         "role": "testbench",
         "path": "sim/cold-start.sh",
         "passed": true,
-        "content_hash": "sha256:1e35ba50c4bbe4e20afa81a618e0628c37991fe6e43b64cad0c3efb67e0335d4"
+        "content_hash": "sha256:f5c8ada03a5e4b21bc5d8aabf4fbff66badd03da190c12b33f14560a6366760f"
       },
       {
         "check": "present",

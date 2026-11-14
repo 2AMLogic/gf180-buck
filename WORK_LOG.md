@@ -3,8 +3,17 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-14
+
+- **PR #168**: chore(attest): pin ngspice 47 and state that inventory pins are unverified
+- **Issue #165** (closed): Item 9 inventory and sim/README pin ngspice 46, but the dispatch hosts now produce records with ngspice 47
+- **PR #160**: refactor: move the item 9 inventory and envelope under manifests/
+- **Issue #154** (closed): Move the item 9 inventory and envelope into manifests/: attest/ and evidence/ are one-file top-level directories
+
 ### 2026-11-13
 
+- **PR #163**: refactor(sim): single-source the step rule, SW clock and no-waveform guard in sim/lib
+- **Issue #152** (closed): Single-source the spec 0.4 step rule, the 41-cycle clock guard and the no-waveform unit guard in sim/lib (hand-copied into 3-5 collectors)
 - **PR #158**: refactor(sim): share one closed-loop bench harness across the five benches
 - **Issue #151** (closed): Extract the bench harness copied into five sim bench.spice decks into one shared include
 - **PR #156**: docs: scope the sim/README cold-start claim to the three benches it runs
