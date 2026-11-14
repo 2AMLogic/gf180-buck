@@ -113,6 +113,18 @@ def main():
     if not (trunk["VIN"] & trunk["SW"]).is_empty() or not (trunk["SW"] & trunk["GND"]).is_empty():
         problems.append("trunks touch")
 
+    # every cut must lie fully under the metal it lands on. The curated deck
+    # cannot check this: an enclosing rule needs a metal/via interaction to
+    # measure, so a cut with no metal under it produces no marker (#176).
+    # excluded: 1260 pre-existing orphan Via1 cuts, see #182 -- add
+    # ("VIA1", m1, "Metal1") to the pairs below when #182 lands.
+    for cut_lay, metal, metal_name in (("VIA2", m2, "Metal2"), ("CONTACT", m1, "Metal1")):
+        orphan = R[cut_lay] - metal
+        if not orphan.is_empty():
+            problems.append("%d %s cut polygon(s) not covered by %s (%d dbu^2, bbox %s)"
+                            % (orphan.count(), cut_lay, metal_name, orphan.area(),
+                               orphan.bbox().to_s()))
+
     # trunk width net of slots: worst case over cut positions along the trunk
     def net_width(net):
         t = trunk[net] - R["M3SLOT"]
