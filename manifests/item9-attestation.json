@@ -816,7 +816,7 @@
         "value": {
           "jq": "1.7",
           "klt": "0.9.0",
-          "ngspice": "46",
+          "ngspice": "47",
           "python3": "3.12"
         }
       }
@@ -832,7 +832,7 @@
         "path": "manifests/item9-inventory.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:abfe1291b1019aefdef20e067c7f4405ebcc04e1904eb59355bb21d0a683e6cf"
+      "content_hash": "sha256:3a8c254b1466927da20655d278e3b71a6819cc678bdf85fe71fdb92593578817"
     }
   }
 }
