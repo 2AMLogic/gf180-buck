@@ -42,9 +42,14 @@ def unit_base(c):
     d = rawgrade.read_ascii_raw(raw, NEEDED)
     t = d["time"]
     step_max_s, step_ok = buckmeas.step_check(t)
-    u.update(graded=True, window_s=[t[0], t[-1]], step_max_s=step_max_s)
-    # R16's verdicts do not read step_ok (see judge()); it is recorded per unit as §0.4 evidence.
+    # Spec 0.4 gates every graded row (spec/decision-records/0009-max-step-gates-graded-rows.md):
+    # a run whose largest saved step exceeds T/200 contributes no value, so it carries no trip
+    # value and both R16 rows see it as a no-value unit. The evidence is recorded either way.
+    u.update(graded=step_ok, window_s=[t[0], t[-1]], step_max_s=step_max_s)
     u["step_ok"] = step_ok
+    if not step_ok:
+        u["reason"] = buckmeas.step_reason(step_max_s)
+        return u, None
     return u, d
 
 

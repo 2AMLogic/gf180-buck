@@ -186,8 +186,10 @@ python3 -I sim/steady-state/collect.py --report GRID.json --report R8.json    # 
 (`request_grid.json`) plus the three R8 Vin / L combinations (`request_r8.json`), `.tran` to
 600 us with the last 120 us saved. Grid parameters are the request axes (`iload`, `lfac`);
 there is no separate params file. `sim/lib/rawgrade.py` reads each `waveform.raw` and applies
-`buckmeas` (spec §0.4). A unit that did not settle, timed out or was lost carries no value and
-the row reports `not_demonstrated`; nothing is relaxed. The committed record is simulated, pre-layout
+`buckmeas` (spec §0.4). A unit that did not settle, timed out, was lost, **or whose largest saved
+time step exceeds the §0.4 T/200 limit** carries no value and the row reports `not_demonstrated`;
+nothing is relaxed. The step rule gates all seven rows the grid feeds (R4, R6, R7, R8, R9, R10, R11)
+-- see `spec/decision-records/0009-max-step-gates-graded-rows.md`. The committed record is simulated, pre-layout
 evidence; R9/R10 are not the graded post-layout value. See the record for per-unit settling windows.
 
 ## Load-step bench (rows R12, R13(b), R13(c))
@@ -201,7 +203,9 @@ python3 -I sim/load-step/collect.py --tol TOL.json --full FULL.json --avg AVG.js
 `bench.spice` is the shared harness with a 50 -> 450 -> 50 mA load at 1 A/us
 (steps at 600 / 680 us, `.tran` to 760 us, last 280 us saved). Each edge is graded by
 `buckmeas.load_step_pair` only if the spec §0.4 settled test passes on the cycles just before it;
-otherwise that step has no value. Requests: `request_tol` = C-typ x all 18 P-T tolerance
+otherwise that step has no value. A run whose largest saved time step exceeds the §0.4 T/200 limit
+carries no value for either edge (decision record `0009`), and R13(c) reports the units it withholds
+for that reason (`n_withheld_step_violation`) rather than shrinking its table silently. Requests: `request_tol` = C-typ x all 18 P-T tolerance
 combinations (18 units); `request_full` = C-full (45) x the two deviation-binding tolerance corners
 (Ceff 4.7 uF, ESR 10 mohm, L x0.8 / x1.2; 90 units); `request_avg` = the averaged model
 (`avg_step.spice`: `design/averaged/buck_avg.spice` unchanged plus the same step) at Vin x 18
@@ -226,7 +230,10 @@ package are the same file, not a copy of it (see "Shared bench harness" below).
 `buckmeas.soft_start` (0 -> 90 % of 1.8 V from EN on per-cycle means, monotonicity with a 1 mV floor,
 overshoot above R4 max after the 20 MHz low-pass, peak I(L)) and `buckmeas.trip_event` (I(L) at the first
 TRIP assertion). A run that never reaches 90 % has no soft-start time; a run whose TRIP never asserts
-has no trip value, and the row is `not_demonstrated`, never a pass.
+has no trip value, and the row is `not_demonstrated`, never a pass. A current-limit run whose largest
+saved time step exceeds the §0.4 T/200 limit likewise has no trip value, so both R16 rows read
+`not_demonstrated` (decision record `0009`); soft-start is the one bench where a step violation is an
+R15 `fail` instead, which `0009` records and leaves as it is.
 
 - `sim/soft-start/`: C-full x load {none, 3.6 ohm} = 90 units, `.tran 2.5n 700u`, saved from EN (20 us);
   rows R15 and the R6 clause (no TRIP in the last 100 us at 0 load).

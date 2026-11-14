@@ -48,8 +48,16 @@ def unit_record(corner, bench):
     if not g["graded"]:
         u.update(settled=False, reason=g["reason"])
         return u
+    # The §0.4 step evidence is recorded ahead of the no-value return below, so a gated unit still
+    # carries the flag and the observed step the reason quotes.
+    u.update(step_max_s=g["run"]["step_max_observed_s"], step_max_ok=g["run"]["step_ok"])
+    if not g["run"]["step_ok"]:
+        # Spec 0.4 gates every graded row (spec/decision-records/0009-max-step-gates-graded-rows.md):
+        # this run yields no value for R4, R6, R7, R8, R9, R10 or R11.
+        u.update(graded=False, settled=False, reason=buckmeas.step_reason(g["run"]["step_max_observed_s"]))
+        return u
     st = g["settle"]
-    u.update(settled=st["settled"], clock_hz=g["clock"]["f_hz"], step_max_ok=g["run"]["step_ok"],
+    u.update(settled=st["settled"], clock_hz=g["clock"]["f_hz"],
              window_s=st["measure_window_s"], settled_since_s=st["settled_since_s"],
              mean_delta_rel=st["mean_vout_delta_rel"], ipk_delta_rel=st["ipk_delta_rel"],
              pwm=g["pwm_regularity"])
