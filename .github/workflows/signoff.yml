@@ -14,8 +14,9 @@ name: klt signoff
 # manifests/item10-attestation.json is re-attested from
 # manifests/item10-inventory.json and must still reproduce and pass.
 #
-# T1 item 9 (testbenches shipped) is attested too: evidence/item9.json is
-# re-hashed against attest/item9.json. Its cold start (sim/cold-start.sh)
+# T1 item 9 (testbenches shipped) is attested too:
+# manifests/item9-attestation.json is re-hashed against
+# manifests/item9-inventory.json. Its cold start (sim/cold-start.sh)
 # needs the PDK, ngspice and the batch fleet, so it is local_only: CI skips it
 # and carries the committed outcome (listed under skipped_checks, not a pass).
 #
@@ -125,8 +126,8 @@ jobs:
           # re-attesting fails this step. A bench added without being listed
           # is NOT caught here: the PR that adds a bench must edit the inventory.
           if ! klt signoff --attest 9 \
-                 --inventory attest/item9.json \
-                 --check evidence/item9.json; then
+                 --inventory manifests/item9-inventory.json \
+                 --check manifests/item9-attestation.json; then
             echo "::error::T1 item 9 attestation drifted or fails - a bench file or the inventory changed."
             echo "Re-run sim/cold-start.sh via the attest command in sim/README.md and commit the envelope in this same PR."
             exit 1
