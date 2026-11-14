@@ -1,24 +1,23 @@
 # layout/drc: DRC evidence for T1 item 3 (issue #23)
 
-**Item 3 is NOT met.** This directory records the run and why it cannot be claimed.
+**Item 3 is NOT met.** The curated-deck run is clean — the Via2 enclosure
+defects were fixed by regenerating the layout (#176) — but the native 30 kA
+deck still cannot run on this 3LM variant, so item 3 cannot be claimed.
 
 ## Run of record
 
 ```
-uvx --from klayout-tools==0.9.0 klt drc layout/buck.gds --deck gf180mcu \
-    --pdk gf180mcuA --format json -o layout/drc/curated-gf180mcu.json
+uvx --from klayout-tools==0.9.0 --with "klayout==0.30.12" klt drc layout/buck.gds \
+    --deck gf180mcu --pdk gf180mcuA --format json -o layout/drc/curated-gf180mcu.json
 uvx --from klayout-tools==0.9.0 klt drc --check layout/drc/curated-gf180mcu.json   # status: match
 ```
 
 | Field | Value |
 |---|---|
-| klt | 0.9.0 (`5dbbad05`), pip KLayout 0.30.12 |
+| klt | 0.9.0 (`5dbbad05`), pip KLayout 0.30.12 (engine pinned with `--with` above) |
 | Deck | curated `gf180mcu`, content hash `sha256:cf44de63f0a5b01c1d09c4d58e0535e990aa4b070bcaae17fd3a94a67a1d97e1` |
-| Input | `layout/buck.gds`, `sha256:0d3d4c3a09391cab7198eea829b0649636eacff7cf2ac148386594d8da566c0c` (equals the committed GDS) |
-| Status | `violations`, 20 findings, all `metal2.enclosing.via2.1` (Metal2 overlap of Via2, at x near -7.5..-5.2 um and 580..583 um, y 88.9 and 462.4 um) |
-
-The 20 findings are real layout defects in the committed GDS, not a coverage
-artefact. Fixing them is a regenerate of the layout (#22's domain), out of scope here.
+| Input | `layout/buck.gds`, `sha256:68e7bcb2e78f2150adc9a20da6b41e7441af1d646a832e32a8abfb83536dd7a5` (equals the committed GDS) |
+| Status | `clean`, 0 findings, `rule_counts` empty. The 20 `metal2.enclosing.via2.1` findings carried by the previous GDS (at x near -7.5..-5.2 um and 580..583 um, y 88.9 and 462.4 um) are gone: `body_ties` now derives the Via2 band from the Metal2 ∩ Metal3-trunk intersection (#176). The deck's enclosing rules cannot see a cut with *no* metal under it, so `layout/check_layout.py` also asserts `Region(VIA2) - Region(METAL2)` and `Region(CONTACT) - Region(METAL1)` are empty geometrically. |
 
 ## Coverage (verbatim from the report)
 
@@ -49,14 +48,18 @@ uvx --from klayout-tools==0.9.1 klt drc layout/buck.gds --engine klayout \
   committed: a partial report must not be counted as clean, and none of
   `metaltop_30k`, `density`, `mslot` is established as run to completion.
 - Upstream friction filed: klayout-tools#5091 (also #4950 for the earlier binary gap).
+  #5091 was closed `completed` on 2026-11-06; it delivered the structured abort cause
+  (and a 3LM documentation note), never a way to run the deck. The live upstream
+  dependency for running the native deck is **klayout-tools#4002** (open): make
+  gf180mcu's native sign-off deck runnable from `klt drc --engine klayout`.
 
 ## Acceptance criteria status
 
 | AC | Status |
 |---|---|
-| Clean curated report, hashes match | Unmet: 20 violations |
+| Clean curated report, hashes match | Met (#176): `clean`, hashes above |
 | Claim quotes coverage fields verbatim | Done above, for the record only |
-| 30 kA family run to completion under pinned KLayout | Unmet: native deck aborts in `mslot.rb` on 3LM (KLayout 0.30.12, klt 0.9.1) |
+| 30 kA family run to completion under pinned KLayout | Unmet: native deck aborts in `mslot.rb` on 3LM (KLayout 0.30.12, klt 0.9.1); live dependency klayout-tools#4002 |
 | Negative control on violating variant | Not done: meaningless until the native deck can run, since the curated deck has no MT30 rule to trip |
 | Method recorded | Done: curated deck + native deck attempt, pins above |
 | MT30.7 out-of-block | Listed as out-of-block per 0001 section 8 item 7 |
@@ -64,7 +67,10 @@ uvx --from klayout-tools==0.9.1 klt drc layout/buck.gds --engine klayout \
 
 ## To close this
 
-1. Regenerate the layout so `metal2.enclosing.via2.1` is clean (new issue).
+1. ~~Regenerate the layout so `metal2.enclosing.via2.1` is clean~~ — done by #176:
+   the curated run is clean and every Via2/Contact cut is geometrically covered
+   (asserted by `layout/check_layout.py`; the deck cannot check orphan cuts itself).
 2. A native-deck run that completes on a 3LM variant: needs an upstream fix to the PDK
    `mslot.rb` (guard `metal4_drawn`) or a klt capability to run a recorded deck subset
-   (klayout-tools#5091). Then re-run both decks, add the negative control, attest item 3.
+   (klayout-tools#4002, open — #5091, closed 2026-11-06, never covered the deck-subset
+   runner). Then re-run both decks, add the negative control, attest item 3.

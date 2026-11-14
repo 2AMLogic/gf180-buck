@@ -359,9 +359,13 @@ class Gen:
             top.insert(db.DCellInstArray(ct.cell_index(), db.DTrans(snap(x + 0.49), snap(y0 + 0.2)), db.DVector(0, 0), db.DVector(0, CT_P), 1, nct))
             self.box(top, "METAL1", x + 0.3, y0, x + 0.9, y1)
             self.box(top, "METAL2", x - 0.7, min(y0, y_trunk), x + 1.9, max(y1, y_trunk))
-            self.via_array(top, "VIA1", x + 0.3, y0, x + 0.9, y1, VS, VS_P, 0.06 - 0.1 + 0.1)
-            # Via2 into the trunk
-            ya, yb = (y_trunk - 3.0, y_trunk + 3.0)
+            self.via_array(top, "VIA1", x + 0.3, y0, x + 0.9, y1, VS, VS_P, 0.06)
+            # Via2 into the trunk, over the metal the cuts land on: the
+            # intersection of the tie's Metal2 extent with the Metal3 trunk
+            # band (a band centred on y_trunk can hang off the Metal2 strip)
+            ty0, ty1 = self.info["trunk_y"][net]
+            m2a, m2b = min(y0, y_trunk), max(y1, y_trunk)
+            ya, yb = max(m2a, ty0), min(m2b, ty1)
             self.via_array(top, "VIA2", x - 0.7, ya, x + 1.9, yb, VS, VS_P, 0.06)
 
 
