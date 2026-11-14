@@ -4,8 +4,9 @@ Simulation environment and benches. Results are **simulated**, never measured.
 
 ## Prerequisites
 
-- `ngspice` on `PATH` (the smoke record was produced with ngspice-42; the
-  `buck-ideal` records with ngspice-46, which is what the dispatch hosts have),
+- `ngspice` on `PATH` (the dispatch hosts currently provide ngspice-47, the
+  version `manifests/item9-inventory.json` pins; records exist from several
+  ngspice versions and each names the one that produced its own numbers),
   `jq`, `sha256sum`, `git`, `python3` (stdlib only).
 - The gf180mcu PDK, variant `gf180mcuD`, at the revision pinned in
   [`pdk.json`](pdk.json), installed with volare in your home directory
@@ -53,9 +54,15 @@ the inventory is not caught: the PR adding it must edit
 `manifests/item9-inventory.json` and re-attest. The inventory hashes every bench
 file under `sim/`, `design/averaged/` and `design/smoke/`; the cold start itself
 runs only the smoke, ideal-buck and averaged benches, and the other benches'
-evidence is their own append-only `records/`. The envelope assumes the pins in
-the inventory (ngspice-46, as on the dispatch hosts; the smoke record of
-2026-10-17 used ngspice-42).
+evidence is their own append-only `records/`. The envelope carries the pins
+from the inventory.
+
+The pins record the toolchain the dispatch hosts provided at attestation time,
+and they are declarative: `klt signoff --attest` transcribes a pin into a
+passing check without comparing it against the host it runs on, so a stale or
+invalid pin cannot fail the attestation. For any individual recorded number the
+authority is the `simulator` / `ngspice` field in that number's own record,
+never the pin.
 
 The smoke bench alone:
 
