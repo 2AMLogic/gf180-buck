@@ -13,6 +13,8 @@ Definitions (per point):
   GM  min over every -180 degree phase crossing of -20*log10|T|, dB;
       "none" when the phase never reaches -180 inside the swept band.
 Phase is unwrapped from the lowest frequency sample, where T is an integrator.
+
+Record plumbing is sim/lib/recordkit.py, the one shared copy (stdlib-only too).
 """
 import argparse
 import hashlib
@@ -20,7 +22,10 @@ import json
 import math
 import os
 import sys
-from datetime import datetime, timezone
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, "..", "..", "sim", "lib"))
+import recordkit  # noqa: E402
 
 TARGET = {"fc_hz_min": 100e3, "fc_hz_max": 250e3, "pm_deg_min": 45.0, "gm_db_min": 10.0}
 # Printed precision: the record stores these rounded values, so a re-run that
@@ -125,8 +130,7 @@ def build_record(report, request_path):
         "ngspice": env.get("engine_version"),
         "ngspice_banner": (env.get("engine_build") or {}).get("version_banner", "").splitlines()[1:2],
         "deck_sha256": env.get("netlist_sha256"),
-        "request_sha256": hashlib.sha256(open(request_path, "rb").read()).hexdigest(),
-        "remote": env.get("remote"),
+        "request_sha256": recordkit.sha256(request_path),
         "precision": {"fc": "kHz, %d decimals" % FC_KHZ_DIGITS, "pm": "deg, %d decimals" % PM_DIGITS, "gm": "dB, %d decimals" % GM_DIGITS},
         "point_count": len(points),
         "expected_point_count": len(report["corners"]),
@@ -161,17 +165,20 @@ def main(argv=None):
     if rec["errored_corners"] or not rec["point_count"]:
         print("extract.py: %d corner(s) produced no loop gain: %s" % (len(rec["errored_corners"]), rec["errored_corners"][:3]), file=sys.stderr)
         return 1
-    rec["generated_utc"] = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    os.makedirs(a.out_dir, exist_ok=True)
-    path = os.path.join(a.out_dir, "%s-%s%s.json" % (rec["generated_utc"], rec["results_sha256"][:12], a.tag))
-    if os.path.exists(path):
-        print("extract.py: records are append-only; %s exists" % path, file=sys.stderr)
-        return 1
-    with open(path, "w") as fh:
-        json.dump(rec, fh, indent=1, sort_keys=True)
-        fh.write("\n")
+    ts, _, hdr = recordkit.header(HERE)
+    rec["environment"] = {
+        **hdr,
+        **recordkit.report_env(report, a.report),
+        "files_sha256": recordkit.files_sha256(
+            HERE, ("buck_avg.spice", "sweep_request.json", "extract.py", "gen_request.py"),
+            lib_files=("genkit.py",)),
+    }
+    rec["generated_utc"] = ts
+    path = os.path.join(a.out_dir, "%s-%s%s.json" % (ts, rec["results_sha256"][:12], a.tag))
+    rc = recordkit.write_record(path, rec, tool="extract.py")
+    if rc:
+        return rc
     s = rec["summary"]
-    print("record %s" % path)
     print("points %d  pass %d  fail %d (fc %d, pm %d, gm %d)  results_sha256 %s" % (
         rec["point_count"], s["pass_all"], s["fail_any"], s["fail_fc"], s["fail_pm"], s["fail_gm"], rec["results_sha256"][:16]))
     print("fc %s..%s kHz  PM min %s deg  GM min %s dB" % (s["fc_khz_min"], s["fc_khz_max"], s["pm_deg_min"], s["gm_db_min"]))

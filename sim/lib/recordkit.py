@@ -107,16 +107,17 @@ def report_env(report, path, fields=REMOTE_FIELDS, jobs=False):
     return env
 
 
-def write_record(path, rec, dry=False):
-    """Write rec as JSON at path; records are append-only, so an existing path is refused (returns 1)."""
+def write_record(path, rec, dry=False, tool="collect.py"):
+    """Write rec as sorted-key JSON at path; records are append-only, so an existing path is refused
+    (returns 1). Sorting makes a re-run of the same record byte-identical."""
     if dry:
         print(path)
         return 0
     if os.path.exists(path):
-        print("collect.py: records are append-only; %s exists" % path, file=sys.stderr)
+        print("%s: records are append-only; %s exists" % (tool, path), file=sys.stderr)
         return 1
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as fh:
-        fh.write(json.dumps(rec, indent=1) + "\n")
-    print("collect.py: record %s" % path)
+        fh.write(json.dumps(rec, indent=1, sort_keys=True) + "\n")
+    print("%s: record %s" % (tool, path))
     return 0

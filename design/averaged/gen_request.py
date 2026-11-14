@@ -5,13 +5,14 @@ Axes (outer to inner): Vin x L x C_eff x ESR x load. klt corners.params rows
 zip by index, so the cross product is expanded here, in a fixed order.
 """
 import itertools
-import json
 import os
+import sys
 
-VIN = [4.5, 5.0, 5.5]
-LFAC = [0.8, 1.0, 1.2]                  # L = 3.3 uH x (1 +/- 20 %)
-CEFF = [4.7e-6, 6e-6, 12e-6]            # spec section 0.2 effective C range
-ESR = [5e-3, 10e-3]                     # spec R13 ESR 5-10 mOhm
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, "..", "..", "sim", "lib"))
+import genkit  # noqa: E402
+from genkit import CEFF, ESR, LFAC, VIN  # noqa: E402
+
 ILOAD = [0.0, 0.25, 0.5]                # ideal current sink, A
 
 rows = list(itertools.product(VIN, LFAC, CEFF, ESR, ILOAD))
@@ -34,7 +35,4 @@ request = {
 assert len(rows) == 162
 
 if __name__ == "__main__":
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sweep_request.json")
-    with open(path, "w") as fh:
-        json.dump(request, fh, indent=1)
-        fh.write("\n")
+    genkit.dump(HERE, "sweep_request.json", request)
