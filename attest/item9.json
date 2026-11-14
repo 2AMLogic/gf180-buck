@@ -49,6 +49,7 @@
     "sim/lib/recordkit.py",
     "sim/lib/stressmeas.py",
     "sim/lib/test_buckmeas.py",
+    "sim/lib/test_collect_step_gate.py",
     "sim/lib/test_device_stress.py",
     "sim/lib/test_rawgrade.py",
     "sim/lib/test_recordkit.py",

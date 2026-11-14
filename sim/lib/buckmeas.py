@@ -122,6 +122,17 @@ def step_check(t, step_max=STEP_MAX_S):
     return max_dt, max_dt <= step_max * (1 + STEP_TOL)
 
 
+def step_reason(max_dt, step_max=STEP_MAX_S):
+    """The one wording for a §0.4 max-step no-value reason, shared by every collector.
+
+    `spec/decision-records/0009-max-step-gates-graded-rows.md`: a run whose largest
+    saved step exceeds the rule contributes no value to any graded row, so each
+    collector records this reason in place of the values it would otherwise report.
+    """
+    return ("max time step %.4g s exceeds the spec 0.4 limit of %.4g s (T/200, met to %g %%): "
+            "the run carries no graded value" % (max_dt, step_max, STEP_TOL * 100))
+
+
 def cycle_floor(t_x, f_sw, t_clk0=0.0):
     """Latest cycle boundary at or before t_x."""
     return t_clk0 + math.floor((t_x - t_clk0) * f_sw + _EPS_CYCLES) / f_sw

@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 9,
-  "summary": "T1 item 9 (Testbenches shipped): 114/114 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 9 (Testbenches shipped): 115/115 attestation checks passed (klt signoff --attest)",
   "source": "attest/item9.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 114,
-    "passed_count": 114,
+    "check_count": 115,
+    "passed_count": 115,
     "checks": [
       {
         "check": "present",
@@ -136,7 +136,7 @@
         "role": "testbench",
         "path": "sim/current-limit/collect.py",
         "passed": true,
-        "content_hash": "sha256:5e78a2611492d7b25b53c65cfbe52fc931f92b828f48fce8cd51b59d38d80a7d"
+        "content_hash": "sha256:ec9706977e5774cf359e6e82f7b8319c454ac28f637f34cc17245b54d1732cf9"
       },
       {
         "check": "present",
@@ -283,7 +283,7 @@
         "role": "testbench",
         "path": "sim/lib/buckmeas.py",
         "passed": true,
-        "content_hash": "sha256:e37825a58a9f11037e04233a2f0dd090af274f1c91d166604da89828e2e0d578"
+        "content_hash": "sha256:72feee6e082f4635c903127d829754a13f942c85971eef7657f70cc0cdccf39f"
       },
       {
         "check": "present",
@@ -326,6 +326,13 @@
         "path": "sim/lib/test_buckmeas.py",
         "passed": true,
         "content_hash": "sha256:f5ea5f7ae99ed46a26f1ad870b7f65e748ec356f2f803df68b02f13ac782e905"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/lib/test_collect_step_gate.py",
+        "passed": true,
+        "content_hash": "sha256:35668d7de64e6024c72f01fb43b08c7a749482e76bc7e3fddf703f6a86488bda"
       },
       {
         "check": "present",
@@ -374,7 +381,7 @@
         "role": "testbench",
         "path": "sim/load-step/collect.py",
         "passed": true,
-        "content_hash": "sha256:c640e3fe7377aa154ce7bf7b2fe8ee3e2c61092fde664d138269b87543bfba15"
+        "content_hash": "sha256:711a5d4a9e6694f3965659b0b254f789f7c98efb6432caf5879d58bbae000048"
       },
       {
         "check": "present",
@@ -654,7 +661,7 @@
         "role": "testbench",
         "path": "sim/steady-state/collect.py",
         "passed": true,
-        "content_hash": "sha256:b9afe014c256e945966c5d079498b542344fdd9498d7873c5fdcaf6f0818532f"
+        "content_hash": "sha256:10f050effbd514daaa04946f18e594e89fdb484ebf0433d8c6e07176fa6d58f7"
       },
       {
         "check": "present",
@@ -832,7 +839,7 @@
         "path": "attest/item9.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:abfe1291b1019aefdef20e067c7f4405ebcc04e1904eb59355bb21d0a683e6cf"
+      "content_hash": "sha256:1560977641514d659bb842ba2609232798e6f83afcf026705276274887b9e82a"
     }
   }
 }
