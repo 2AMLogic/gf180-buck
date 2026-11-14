@@ -120,7 +120,6 @@ spec/          ratified spec + decision records
 design/        schematics / netlists (xschem)
 sim/           testbenches + PVT corner results (ngspice)
 layout/        GDS + DRC/LVS/EM reports (klayout-tools driven)
-manifests/     klt signoff manifest, tier doc and item attestations
 measurements/  silicon characterization (empty until tape-out)
 ```
 
