@@ -22,10 +22,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
 import genkit  # noqa: E402
-from genkit import PROCESS, TEMP, VIN  # noqa: E402
-LFAC = [0.8, 1.0, 1.2]
-CEFF = [4.7e-6, 6e-6, 12e-6]
-ESR = [5e-3, 10e-3]
+from genkit import CEFF, ESR, LFAC, PROCESS, TEMP, VIN  # noqa: E402
 CUBE = list(itertools.product(LFAC, CEFF, ESR))                 # 18
 WORST = [(0.8, 4.7e-6, 10e-3), (1.2, 4.7e-6, 10e-3)]
 # .tran: 2.5 ns = T/200 at 2 MHz; steps at 600 / 680 us (bench.spice), stop 760 us, saved from 480 us

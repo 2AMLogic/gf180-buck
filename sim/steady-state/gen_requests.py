@@ -15,7 +15,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "lib"))
 import genkit  # noqa: E402
-from genkit import PROCESS, TEMP, VIN  # noqa: E402
+from genkit import LFAC, PROCESS, TEMP, VIN  # noqa: E402
 LOADS = [0.0, 0.05, 0.25, 0.5]              # A
 # .tran 2.5n (= T/200 at 2 MHz) stop 600u, saved from 480u (120 us tail)
 TRAN = "2.5n 600u 480u 2.5n"
@@ -44,7 +44,7 @@ dump("matrix_grid.json", genkit.matrix(grid))
 # R8 (C-ex): Vin 4.5 V with L +20 %, Vin 5.5 V with L -20 %, Vin 5.0 V with L nominal;
 # typical process, 27 C, 250 mA (forced PWM: CCM at every load, so ripple does not depend on it).
 r8 = {"process": [PROCESS[0]], "supply_v": {"vsrc": VIN}, "supply_waveforms": ["vsrc"],
-      "temperature_c": [27], "params": {"iload": [0.25, 0.25, 0.25], "lfac": [0.8, 1.0, 1.2]}}
+      "temperature_c": [27], "params": {"iload": [0.25, 0.25, 0.25], "lfac": LFAC}}
 r8_exclude = [{"supply_v": {"vsrc": 4.5}, "params": {"lfac": 0.8}}, {"supply_v": {"vsrc": 4.5}, "params": {"lfac": 1.0}},
               {"supply_v": {"vsrc": 5.0}, "params": {"lfac": 0.8}}, {"supply_v": {"vsrc": 5.0}, "params": {"lfac": 1.2}},
               {"supply_v": {"vsrc": 5.5}, "params": {"lfac": 1.0}}, {"supply_v": {"vsrc": 5.5}, "params": {"lfac": 1.2}}]

@@ -1,5 +1,9 @@
 import cmath
+import hashlib
+import json
 import math
+import os
+import tempfile
 import unittest
 
 import extract
@@ -69,6 +73,79 @@ class EdgeCases(unittest.TestCase):
     def test_unwrap_through_minus_180(self):
         out = extract.unwrap_deg([-170.0, 179.0, 170.0])
         self.assertEqual(out, [-170.0, -181.0, -190.0])
+
+
+class RecordEnvelope(unittest.TestCase):
+    """The issue #169 consolidation invariant: results_sha256 covers `points`
+    alone, so growing the provenance envelope (repo_commit, klt, files_sha256)
+    cannot move the graded numbers -- and every committed record reproduces it."""
+
+    PARAMS = {"vin": 5.0, "lfac": 1.0, "ceff": 4.7e-6, "esr": 0.005, "iload": 0.25}
+
+    @staticmethod
+    def write_sidecar(path, fs, t):
+        """A klt complex_vectors artifact for T = t(f): v(b) = 1, v(vo) = -T."""
+        with open(path, "w") as fh:
+            json.dump({"frequency_hz": fs,
+                       "data": {"v(vo)": {"real": [-x.real for x in t], "imag": [-x.imag for x in t]},
+                                "v(b)": {"real": [1.0] * len(fs), "imag": [0.0] * len(fs)}}}, fh)
+
+    def fixture(self, d, banner="ngspice-47", remote=None):
+        fs, t = sweep(lambda f: 100e3 / (1j * f) * cmath.exp(-2j * math.pi * f * 0.5e-6))
+        p = os.path.join(d, "point.json")
+        self.write_sidecar(p, fs, t)
+        return {"environment": {"engine_version": banner, "engine_build": {"version_banner": "x\n%s\ny" % banner},
+                                "netlist_sha256": "deadbeef", "remote": remote or {}},
+                "corners": [{"corner_id": "typical/5.0V/27C/params:" + ",".join(
+                                "%s=%r" % (k, v) for k, v in self.PARAMS.items()),
+                             "status": "pass", "params": dict(self.PARAMS),
+                             "artifacts": {"complex_vectors": p}}]}
+
+    def test_results_sha_covers_points_alone(self):
+        with tempfile.TemporaryDirectory() as d:
+            rec = extract.build_record(self.fixture(d), self.request_file(d))
+        self.assertEqual(rec["results_sha256"],
+                         hashlib.sha256(json.dumps(rec["points"], sort_keys=True).encode()).hexdigest())
+
+    def test_envelope_cannot_move_the_hash(self):
+        with tempfile.TemporaryDirectory() as d:
+            req = self.request_file(d, "{}")
+            a = extract.build_record(self.fixture(d, banner="ngspice-44", remote={"job_id": "a"}), req)
+            b = extract.build_record(self.fixture(d, banner="ngspice-47", remote={"job_id": "b"}), req)
+        self.assertEqual(a["results_sha256"], b["results_sha256"])
+        self.assertEqual(a["points"], b["points"])
+        self.assertNotEqual((a["ngspice_banner"], a["deck_sha256"]), (b["ngspice_banner"], b["deck_sha256"]))
+
+    def test_request_bytes_do_not_move_the_hash(self):
+        with tempfile.TemporaryDirectory() as d:
+            a = extract.build_record(self.fixture(d), self.request_file(d, '{"netlist": "a"}'))
+            b = extract.build_record(self.fixture(d), self.request_file(d, '{"netlist": "b"}'))
+        self.assertNotEqual(a["request_sha256"], b["request_sha256"])
+        self.assertEqual(a["results_sha256"], b["results_sha256"])
+
+    def test_committed_records_reproduce_their_hash(self):
+        """Append-only evidence: every committed record's results_sha256 is the
+        formula over its own points, and the newest record still carries the
+        781e1a29003d prefix the whole history shares."""
+        records = sorted(os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "records")))
+        newest = None
+        for name in records:
+            if not name.endswith(".json"):
+                continue
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "records", name)) as fh:
+                rec = json.load(fh)
+            self.assertEqual(rec["results_sha256"],
+                             hashlib.sha256(json.dumps(rec["points"], sort_keys=True).encode()).hexdigest(),
+                             name)
+            newest = rec
+        self.assertTrue(newest and newest["results_sha256"].startswith("781e1a29003d"), records[-1])
+
+    @staticmethod
+    def request_file(d, body='{"netlist": "buck_avg.spice"}'):
+        p = os.path.join(d, "sweep_request.json")
+        with open(p, "w") as fh:
+            fh.write(body)
+        return p
 
 
 if __name__ == "__main__":
