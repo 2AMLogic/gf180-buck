@@ -4,9 +4,10 @@ gf180-buck is a synchronous buck converter on the gf180mcu open PDK (on-die
 switches, gate drive, voltage-mode PWM controller), built to exercise the
 30 kÅ MetalTop rule set and the klayout-tools evidence flow.
 
-**Status as of 2026-11-13, `main` @ `3e3159a`.** Everything below is simulated
-or structural; nothing is measured. `WORK_PLAN.md` is the generated label view
-of the tracker; this file says what the order is and why.
+**Status as of 2026-11-14, `main` @ `a3cb225`; the tracker was re-read the same
+day.** Everything below is simulated or structural; nothing is measured.
+`WORK_PLAN.md` is the generated label view of the tracker; this file says what
+the order is and why.
 
 ## Where it stands
 
@@ -35,6 +36,11 @@ and one grading library (PRs #158, #163); a netlist geometry pre-check
 (`design/check_geometry.py`); and a CI drift guard that regenerates the GDS and
 byte-compares it (PR #150).
 
+Landed since the previous roadmap pass (`3e3159a` to `a3cb225`): the ngspice pin
+reconciliation (#165, PR #168, merged 2026-11-14). `manifests/item9-inventory.json`
+and `sim/README.md` now state ngspice 47, the version the newest records carry,
+and item 9 is re-attested (114/114).
+
 **The binding fact:** the closed loop does not regulate. `sim/steady-state/DIAGNOSIS-82.md`
 traces it to the adopted error amplifier: about 1.1 MHz GBW into the type-III
 load against about 8 MHz needed (decision record 0004), with its inputs at
@@ -48,23 +54,22 @@ that is closed, rows R4, R12, R13, R2 and R14 can only fail or read
    generator.** Done when `klt drc layout/buck.gds --deck gf180mcu --pdk gf180mcuA`
    reports zero findings in a regenerated `layout/drc/curated-gf180mcu.json`,
    `layout/test_layout.py` passes, and item 2 is re-attested against the new
-   GDS hash. No issue yet (`layout/drc/README.md` "To close this", step 1).
+   GDS hash. Tracked as #176 (`layout/drc/README.md` "To close this", step 1).
    Does not meet item 3 on its own; see Blocked.
-2. **Bring the README status into line with the verdict of record.** The README
-   says "1 of 11", "nothing is designed yet", "Current position: spec ratified",
-   and that the averaged bench has no record on `main`; all four are stale.
-   Done when each statement matches `manifests/gf180-buck.signoff.json` and the
-   tree, the Reproduce table lists the benches `sim/cold-start.sh` runs, and
-   `manifests/check_readme.py` and the item 10 attestation still pass. No issue yet.
-3. **Reconcile the ngspice pin with the hosts that produce the records** (#165).
-   Done when the item 9 inventory and `sim/README.md` state the version the
-   newest records carry (47) and item 9 is re-attested.
-4. **Land the spec §0.4 max-step gate** (#161, PR #167, changes requested,
-   merge conflict). Done when R16, R12, R13 and the steady-state rows are graded
-   only on runs that meet the step rule, with a decision record.
-5. **Land the capacity wait on the averaged grid submit** (#162, PR #166,
-   changes requested, merge conflict). Done when `design/averaged/run.sh` waits
-   for capacity and a re-attest does not fail on a busy batch fleet.
+2. **Bring the README status into line with the verdict of record** (#177). The
+   README says "1 of 11 T1 evidence items" (`README.md:12`), "nothing is
+   designed yet" (`README.md:10`), and that the averaged-model bench "has no
+   record on `main` yet" (`README.md:103`, against seven records in
+   `design/averaged/records/`); all three are stale. Done when each statement
+   matches `manifests/gf180-buck.signoff.json` and the tree, the Reproduce table
+   lists the benches `sim/cold-start.sh` runs, and `manifests/check_readme.py`
+   and the item 10 attestation still pass.
+3. **Land the spec §0.4 max-step gate** (#161, PR #167, in review, mergeable).
+   Done when R16, R12, R13 and the steady-state rows are graded only on runs
+   that meet the step rule, with a decision record.
+4. **Land the capacity wait on the averaged grid submit** (#162, PR #166,
+   approved and awaiting merge). Done when `design/averaged/run.sh` waits for
+   capacity and a re-attest does not fail on a busy batch fleet.
 
 ## Next
 
@@ -96,7 +101,10 @@ that is closed, rows R4, R12, R13, R2 and R14 can only fail or read
 
 - **Item 3 on the 30 kÅ rule family** (#23). Question first: does the native
   deck run to completion on a 3LM variant (upstream guard for `metal4_drawn` in
-  `mslot.rb`), or does klt gain a recorded deck-subset run (klayout-tools#5091)?
+  `mslot.rb`), or does klt gain a recorded deck-subset run
+  (klayout-tools#4002)? Not klayout-tools#5091, which closed having delivered
+  the structured abort cause and the 3LM documentation note only, with the
+  per-deck subset runner explicitly out of scope.
 - **Monte Carlo** (#26). Question first: which rows are statistical once R4 has
   a settled nominal result.
 - **Post-layout re-verification and the characterization report** (#27, #28).
@@ -114,7 +122,11 @@ that is closed, rows R4, R12, R13, R2 and R14 can only fail or read
   returns three items: the source of the 1.50 V reference, the `soft_start`
   follower's range at 1.5 V, and amplifier behaviour below 1.20 V.
 - **Sibling.** The error-amplifier target and re-pin (gf180-opamp#295).
-- **Upstream tool.** klayout-tools#5091 (native 30 kÅ deck on 3LM).
+- **Upstream tool.** klayout-tools#4002 (make the native gf180mcu sign-off deck
+  runnable from `klt drc --engine klayout`), open and itself on `loom:operator`.
+  klayout-tools#5091 is closed (2026-11-06) and was never the ticket for a
+  recorded deck-subset run; `layout/drc/README.md` on `main` still cites it
+  (#178).
 - **Batch capacity.** #69 and #123 need a multi-hour grid launched outside a
   builder session.
 - **Cleanup proposals awaiting a decision:** #96 (duplicate
