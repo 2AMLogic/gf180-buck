@@ -5,6 +5,8 @@ Maintained by the Guide role.
 
 ### 2026-11-15
 
+- **PR #205**: test: fail a ROADMAP.md stamp off main, warn on doc-excluding drift
+- **Issue #199** (closed): ROADMAP.md header-sha staleness is invisible until review: consider a CI ancestry/age check
 - **PR #195**: docs: refresh ROADMAP to a13150c, drop volatile per-PR review state
 - **Issue #190** (closed): ROADMAP.md carries per-PR review states that rot within a day: refresh, and drop the volatile fields
 - **PR #204**: fix(layout): keep the gate buses clear of the body-tie Metal2; propagate net Metal2 outside the array box
