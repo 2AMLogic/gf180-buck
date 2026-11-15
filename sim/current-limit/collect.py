@@ -136,10 +136,9 @@ def main(argv=None):
     mn = [min_unit(c) for c in reps["min"]["corners"]]
     rows = judge(ramp, mn)
     ts, sha, hdr = recordkit.header(HERE)
-    fields = ("provider", "job_id", "instance_type", "state")
 
     def env(k, p):
-        return recordkit.report_env(reps[k], p, fields)
+        return recordkit.report_env(reps[k], p)
     rec = {
         "record": "simulated, not measured; pre-layout; spec R16",
         "environment": {**hdr, "reports": [env("ramp", a.ramp), env("min", a.mn)],

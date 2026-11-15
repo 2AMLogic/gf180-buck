@@ -130,7 +130,7 @@ def main(argv=None):
         "record": "simulated, not measured; pre-layout; spec R15 and the R6 no-trip clause",
         "environment": {**hdr,
                         "report": {"file": os.path.basename(a.report), "status": rep.get("status"),
-                                   "remote": recordkit.remote_subset(rep, ("provider", "job_id", "instance_type", "state"))},
+                                   "remote": recordkit.remote_subset(rep)},
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "request_grid.json", "gen_requests.py"),
                             ("design/netlists/buck_top.spice",), ("bench_harness.spice", "buckmeas.py", "rawgrade.py"))},
