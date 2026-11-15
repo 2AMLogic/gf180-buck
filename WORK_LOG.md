@@ -5,6 +5,8 @@ Maintained by the Guide role.
 
 ### 2026-11-15
 
+- **PR #197**: docs: add static hold caveat to WORK_PLAN preamble
+- **Issue #194** (closed): WORK_PLAN.md renders no Blocked section, so a loom:blocked issue appears as takeable Important work
 - **PR #196**: fix(sim): device-stress R2/R14 read the spec 0.4 whole-run step gate
 - **PR #191**: docs: correct README status to the verdict of record (4/11 T1) and re-attest item 10
 - **Issue #177** (closed): README status is stale: says 1 of 11 T1 items and "nothing is designed yet"; the verdict of record is 4 of 11
