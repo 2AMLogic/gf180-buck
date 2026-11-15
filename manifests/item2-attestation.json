@@ -15,7 +15,7 @@
         "check": "stream_readable",
         "role": "layout",
         "passed": true,
-        "content_hash": "sha256:68e7bcb2e78f2150adc9a20da6b41e7441af1d646a832e32a8abfb83536dd7a5"
+        "content_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f"
       },
       {
         "check": "top_cell_non_empty",
@@ -34,7 +34,7 @@
     ]
   },
   "provenance": {
-    "klt_version": "0.9.1",
+    "klt_version": "0.9.3.dev3+gd5d57daf9a14",
     "klayout_version": "0.30.13",
     "pdk": null,
     "deck": null,
@@ -43,11 +43,11 @@
         "path": "layout/buck.gds",
         "scope": "repo"
       },
-      "content_hash": "sha256:68e7bcb2e78f2150adc9a20da6b41e7441af1d646a832e32a8abfb83536dd7a5"
+      "content_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f"
     },
     "regeneration": {
       "generator": "python3 layout/gen_layout.py",
-      "regenerated_hash": "sha256:68e7bcb2e78f2150adc9a20da6b41e7441af1d646a832e32a8abfb83536dd7a5"
+      "regenerated_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f"
     }
   }
 }

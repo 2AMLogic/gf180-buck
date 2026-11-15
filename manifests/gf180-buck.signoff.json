@@ -301,7 +301,7 @@
         "command": null,
         "kind": "generic",
         "check_status": "pass",
-        "content_hash": "sha256:68e7bcb2e78f2150adc9a20da6b41e7441af1d646a832e32a8abfb83536dd7a5",
+        "content_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f",
         "input_verified": true,
         "exit_status": 0,
         "artifact_binding": {
@@ -310,7 +310,7 @@
             "path": "layout/buck.gds",
             "scope": "repo"
           },
-          "content_hash": "sha256:68e7bcb2e78f2150adc9a20da6b41e7441af1d646a832e32a8abfb83536dd7a5",
+          "content_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f",
           "input_verified": true,
           "summary": "T1 item 2 (Layout): 3/3 attestation checks passed (klt signoff --attest)",
           "source": "layout/buck.gds",
@@ -322,7 +322,7 @@
           },
           "regeneration": {
             "generator": "python3 layout/gen_layout.py",
-            "regenerated_hash": "sha256:68e7bcb2e78f2150adc9a20da6b41e7441af1d646a832e32a8abfb83536dd7a5",
+            "regenerated_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f",
             "executed_by_klt": false
           }
         }
