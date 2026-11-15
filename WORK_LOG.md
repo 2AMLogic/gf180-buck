@@ -5,6 +5,12 @@ Maintained by the Guide role.
 
 ### 2026-11-15
 
+- **PR #195**: docs: refresh ROADMAP to a13150c, drop volatile per-PR review state
+- **Issue #190** (closed): ROADMAP.md carries per-PR review states that rot within a day: refresh, and drop the volatile fields
+- **PR #204**: fix(layout): keep the gate buses clear of the body-tie Metal2; propagate net Metal2 outside the array box
+- **Issue #201** (closed): Power-stage gate buses are shorted to their body-tie Metal2 (GH→VIN, GL→GND): 3.9 um^2 of shared Metal2 each
+- **PR #198**: fix(layout): clip straps and cuts to the row extent; span the LS gate strap
+- **Issue #182** (closed): Clear the 1260 orphan Via1 cuts in the power-stage strap arrays (build_array row/strap extent mismatch)
 - **PR #197**: docs: add static hold caveat to WORK_PLAN preamble
 - **Issue #194** (closed): WORK_PLAN.md renders no Blocked section, so a loom:blocked issue appears as takeable Important work
 - **PR #196**: fix(sim): device-stress R2/R14 read the spec 0.4 whole-run step gate
