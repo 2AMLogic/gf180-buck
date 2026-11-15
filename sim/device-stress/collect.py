@@ -11,8 +11,9 @@ times), and writes
 
 Verdict rules (nothing is relaxed): a limit exceeded anywhere in the saved window FAILS the unit, settled
 or not, resolved or not (a coarser step can only under-read a peak, and R2 takes no transient credit); a
-PASS needs a settled run, edge windows <= 100 ps, and every value inside its limit; a row is `pass` only
-when the full 135-unit PVT grid is present and every unit is a pass (a subset such as C-typ never passes), and `not_demonstrated` otherwise. A unit that timed
+PASS needs a settled run, a whole-run max step inside the spec 0.4 T/200 limit (over it the unit
+contributes no value, decision record 0011), edge windows <= 100 ps, and every value inside its limit; a
+row is `pass` only when the full 135-unit PVT grid is present and every unit is a pass (a subset such as C-typ never passes), and `not_demonstrated` otherwise. A unit that timed
 out or errored contributes no value. Simulated, never measured.
 """
 import argparse
@@ -60,6 +61,16 @@ def unit_record(corner):
         u.update(graded=False, settled=False, reason=str(exc))
         return u
     t = c["time"]
+    step_max_s, step_ok = buckmeas.step_check(t)
+    # Spec 0.4 gates every graded row (spec/decision-records/0011-device-stress-step-gate.md, extending
+    # 0009 to this bench): a run whose largest saved step exceeds T/200 contributes no value, so it
+    # carries no peaks and no dead time and both R2 and R14 read it as a no-value unit. The evidence is
+    # recorded either way.
+    u["step_max_s"] = step_max_s
+    u["step_ok"] = step_ok
+    if not step_ok:
+        u.update(graded=False, settled=False, reason=buckmeas.step_reason(step_max_s))
+        return u
     p = sm.stress_peaks(t, c["v(vin_d)"], c["v(sw_d)"], c["v(gnd_d)"], c["v(xtop.gh)"], c["v(xtop.gl)"])
     u["window_saved_s"] = [t[0], t[-1]]
     u["peaks"] = p
@@ -166,6 +177,9 @@ def main(argv=None):
             "analysis": ".tran 100p 600u, waveforms saved from 540u (a 60 us tail); max step 100 ps over the WHOLE run (spec 0.4 edge-window step)",
             "edge_window": "[-2 ns, +10 ns] around every mid-swing crossing of SW and both gates; the unit's largest step inside them is units[].edge.max_step_s, "
                            "and a unit with any step > 100 ps has no PASS",
+            "step_gate": "spec 0.4 max step T/200 (buckmeas.STEP_MAX_S, met to its tolerance) over the whole saved run: a unit whose largest "
+                         "saved step exceeds it records no peaks and no dead time, and both R2 and R14 read it as no value "
+                         "(decision record 0011-device-stress-step-gate.md, extending 0009 to this bench)",
             "startup": "Vin ramps 0 -> Vin over 10 us, control rails/bias over 5 us, EN at 20 us (soft start ~200 us), load applied 0 -> I at 260 us over 0.5 us",
             "steady_state": "spec 0.4: two consecutive 20-cycle windows < 0.1 % in mean Vout and < 1 % in peak I(L); the record gives settled_since_s and "
                             "measure_window_s per unit; an unsettled unit can fail but not pass",

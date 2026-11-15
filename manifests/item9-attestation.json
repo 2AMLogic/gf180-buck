@@ -227,7 +227,7 @@
         "role": "testbench",
         "path": "sim/device-stress/collect.py",
         "passed": true,
-        "content_hash": "sha256:d0aa58f8d068bd24b53edc00ee75d41ccf7cfdd04c5668ba14d6d416dc0a627c"
+        "content_hash": "sha256:c895edd3e8048bb69713767fa61e0b48fc02d693f589d284be7520b51ec68bbc"
       },
       {
         "check": "present",
@@ -332,7 +332,7 @@
         "role": "testbench",
         "path": "sim/lib/test_collect_step_gate.py",
         "passed": true,
-        "content_hash": "sha256:b069a9d783ebbbf9f46dd19995cd692f0616f1232cf75beb58bc4e629926796f"
+        "content_hash": "sha256:9d393060be11e6083d01f9f979f53c103694617a7363493b112fdf684a70dfb0"
       },
       {
         "check": "present",
