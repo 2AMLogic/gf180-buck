@@ -810,7 +810,7 @@
       "released": true
     },
     "input": {
-      "content_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f",
+      "content_hash": "sha256:a7afbfe7a635637e65cc127c77df3fd1fc51c104e8eab067a480fee8452106c3",
       "role": "layout"
     },
     "klayout_version_mismatch": false

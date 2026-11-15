@@ -66,6 +66,10 @@ STRAP_W, STRAP_P, N_STRAP = 3.4, 4.0, 5     # Metal2 S/D straps per group
 GSTRAP_W = 1.5            # Metal2 gate strap
 ROW_GAP = 0.5
 VIA_ENC = 0.06            # via enclosure in the strap metal (via_array margin)
+TIE_X_L, TIE_X_R_OFF = -7.0, 5.0    # body-tie strip centres: left end, right end at W + offset
+TIE_M2_LO, TIE_M2_HI = -0.7, 1.9    # body-tie Metal2 overhang around the strip centre
+M2_SPACE_MIN = 0.28                 # DRM 7.13 rule Mn.2a metal2 min space (deck metal2.space.1)
+GATE_BUS_TIE_CLEAR = 2 * M2_SPACE_MIN   # gate bus kept clear of the tie Metal2 (#201)
 SLOT_W, SLOT_PITCH_MIN = 2.0, 30.0   # slot width; metal between slots
 SLOT_LEN, SLOT_GAP = 250.0, 10.0
 SLOT_EDGE = 10.0
@@ -104,6 +108,8 @@ class Gen:
         self.ly.dbu = 0.001
         self.L = {k: self.ly.layer(*v) for k, v in LAYERS.items()}
         self.nets = {}      # label -> record data
+        self.gate_bus_rect = {}   # GH/GL -> drawn gate-bus Metal2 rect (x0, y0, x1, y1)
+        self.m2_power = {}        # power net -> its drawn Metal2 rects, for the isolation assert
         self.info = {}
 
     # -------------------------------------------------------- primitives
@@ -276,6 +282,7 @@ class Gen:
         self.box(top, "NWELL", -9.0, y_hs0 - 1.0, W + 9.0, y_hs1 + 0.5)
         self.body_ties(top, "HS", y_hs0, y_hs1, W, y_vin0 + 5.0, "VIN")
         self.body_ties(top, "LS", y_ls0, y_ls1, W, y_gnd1 - 5.0, "GND")
+        self.assert_gate_bus_isolated()
 
         # ---- bond pads: two per power net on the trunk tails
         PAD = 80.0
@@ -324,6 +331,7 @@ class Gen:
         for k in range(n_per):
             x0 = k * PERIOD
             for gi, net, typ in ((0, s_net, "S"), (1, d_net, "D")):
+                pnet = net if net in ("VIN", "SW", "GND") else "SW"
                 gx0 = x0 + gi * (GROUP + GAP)
                 for i in range(N_STRAP):
                     sx0 = gx0 + 0.3 + i * STRAP_P
@@ -331,6 +339,7 @@ class Gen:
                     if sx1 - sx0 < VS + 2 * VIA_ENC:    # no room for even one via
                         continue
                     self.box(top, "METAL2", sx0, rows_bot, sx1, rows_top)
+                    self.m2_power.setdefault(pnet, []).append((sx0, rows_bot, sx1, rows_top))
                     # Via2 up to the Metal3 strip along the whole strap
                     n2 = self.via_array(top, "VIA2", sx0, rows_bot, sx1, rows_top, VS, VS_P, VIA_ENC)
                     cnt[net]["VIA2"] += n2
@@ -361,9 +370,14 @@ class Gen:
         assert drawn_x1 <= clip_x + 1e-9, \
             "strap field drawn past the row extent %s (%s): no Via1 may land off the metal, see #182" \
             % (clip_x, tag)
-        # gate bus (Metal2) running left to the control area
-        self.box(top, "METAL2", -30.0, gate_bus_y[0], W - 0.0, gate_bus_y[1])
-        top.shapes(self.L["M2LABEL"]).insert(db.DText("GH" if tag == "HS" else "GL", db.DTrans(-29.0, snap((gate_bus_y[0] + gate_bus_y[1]) / 2))))
+        # gate bus (Metal2) running left to the control area, stopping short of
+        # the left body-tie Metal2 strip: at x -30 the bus ran under the tie
+        # strip and shorted GH to VIN / GL to GND (#201)
+        gtag = "GH" if tag == "HS" else "GL"
+        bus_x0 = snap(TIE_X_L + TIE_M2_HI + GATE_BUS_TIE_CLEAR)
+        self.box(top, "METAL2", bus_x0, gate_bus_y[0], W - 0.0, gate_bus_y[1])
+        top.shapes(self.L["M2LABEL"]).insert(db.DText(gtag, db.DTrans(snap(bus_x0 + GSTRAP_W), snap((gate_bus_y[0] + gate_bus_y[1]) / 2))))
+        self.gate_bus_rect[gtag] = (bus_x0, gate_bus_y[0], W - 0.0, gate_bus_y[1])
         # Metal3 strips: A strips hang from the far trunk, B strips from the near trunk
         for k in range(n_per):
             x0 = k * PERIOD
@@ -379,14 +393,14 @@ class Gen:
     def body_ties(self, top, tag, y0, y1, W, y_trunk, net):
         """Body tie strips at both array ends, Metal2 up/down to the trunk (not counted as power-path cuts)."""
         kind = "N" if tag == "HS" else "P"
-        for x in (-7.0, W + 5.0):
+        for x in (TIE_X_L, W + TIE_X_R_OFF):
             self.box(top, "COMP", x, y0, x + 1.2, y1)
             self.box(top, "NPLUS" if kind == "N" else "PPLUS", x - 0.3, y0 - 0.3, x + 1.5, y1 + 0.3)
             ct = self.via_cell("CONTACT", CT)
             nct = int((y1 - y0 - 0.7) / CT_P) + 1
             top.insert(db.DCellInstArray(ct.cell_index(), db.DTrans(snap(x + 0.49), snap(y0 + 0.2)), db.DVector(0, 0), db.DVector(0, CT_P), 1, nct))
             self.box(top, "METAL1", x + 0.3, y0, x + 0.9, y1)
-            self.box(top, "METAL2", x - 0.7, min(y0, y_trunk), x + 1.9, max(y1, y_trunk))
+            self.box(top, "METAL2", x + TIE_M2_LO, min(y0, y_trunk), x + TIE_M2_HI, max(y1, y_trunk))
             self.via_array(top, "VIA1", x + 0.3, y0, x + 0.9, y1, VS, VS_P, 0.06)
             # Via2 into the trunk, over the metal the cuts land on: the
             # intersection of the tie's Metal2 extent with the Metal3 trunk
@@ -394,7 +408,21 @@ class Gen:
             ty0, ty1 = self.info["trunk_y"][net]
             m2a, m2b = min(y0, y_trunk), max(y1, y_trunk)
             ya, yb = max(m2a, ty0), min(m2b, ty1)
-            self.via_array(top, "VIA2", x - 0.7, ya, x + 1.9, yb, VS, VS_P, 0.06)
+            self.via_array(top, "VIA2", x + TIE_M2_LO, ya, x + TIE_M2_HI, yb, VS, VS_P, 0.06)
+            self.m2_power.setdefault(net, []).append((x + TIE_M2_LO, m2a, x + TIE_M2_HI, m2b))
+
+    def assert_gate_bus_isolated(self):
+        """Gate-bus Metal2 must keep a strict gap to every power-net Metal2 (#201).
+
+        Same-layer metal sharing so much as an edge is one electrical node, so
+        the rects must be separated, not merely non-overlapping.
+        """
+        for gnet, (gx0, gy0, gx1, gy1) in sorted(self.gate_bus_rect.items()):
+            for pnet, rects in sorted(self.m2_power.items()):
+                for px0, py0, px1, py1 in rects:
+                    assert gx1 < px0 or px1 < gx0 or gy1 < py0 or py1 < gy0, \
+                        "gate bus %s Metal2 touches %s Metal2 at x %.1f..%.1f y %.1f..%.1f" \
+                        % (gnet, pnet, max(gx0, px0), min(gx1, px1), max(gy0, py0), min(gy1, py1))
 
 
 # -------------------------------------------------------------- output
