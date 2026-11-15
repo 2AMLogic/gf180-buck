@@ -10,7 +10,8 @@ manifests/README.md for the regeneration cascade a pinned edit must perform.
 
 This test is green while the overlap between the staged set and the pinned set
 is exactly ALLOWED_OVERLAP, and goes red with a named cause if a future Loom
-resync widens the staged set onto another pinned file. If the create_docs_pr
+resync widens the staged set onto another pinned file or shrinks it off the
+allowlist. If the create_docs_pr
 staging anchor cannot be parsed it FAILS rather than skips: an unparseable
 anchor must never read as a pass. The generic defect (hardcoded staging set,
 mergeability-blind skip of an open docs PR) is filed upstream at
@@ -77,13 +78,26 @@ def pinned_paths(inventories):
 def check_overlap(overlap):
     """The single assertion the tripwire exists for."""
     if overlap != ALLOWED_OVERLAP:
+        if overlap - ALLOWED_OVERLAP:
+            direction = (
+                "Extra pinned paths staged: "
+                f"{sorted(overlap - ALLOWED_OVERLAP)} - extend the recipe and "
+                "ALLOWED_OVERLAP together"
+            )
+        else:
+            direction = (
+                "Allowlisted pinned paths no longer staged (overlap shrank): "
+                f"{sorted(ALLOWED_OVERLAP - overlap)} - prune the recipe and "
+                "ALLOWED_OVERLAP to match"
+            )
         raise AssertionError(
-            "Guide's docs staging set overlaps evidence-pinned files beyond the "
-            "allowlist: a docs PR editing one can never pass the signoff record "
-            "check. Extend the regeneration recipe in manifests/README.md "
-            "(item-10 section) and update ALLOWED_OVERLAP deliberately, or stop "
-            "staging the file (upstream: rjwalters/loom#13897). Extra pinned "
-            f"paths staged: {sorted(overlap - ALLOWED_OVERLAP)}"
+            "Guide's docs staging set no longer matches the evidence-pinned "
+            "allowlist: a docs PR editing a pinned file it stages can never "
+            "pass the signoff record check, and every change to the overlap "
+            "is a deliberate one. Update the regeneration recipe in "
+            "manifests/README.md (item-10 section) and ALLOWED_OVERLAP "
+            "together, or stop staging the file (upstream: "
+            f"rjwalters/loom#13897). {direction}"
         )
 
 
@@ -155,6 +169,25 @@ class NegativeCases(unittest.TestCase):
         with self.assertRaises(AssertionError) as ctx:
             check_overlap(overlap)
         self.assertIn("WORK_PLAN.md", str(ctx.exception))
+
+    def test_shrunk_overlap_message_names_the_stale_allowlist_entry(self):
+        # When the upstream fix (rjwalters/loom#13897) lands and README.md
+        # stops being staged, the overlap shrinks below the allowlist: the
+        # failure must name the stale allowlist entry, not report an empty
+        # "extra staged" list.
+        text = (
+            "create_docs_pr() {\n"
+            '  git -C "$DOCS_WT" add WORK_LOG.md WORK_PLAN.md\n'
+            "}\n"
+        )
+        inventories = {
+            "item10-inventory.json": {"hygiene": ["README.md"]},
+        }
+        overlap = staged_paths(text) & pinned_paths(inventories)
+        with self.assertRaises(AssertionError) as ctx:
+            check_overlap(overlap)
+        self.assertIn("no longer staged", str(ctx.exception))
+        self.assertIn("README.md", str(ctx.exception))
 
     def test_inventory_without_hygiene_key_is_tolerated(self):
         text = (

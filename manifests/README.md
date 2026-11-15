@@ -100,16 +100,32 @@ and `README.md` is a `hygiene[]` member of the item-10 inventory. So a docs PR
 that actually edits `README.md` (Guide's docs PR is the common trigger) changes
 its content hash, and the signoff-record check above fails until the envelope
 and the record are regenerated in the same PR. Any PR editing **any**
-`hygiene[]` member must regenerate exactly two committed files, in this order,
-with the throwaway-venv `klt` from above:
+`hygiene[]` member must regenerate exactly two committed files — the record
+twice and the envelope once, in this order — with the throwaway-venv `klt`
+from above:
 
 ```
+klt signoff --manifest manifests/gf180-buck.json \
+    --tiers-doc manifests/design-evidence-tiers.md \
+    --format json > manifests/gf180-buck.signoff.json
 klt signoff --attest 10 --inventory manifests/item10-inventory.json \
     -o manifests/item10-attestation.json
 klt signoff --manifest manifests/gf180-buck.json \
     --tiers-doc manifests/design-evidence-tiers.md \
     --format json > manifests/gf180-buck.signoff.json
 ```
+
+The record comes first: the attest pass runs the inventory's checks, and its
+`signoff-record-fresh` check reads the committed record, which the member edit
+just invalidated — so an attest-first run exits 3 and writes nothing, silently
+leaving item 10 demoted. After the first regeneration the committed record
+matches a fresh render (item 10 `unmet` at that point), so the attest pass
+passes and `-o` writes the envelope with the new member hash — it writes
+nothing on failure — and the second regeneration grades the fresh envelope:
+item 10 `met` again. Require exit 0 from the attest pass (an unchecked,
+copy-pasted attest that exits 3 changes nothing); exit 3 from the two
+record-regeneration passes is expected and not an error, per the exit-code
+note above. After the cascade, both `--check` runs above exit 0.
 
 `gf180-buck.json` is **not** edited for a member-only change: its
 `evidence["10"].content_hash` pins `item10-inventory.json` (see the table
