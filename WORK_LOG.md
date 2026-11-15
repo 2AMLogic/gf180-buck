@@ -5,6 +5,10 @@ Maintained by the Guide role.
 
 ### 2026-11-15
 
+- **PR #196**: fix(sim): device-stress R2/R14 read the spec 0.4 whole-run step gate
+- **PR #191**: docs: correct README status to the verdict of record (4/11 T1) and re-attest item 10
+- **Issue #177** (closed): README status is stale: says 1 of 11 T1 items and "nothing is designed yet"; the verdict of record is 4 of 11
+- **Issue #170** (closed): sim/device-stress/collect.py computes the spec 0.4 step flag but no verdict reads it (R2, R14)
 - **PR #192**: fix(sim): R13(c) counts every withheld unit by reason, not just step violations
 - **PR #188**: feat(sim): keep the fleet runner's klt provenance in every bench record
 - **PR #185**: test: tripwire docs staging set against evidence-pinned hygiene files
