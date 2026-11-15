@@ -96,20 +96,33 @@ def main():
     nets = {}
     for net, tag in (("VIN", "HS"), ("SW", "HS"), ("SW", "LS"), ("GND", "LS")):
         c2, m2n, c1, m1n, cc = cuts_in(tag, trunk[net])
-        nets[(net, tag)] = dict(via2=c2, via1=c1, contact=cc, m2=m2n, m1=m1n)
+        nets[(net, tag)] = dict(via2=c2, via1=c1, contact=cc, m1=m1n)
+    # net-level Metal2, propagated from every Via2 that lands on the labelled
+    # trunk, not only from cuts inside the array box: the body-tie strips and
+    # their Via2 cuts sit outside arr[tag] (x < 0, the box is built from the
+    # rows with a hardcoded x-left of 0), so the array-scoped m2 above never
+    # carried them and a gate bus merged with a tie strip was invisible to the
+    # shorts tests below (#201).
+    m2_net = {}
+    for net in ("VIN", "SW", "GND"):
+        v2n = db.Region([p for p in R["VIA2"].each()
+                         if not (trunk[net] & db.Region(p.bbox())).is_empty()])
+        m2_net[net] = m2.interacting(v2n)
     gate = {t: at(m2, m2l[t]) for t in ("GH", "GL")}
     # shorts: the power nets' Metal1/Metal2 must not touch each other or the gate buses
     problems = []
     keys = list(nets)
     for i, ka in enumerate(keys):
         for kb in keys[i + 1:]:
-            for lay in ("m1", "m2"):
-                if not (nets[ka][lay] & nets[kb][lay]).is_empty():
-                    problems.append("short %s/%s on %s" % (ka, kb, lay))
+            if not (nets[ka]["m1"] & nets[kb]["m1"]).is_empty():
+                problems.append("short %s/%s on m1" % (ka, kb))
+    for na, nb in (("VIN", "SW"), ("VIN", "GND"), ("SW", "GND")):
+        if not (m2_net[na] & m2_net[nb]).is_empty():
+            problems.append("short %s/%s on m2" % (na, nb))
     for g, reg in gate.items():
-        for k in keys:
-            if not (nets[k]["m2"] & reg).is_empty():
-                problems.append("gate %s shorts to %s" % (g, k))
+        for net in ("VIN", "SW", "GND"):
+            if not (m2_net[net] & reg).is_empty():
+                problems.append("gate %s shorts to %s" % (g, net))
     if not (trunk["VIN"] & trunk["SW"]).is_empty() or not (trunk["SW"] & trunk["GND"]).is_empty():
         problems.append("trunks touch")
 
