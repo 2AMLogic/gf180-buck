@@ -33,27 +33,26 @@ _None._
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-_None._
+- **#169**: Consolidate design/averaged onto sim/lib: it re-implements recordkit and re-declares the P-T tolerance box
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
-- **#152**: Single-source the spec 0.4 step rule, the 41-cycle clock guard and the no-waveform unit guard in sim/lib (hand-copied into 3-5 collectors)
-- **#154**: Move the item 9 inventory and envelope into manifests/: attest/ and evidence/ are one-file top-level directories
+- **#161**: Gate R16, R12 and the steady-state rows on the spec 0.4 max-step rule, with a decision record
 - **#162**: design/averaged/run.sh submits its batch grid with no capacity wait, so a re-attest fails on a busy fleet
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#163**: refactor(sim): single-source the step rule, SW clock and no-waveform guard in sim/lib
+- **#166**: sim: wait 600 s for fleet capacity on the averaged grid's batch submit
 
 ## Approved (Awaiting Merge)
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-_None._
+- **#167**: feat(sim): gate R16, R12, R13 and the steady-state rows on the spec 0.4 max-step rule
 
 ## Proposed
 
@@ -68,7 +67,7 @@ Issues carrying `loom:curated`.
 - **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)*
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)*
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)*
-- **#154**: Move the item 9 inventory and envelope into manifests/: attest/ and evidence/ are one-file top-level directories *(curated)*
+- **#161**: Gate R16, R12 and the steady-state rows on the spec 0.4 max-step rule, with a decision record *(curated)*
 - **#162**: design/averaged/run.sh submits its batch grid with no capacity wait, so a re-attest fails on a busy fleet *(curated)*
 
 ## Proposed (Architect / Hermit)
@@ -87,10 +86,10 @@ _None._
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
 | Important | 8 |
-| Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 3 |
+| Ready (`loom:issue`) | 1 |
+| In Progress (`loom:building`) | 2 |
 | PRs awaiting review | 1 |
-| Approved PRs awaiting merge | 0 |
+| Approved PRs awaiting merge | 1 |
 | Curated | 11 |
 | Architect / Hermit proposals | 2 |
 | Active epics | 0 |

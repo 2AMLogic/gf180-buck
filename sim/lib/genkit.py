@@ -12,6 +12,10 @@ FAMILY = {"typical": "typical", "ff": "ff", "ss": "ss", "fs": "typical", "sf": "
 PROCESS = [{"name": p, "sections": [p, "mimcap_" + f, "cap_mim", "res_" + f]} for p, f in FAMILY.items()]
 VIN = [4.5, 5.0, 5.5]                       # R1: 5.0 V +/- 10 %
 TEMP = [-40, 27, 125]
+# spec/target-spec.md 0.2 P-T set, the box R13 holds its margins over
+LFAC = [0.8, 1.0, 1.2]                      # L 3.3 uH +/- 20 %
+CEFF = [4.7e-6, 6e-6, 12e-6]                # Ceff 4.7-12 uF (effective at 1.8 V bias)
+ESR = [5e-3, 10e-3]                         # ESR 5-10 mOhm
 # One unit per batch job: measured on the fleet, units sharing an instance run slower than serial.
 BATCH = {"max_units_per_job": 1, "max_concurrent_jobs": 12}
 MATRIX_KEYS = ("process", "supply_v", "temperature_c", "params")
