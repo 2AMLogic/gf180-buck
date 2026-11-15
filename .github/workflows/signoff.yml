@@ -49,6 +49,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: manifests/test_roadmap_stamp.py asserts that
+          # ROADMAP.md's header stamp sha is an ancestor of HEAD, and a
+          # depth-1 checkout does not contain that object at all (its
+          # --is-ancestor exits 128, which the test correctly treats as
+          # cannot-know and skips). 310 commits / ~44 MB as of 2026-11-15.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
