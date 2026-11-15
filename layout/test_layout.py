@@ -79,8 +79,8 @@ class PowerPathTests(unittest.TestCase):
         ly.read(GDS)
         top = ly.top_cell()
         via1 = ly.layer(35, 0)
-        # below-orphan: in the HS gate-bus band (Metal2, x -30..W) beyond the row
-        # extent, where no Metal1 exists
+        # below-orphan: in the HS gate-bus band (Metal2, from the tie clearance
+        # out to W) beyond the row extent, where no Metal1 exists
         top.shapes(via1).insert(db.DBox(w - 6.0, rows_bot - 2.35, w - 6.0 + 0.26, rows_bot - 2.35 + 0.26))
         # above-orphan: on the row-0 gate-rail Metal1 (full width) inside a strap
         # gap of period x0 = 288 (gap 299.7..300.3), where no Metal2 exists
@@ -95,6 +95,73 @@ class PowerPathTests(unittest.TestCase):
                       "below-direction did not bite:\n%s" % r.stdout)
         self.assertIn("not covered by Metal2", r.stdout,
                       "above-direction did not bite:\n%s" % r.stdout)
+
+    def test_gate_buses_share_no_metal2_with_power_nets(self):
+        """The GH/GL Metal2 islands share no metal with any power net's (#201).
+
+        Measured on the committed GDS the way the issue measured the defect:
+        one merged Metal2 island per labelled gate bus, zero shared area with
+        every power net's propagated Metal2, and zero Via2 cuts on the island
+        touching Metal3. The pre-fix GDS measured 3.9 um^2 shared and 45
+        trunk-reaching cuts per gate bus.
+        """
+        ly = db.Layout()
+        ly.read(GDS)
+        top = ly.top_cell()
+        um = 1000
+        R = {n: db.Region(top.begin_shapes_rec(ly.layer(*l)))
+             for n, l in (("METAL2", (36, 0)), ("METAL3", (42, 0)), ("VIA2", (38, 0)))}
+        texts = {}
+        for lay in ((36, 10), (42, 10)):
+            it = top.begin_shapes_rec(ly.layer(*lay))
+            while not it.at_end():
+                s = it.shape()
+                if s.is_text():
+                    t = s.text.transformed(it.trans())
+                    texts[t.string] = (t.x, t.y)
+                it.next()
+        m2, m3 = R["METAL2"].merged(), R["METAL3"].merged()
+
+        def at(region, pt):
+            return region.interacting(db.Region(db.Box(pt[0] - 1, pt[1] - 1, pt[0] + 1, pt[1] + 1)))
+        trunk = {n: at(m3, texts[n]) for n in ("VIN", "SW", "GND")}
+        for t in ("GH", "GL"):
+            island = at(m2, texts[t])
+            for net, tr in trunk.items():
+                v2n = db.Region([p for p in R["VIA2"].each()
+                                 if not (tr & db.Region(p.bbox())).is_empty()])
+                shared = m2.interacting(v2n) & island
+                self.assertEqual(shared.area(), 0,
+                                 "gate %s shares %.3f um^2 of Metal2 with %s"
+                                 % (t, shared.area() / um, net))
+            cuts = [p for p in R["VIA2"].each() if not (island & db.Region(p.bbox())).is_empty()]
+            on_m3 = [p for p in cuts if not (m3 & db.Region(p.bbox())).is_empty()]
+            self.assertEqual(len(on_m3), 0,
+                             "gate %s island carries %d Via2 cuts touching Metal3" % (t, len(on_m3)))
+
+    def test_gate_short_checker_bites_on_bus_tie_bridge(self):
+        """A Metal2 bridge from a gate bus into a body-tie strip must fail.
+
+        Re-creates the #201 class on the committed GDS: one drawn Metal2 rect
+        overlapping both the GL bus and the tie strip merges the two nets, and
+        the tie's Via2 cuts make the short visible to the net-level Metal2 the
+        checker propagates.
+        """
+        with open(os.path.join(HERE, "buck.info.json")) as fh:
+            info = json.load(fh)
+        rows_top = info["rows_y"]["LS"][1]    # LS gate-bus band sits rows_top+1.5 .. +3.0
+        ly = db.Layout()
+        ly.read(GDS)
+        top = ly.top_cell()
+        top.shapes(ly.layer(36, 0)).insert(db.DBox(-6.5, rows_top + 1.5, -4.0, rows_top + 3.0))
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "mutant.gds")
+            ly.write(p)
+            r = run("check_layout.py", "--gds", p)
+        self.assertNotEqual(r.returncode, 0,
+                            "checker did not bite on a bus-to-tie Metal2 bridge:\n%s" % r.stdout)
+        self.assertIn("gate GL shorts to GND", r.stdout,
+                      "short not named:\n%s" % r.stdout)
 
 
 if __name__ == "__main__":

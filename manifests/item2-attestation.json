@@ -15,7 +15,7 @@
         "check": "stream_readable",
         "role": "layout",
         "passed": true,
-        "content_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f"
+        "content_hash": "sha256:a7afbfe7a635637e65cc127c77df3fd1fc51c104e8eab067a480fee8452106c3"
       },
       {
         "check": "top_cell_non_empty",
@@ -43,11 +43,11 @@
         "path": "layout/buck.gds",
         "scope": "repo"
       },
-      "content_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f"
+      "content_hash": "sha256:a7afbfe7a635637e65cc127c77df3fd1fc51c104e8eab067a480fee8452106c3"
     },
     "regeneration": {
       "generator": "python3 layout/gen_layout.py",
-      "regenerated_hash": "sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f"
+      "regenerated_hash": "sha256:a7afbfe7a635637e65cc127c77df3fd1fc51c104e8eab067a480fee8452106c3"
     }
   }
 }
