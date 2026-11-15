@@ -79,8 +79,13 @@ def grade_unit(corner, bench, tm):
             return u
         f_sw, t_clk0, vout, il = clk["f_hz"], clk["t_clk0_s"], c["v(out)"], c["i(lind)"]
         u["clock"] = {"source": "rising crossings of Vin/2 on V(sw) over the saved tail", "f_hz": f_sw, "crossings": clk["crossings"]}
-    max_dt, step_ok = buckmeas.step_check(t)
-    u["run"] = {"t_first_s": t[0], "t_last_s": t[-1], "step_max_observed_s": max_dt, "step_ok": step_ok}
+    max_dt, run_step_ok = buckmeas.step_check(t)   # the run's §0.4 step, not the per-step step_ok() below
+    u["run"] = {"t_first_s": t[0], "t_last_s": t[-1], "step_max_observed_s": max_dt, "step_ok": run_step_ok}
+    if not run_step_ok:
+        # Spec 0.4 gates every graded row (spec/decision-records/0009-max-step-gates-graded-rows.md):
+        # neither edge of this run carries a value, so the unit gains no `up`/`back` and keeps `run`.
+        u.update(graded=False, reason=buckmeas.step_reason(max_dt))
+        return u
     pair = buckmeas.load_step_pair(t, vout, il, f_sw, tm["t_up"], tm["t_dn"], BAND, t_clk0=t_clk0)
     u["graded"] = True
     for name, r in pair.items():
@@ -142,7 +147,18 @@ def r13b_table(units):
     return out
 
 
+def step_withheld_ids(units):
+    """Ids of units withheld from a graded table for a §0.4 step violation (decision record 0009)."""
+    return [u["id"] for u in units if (u.get("run") or {}).get("step_ok") is False]
+
+
 def r13c(sw_units, avg_units):
+    """R13(c) over every switched and averaged unit. Ungraded units are excluded from the table as
+    before, but one withheld for a §0.4 step violation is counted (decision record 0009): without
+    that count the row could still read `pass` on a silently smaller set."""
+    withheld = step_withheld_ids(sw_units) + step_withheld_ids(avg_units)
+    sw_units = [u for u in sw_units if u.get("graded")]
+    avg_units = [u for u in avg_units if u.get("graded")]
     amap = {(u["vin_v"], u["lfac"], u["ceff_f"], u["esr_ohm"]): u for u in avg_units}
     table = []
     for u in sw_units:
@@ -163,7 +179,11 @@ def r13c(sw_units, avg_units):
     worst = max(errs, key=lambda x: x[0], default=None)
     return {"what": "R13(c): switched step vs averaged-model step, peak deviation and recovery time of both edges, +-%d %%" % (XTOL * 100),
             "n_units": len(table), **{"n_" + k: v for k, v in n.items()},
-            "verdict": "fail" if n["fail"] else ("not_demonstrated" if n["no_value"] or not table else "pass"),
+            "n_withheld_step_violation": len(withheld), "withheld_step_violation_units": withheld,
+            "withheld_note": "a unit whose largest saved step exceeds the spec 0.4 limit is withheld from this table and counted here, "
+                             "so the row cannot read `pass` on a smaller set (decision record 0009). Units withheld for no waveform or "
+                             "an unlocked clock are not counted: that pre-existing drop is unchanged here",
+            "verdict": "fail" if n["fail"] else ("not_demonstrated" if n["no_value"] or withheld or not table else "pass"),
             "worst": None if worst is None else {"id": worst[1], "check": worst[2], "rel_err": worst[3]["rel_err"],
                                                  "switched": worst[3]["switched"], "predicted": worst[3]["predicted"]},
             "table": table}
@@ -188,10 +208,9 @@ def main(argv=None):
         if u["id"] not in seen:
             seen.add(u["id"])
             sw.append(u)
-    graded = [u for u in sw if u.get("graded")]
     rows = {"R12": judge_r12(sw), "R13b": {"what": "R13(b): the switched step per P-T tolerance corner (same grading as R12)",
                                            "per_tolerance_corner": r13b_table(sw)},
-            "R13c": r13c(graded, [u for u in units["avg"] if u.get("graded")])}
+            "R13c": r13c(sw, units["avg"])}
     rows["R13b"]["verdict"] = ("fail" if any(e["verdict"] == "fail" for e in rows["R13b"]["per_tolerance_corner"].values())
                                else "not_demonstrated" if any(e["verdict"] != "pass" for e in rows["R13b"]["per_tolerance_corner"].values()) else "pass")
     ts, sha, hdr = recordkit.header(HERE)
