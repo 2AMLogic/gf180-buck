@@ -4,7 +4,7 @@ gf180-buck is a synchronous buck converter on the gf180mcu open PDK (on-die
 switches, gate drive, voltage-mode PWM controller), built to exercise the
 30 kÅ MetalTop rule set and the klayout-tools evidence flow.
 
-**Status as of 2026-11-14, `main` @ `a3cb225`; the tracker was re-read the same
+**Status as of 2026-11-15, `main` @ `1452651`; the tracker was re-read the same
 day.** Everything below is simulated or structural; nothing is measured.
 `WORK_PLAN.md` is the generated label view of the tracker; this file says what
 the order is and why.
@@ -28,7 +28,7 @@ The verdict of record (`manifests/gf180-buck.signoff.json`) is tier `null`,
 | 10 | Repo hygiene | met | `manifests/item10-attestation.json`, CI re-grades on drift |
 | 11 | Power delivery | unmet | #31 |
 
-Also on `main`: the ratified spec and eight decision records under
+Also on `main`: the ratified spec and the decision records under
 `spec/decision-records/`; the averaged-model loop-gain bench with records
 (`design/averaged/records/`); switched benches for steady state, load step,
 soft start, current limit, dead time and device stress, sharing one harness
@@ -50,26 +50,14 @@ that is closed, rows R4, R12, R13, R2 and R14 can only fail or read
 
 ## Now
 
-1. **Clear the 20 `metal2.enclosing.via2.1` findings in the power-stage
-   generator.** Done when `klt drc layout/buck.gds --deck gf180mcu --pdk gf180mcuA`
-   reports zero findings in a regenerated `layout/drc/curated-gf180mcu.json`,
-   `layout/test_layout.py` passes, and item 2 is re-attested against the new
-   GDS hash. Tracked as #176 (`layout/drc/README.md` "To close this", step 1).
-   Does not meet item 3 on its own; see Blocked.
-2. **Bring the README status into line with the verdict of record** (#177). The
-   README says "1 of 11 T1 evidence items" (`README.md:12`), "nothing is
-   designed yet" (`README.md:10`), and that the averaged-model bench "has no
-   record on `main` yet" (`README.md:103`, against seven records in
-   `design/averaged/records/`); all three are stale. Done when each statement
-   matches `manifests/gf180-buck.signoff.json` and the tree, the Reproduce table
-   lists the benches `sim/cold-start.sh` runs, and `manifests/check_readme.py`
-   and the item 10 attestation still pass.
-3. **Land the spec §0.4 max-step gate** (#161, PR #167, in review, mergeable).
-   Done when R16, R12, R13 and the steady-state rows are graded only on runs
-   that meet the step rule, with a decision record.
-4. **Land the capacity wait on the averaged grid submit** (#162, PR #166,
-   approved and awaiting merge). Done when `design/averaged/run.sh` waits for
-   capacity and a re-attest does not fail on a busy batch fleet.
+Nothing is dispatchable from the design queue today. The four items the
+previous pass listed here (#176, #177, #161, #162) are closed and completed,
+and every other open thread waits on an operator ruling, the batch fleet, or
+the error-amplifier sibling - see Blocked. The first thread to unblock
+reorders this list; the tracker, and `WORK_PLAN.md` as its generated view,
+carry the live state. This section names trackers and done-conditions only,
+never another file's content or a pull request's review state: quoted state
+is what rots between passes.
 
 ## Next
 
@@ -132,8 +120,9 @@ that is closed, rows R4, R12, R13, R2 and R14 can only fail or read
 - **Cleanup proposals awaiting a decision:** #96 (duplicate
   `buck_top_kelvin.spice`), #159 (untrack `layout/buck.info.json`).
 
-Items 4 to 8 and 11 have nothing dispatchable until the above move; the Now
-list is the whole of what can be built today.
+Items 4 to 8 and 11 have nothing dispatchable until the above move; the live
+queue of what can be built today, including newly opened work this file does
+not list, is `WORK_PLAN.md`.
 
 ## Not planned
 
