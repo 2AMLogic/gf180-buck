@@ -14,6 +14,7 @@ The ratified specification and its decision records.
 | [`decision-records/0007-deadtime-detector-vs-corner-vth.md`](decision-records/0007-deadtime-detector-vs-corner-vth.md) | Recorded (no ratified row changed): the gate-level dead-time detector is a 0.5 V screen; R14 grades at the corner's Vth (issue #123, sf/125 C) |
 | [`decision-records/0008-ea-input-common-mode.md`](decision-records/0008-ea-input-common-mode.md) | Proposed (not ratified): move the error-amplifier input common mode into the op-amp's 1.20 - 2.70 V range; R4 and start-up closure stay conditional on three open items (issue #131) |
 | [`decision-records/0009-max-step-gates-graded-rows.md`](decision-records/0009-max-step-gates-graded-rows.md) | Recorded (no ratified row changed): the §0.4 max-step rule gates every graded row — a step violation is no value, not a pass; soft-start's R15 `fail` and R13(c)'s withheld count (issue #161) |
+| [`decision-records/0010-r13c-accounts-for-every-withheld-unit.md`](decision-records/0010-r13c-accounts-for-every-withheld-unit.md) | Recorded (no number on record changed; R13(c)'s entitlement to read `pass` is narrowed): R13(c) counts every unit it withholds from its table, by reason, and reads `not_demonstrated` whenever any unit was withheld (issue #171) |
 | [`../reuse.lock.json`](../reuse.lock.json) | The pinned sibling references behind the adopt-or-keep table |
 
 A change to a ratified number needs a new decision record in
