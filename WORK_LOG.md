@@ -5,6 +5,13 @@ Maintained by the Guide role.
 
 ### 2026-11-15
 
+- **PR #192**: fix(sim): R13(c) counts every withheld unit by reason, not just step violations
+- **PR #188**: feat(sim): keep the fleet runner's klt provenance in every bench record
+- **PR #185**: test: tripwire docs staging set against evidence-pinned hygiene files
+- **PR #175**: docs: roadmap as of 2026-11-13
+- **Issue #186** (closed): recordkit.REMOTE_FIELDS drops the fleet runner's klt version from every bench record
+- **Issue #174** (closed): Guide docs maintenance stages README.md, which is evidence-pinned in item 10: any README edit produces an unmergeable docs PR that stalls the docs pipeline
+- **Issue #171** (closed): R13(c) silently drops no-waveform and unlocked-clock units from its table (the row can read pass on a smaller set)
 - **PR #187**: docs(layout): cite klayout-tools#4002 as the live native-deck dependency
 - **Issue #178** (closed): layout/drc/README.md cites closed klayout-tools#5091 as the live upstream blocker; the deck-subset ticket is #4002
 - **PR #167**: feat(sim): gate R16, R12, R13 and the steady-state rows on the spec 0.4 max-step rule

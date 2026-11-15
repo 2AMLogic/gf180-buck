@@ -24,35 +24,35 @@ _None._
 - **#60**: T1 item 5d: soft-start and current-limit benches (R15, R16) as klt sim envelopes
 - **#62**: Draw device-level layout for the control blocks (gate_drive, osc_ramp, pwm_comp, soft_start, ocp_sense, compensator)
 - **#69**: T1 item 5b remainder: run the R2 / R14 C-full grid (135 units at 100 ps) on the fleet
+- **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62)
 - **#111**: Lay out osc_ramp, pwm_comp, soft_start, ocp_sense, compensator and route the control strip (second split of #62)
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53)
-- **#162**: design/averaged/run.sh submits its batch grid with no capacity wait, so a re-attest fails on a busy fleet
 
 ## Ready
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-- **#169**: Consolidate design/averaged onto sim/lib: it re-implements recordkit and re-declares the P-T tolerance box
+- **#170**: sim/device-stress/collect.py computes the spec 0.4 step flag but no verdict reads it (R2, R14)
+- **#190**: ROADMAP.md carries per-PR review states that rot within a day: refresh, and drop the volatile fields
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
-- **#161**: Gate R16, R12 and the steady-state rows on the spec 0.4 max-step rule, with a decision record
-- **#162**: design/averaged/run.sh submits its batch grid with no capacity wait, so a re-attest fails on a busy fleet
+- **#177**: README status is stale: says 1 of 11 T1 items and "nothing is designed yet"; the verdict of record is 4 of 11
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#166**: sim: wait 600 s for fleet capacity on the averaged grid's batch submit
+- **#191**: docs: correct README status to the verdict of record (4/11 T1) and re-attest item 10
 
 ## Approved (Awaiting Merge)
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#167**: feat(sim): gate R16, R12, R13 and the steady-state rows on the spec 0.4 max-step rule
+_None._
 
 ## Proposed
 
@@ -67,13 +67,18 @@ Issues carrying `loom:curated`.
 - **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)*
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)*
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)*
-- **#161**: Gate R16, R12 and the steady-state rows on the spec 0.4 max-step rule, with a decision record *(curated)*
-- **#162**: design/averaged/run.sh submits its batch grid with no capacity wait, so a re-attest fails on a busy fleet *(curated)*
+- **#170**: sim/device-stress/collect.py computes the spec 0.4 step flag but no verdict reads it (R2, R14) *(curated)*
+- **#177**: README status is stale: says 1 of 11 T1 items and "nothing is designed yet"; the verdict of record is 4 of 11 *(curated)*
+- **#182**: Clear the 1260 orphan Via1 cuts in the power-stage strap arrays (build_array row/strap extent mismatch) *(curated)*
+- **#190**: ROADMAP.md carries per-PR review states that rot within a day: refresh, and drop the volatile fields *(curated)*
 
 ## Proposed (Architect / Hermit)
 
 - **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)*
 - **#159**: Stop tracking layout/buck.info.json: generator by-product that nothing reads or guards (219 lines) *(hermit)*
+- **#173**: design/averaged/records: six committed records re-inline a byte-identical 3404-line payload (24,669 of design/'s 29,098 lines) *(hermit)*
+- **#180**: Gate the sim/smoke record write: 5 of 6 records carry a byte-identical result block *(hermit)*
+- **#181**: Single-source the batch capacity wait in genkit.BATCH: nine generated requests carry none, three mechanisms solve it *(hermit)*
 
 ## Epics
 
@@ -86,11 +91,11 @@ _None._
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
 | Important | 8 |
-| Ready (`loom:issue`) | 1 |
-| In Progress (`loom:building`) | 2 |
+| Ready (`loom:issue`) | 2 |
+| In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 1 |
-| Approved PRs awaiting merge | 1 |
-| Curated | 11 |
-| Architect / Hermit proposals | 2 |
+| Approved PRs awaiting merge | 0 |
+| Curated | 13 |
+| Architect / Hermit proposals | 5 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
