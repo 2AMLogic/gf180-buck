@@ -3,8 +3,22 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-15
+
+- **PR #187**: docs(layout): cite klayout-tools#4002 as the live native-deck dependency
+- **Issue #178** (closed): layout/drc/README.md cites closed klayout-tools#5091 as the live upstream blocker; the deck-subset ticket is #4002
+- **PR #167**: feat(sim): gate R16, R12, R13 and the steady-state rows on the spec 0.4 max-step rule
+- **Issue #161** (closed): Gate R16, R12 and the steady-state rows on the spec 0.4 max-step rule, with a decision record
+
 ### 2026-11-14
 
+- **PR #184**: fix(layout): enclose body-tie Via2 arrays in Metal2 via the Metal2/trunk intersection
+- **Issue #176** (closed): Clear the 20 metal2.enclosing.via2.1 findings in the power-stage layout generator
+- **PR #183**: refactor: consolidate design/averaged onto sim/lib record plumbing and axes
+- **Issue #169** (closed): Consolidate design/averaged onto sim/lib: it re-implements recordkit and re-declares the P-T tolerance box
+- **PR #166**: sim: wait 600 s for fleet capacity on the averaged grid's batch submit
+- **Issue #162** (closed): design/averaged/run.sh submits its batch grid with no capacity wait, so a re-attest fails on a busy fleet
+- **Issue #179** (closed): README layout block omits manifests/: fix it in a PR that also re-attests T1 item 10
 - **PR #168**: chore(attest): pin ngspice 47 and state that inventory pins are unverified
 - **Issue #165** (closed): Item 9 inventory and sim/README pin ngspice 46, but the dispatch hosts now produce records with ngspice 47
 - **PR #160**: refactor: move the item 9 inventory and envelope under manifests/
