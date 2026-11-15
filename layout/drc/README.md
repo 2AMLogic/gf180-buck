@@ -47,11 +47,12 @@ uvx --from klayout-tools==0.9.1 klt drc layout/buck.gds --engine klayout \
 - klt refuses the partial report (it would need `--allow-deck-errors`). No report is
   committed: a partial report must not be counted as clean, and none of
   `metaltop_30k`, `density`, `mslot` is established as run to completion.
-- Upstream friction filed: klayout-tools#5091 (also #4950 for the earlier binary gap).
-  #5091 was closed `completed` on 2026-11-06; it delivered the structured abort cause
-  (and a 3LM documentation note), never a way to run the deck. The live upstream
-  dependency for running the native deck is **klayout-tools#4002** (open): make
-  gf180mcu's native sign-off deck runnable from `klt drc --engine klayout`.
+- Upstream friction filed: klayout-tools#5091 (also #4950 for the earlier binary gap;
+  #4950 is closed — it delivered the pinned standalone-KLayout env). #5091 was closed
+  `completed` on 2026-11-06; it delivered the structured abort cause with
+  `decks_executed` and a 3LM documentation note, never a way to run the deck. The live
+  upstream dependency for running the native deck is **klayout-tools#4002** (open):
+  make gf180mcu's native sign-off deck runnable from `klt drc --engine klayout`.
 
 ## Acceptance criteria status
 
@@ -71,6 +72,8 @@ uvx --from klayout-tools==0.9.1 klt drc layout/buck.gds --engine klayout \
    the curated run is clean and every Via2/Contact cut is geometrically covered
    (asserted by `layout/check_layout.py`; the deck cannot check orphan cuts itself).
 2. A native-deck run that completes on a 3LM variant: needs an upstream fix to the PDK
-   `mslot.rb` (guard `metal4_drawn`) or a klt capability to run a recorded deck subset
-   (klayout-tools#4002, open — #5091, closed 2026-11-06, never covered the deck-subset
-   runner). Then re-run both decks, add the negative control, attest item 3.
+   `mslot.rb` (guard `metal4_drawn`) or a klt capability to run the native deck on this
+   variant (klayout-tools#4002, open; its own criteria allow the 3LM `mslot.rb`
+   breakage to be *disclosed* rather than fixed, so #4002 closing may not be enough).
+   #5091 is closed and delivered only the structured abort cause and the 3LM
+   documentation note. Then re-run both decks, add the negative control, attest item 3.
