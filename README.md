@@ -7,12 +7,20 @@ output capacitor — designed by AI agents driving
 [klayout-tools](https://github.com/2AMLogic/klayout-tools) and the
 open-source xschem + ngspice flow.
 
-**Status: specification ratified on merge of issue #2; nothing is designed yet.**
+**Status: specification ratified on merge of issue #2; design and simulation
+under way.** Schematics, netlists, a generated power-stage layout and 67
+committed simulation records are on `main` (counts read at `64535b7`,
+2026-11-15); no post-layout or measured result exists, and the switched closed
+loop does not yet regulate in simulation (issue #82).
 
-**T1 status:** tier verdict of record is `null` — 1 of 11 T1 evidence items
-met (item 10, repo hygiene), graded by `klt signoff` from [`manifests/gf180-buck.json`](manifests/gf180-buck.json)
+**T1 status:** tier verdict of record is `null` — 4 of 11 T1 evidence items met
+(items 1 design sources, 2 layout, 9 testbenches shipped, 10 repo hygiene; the
+other seven — DRC clean, LVS clean, corner verification, Monte Carlo evidence,
+post-layout verification, characterization report, power delivery — are
+`unmet`/no-evidence), graded by `klt signoff` from [`manifests/gf180-buck.json`](manifests/gf180-buck.json)
 and committed as [`manifests/gf180-buck.signoff.json`](manifests/gf180-buck.signoff.json);
 CI re-grades and fails on drift (see [`manifests/README.md`](manifests/README.md)).
+Counts read at `64535b7`, 2026-11-15.
 
 **Built agent-native.** Every specification, decision record, testbench, and
 line of documentation here is produced by AI agents working from a ratified
@@ -62,7 +70,10 @@ Ratified by [decision record 0001](spec/decision-records/0001-ratify-target-spec
 on merge of the pull request that carries it; the full table (min / typ / max,
 grading condition, corner set, external parts, for all three tiers) is
 [`spec/target-spec.md`](spec/target-spec.md). A row is a design-to target,
-never a result: nothing here is simulated yet. Summary at the target tier, with
+never a result. Pre-layout simulated results exist for several rows (see
+[Reproduce](#reproduce)); no switched bench row is graded passing (issue #82)
+and no post-layout result exists, so no target-tier row has a passing record
+yet. Summary at the target tier, with
 the external parts every number assumes (inductor 3.3 µH ±20 %, DCR 100 mΩ typ,
 Isat ≥ 1.0 A; output capacitor 10 µF nominal, ≥ 4.7 µF effective, ESR ≤ 10 mΩ):
 
@@ -85,7 +96,11 @@ Isat ≥ 1.0 A; output capacitor 10 µF nominal, ≥ 4.7 µF effective, ESR ≤ 
 Maturity ladder: spec ratified → power stage sized and EM budget recorded →
 controller and closed loop simulated across PVT → layout DRC/LVS-clean →
 post-layout re-verification → shuttle seat → measured silicon. **Current
-position: spec ratified.**
+position: rung two** — the power stage is sized and an 18-row power-path EM
+budget, all `pass`, is recorded in [`layout/record.md`](layout/record.md)
+(read at `64535b7`, 2026-11-15; T1 item 11 is not yet attested). The switched
+closed loop does not yet regulate in simulation (issue #82), so rung three is
+not reached.
 
 ## Reproduce
 
@@ -96,14 +111,26 @@ root; prerequisites (ngspice, jq, the pinned gf180mcuD PDK install) are in
 
 | Result | Cold-start command | Record |
 |---|---|---|
+| Cold start (T1 item 9): smoke bench, ideal-switch buck bench, `sim/lib` and `design/averaged` unit tests, averaged-model grid (batch fleet) | `source sim/env.sh && sim/cold-start.sh` | `sim/smoke/records/`, `sim/buck-ideal/records/`, `design/averaged/records/` |
 | Toolchain smoke (one `.op` + short `.tran`, typical corner) | `sim/smoke/run.sh` | `sim/smoke/records/` |
 | Ideal-switch buck bench (open loop, not a spec claim) | `sim/buck-ideal/run.sh` | `sim/buck-ideal/records/` |
+| Dead-time smoke (real gate drive into the power stage, one operating point + no-dead-time control) | `sim/dead-time/run.sh` | `sim/dead-time/records/` |
+| Controller-block smoke (six benches, single corner) | `design/smoke/run.sh --record` | `design/smoke/records/` |
 | Averaged-model loop gain (162-point `klt sim` grid, batch fleet) | `design/averaged/run.sh` | `design/averaged/records/` |
+| Steady-state, load-step, soft-start, current-limit and device-stress benches | batch-fleet pipeline (`gen_requests.py` → `klt sim --batch-set` → `collect.py` per bench) — see the per-bench sections of [`sim/README.md`](sim/README.md) | `sim/steady-state/records/`, `sim/load-step/records/`, `sim/soft-start/records/`, `sim/current-limit/records/`, `sim/device-stress/records/` |
 
-The averaged-model bench is committed but has no record on `main` yet, so its
-loop-gain numbers are not reproduced here. No post-layout, power-metal,
+Every bench above has committed records on `main` — 67 records across the ten
+`records/` directories at `64535b7`, 2026-11-15 — but none grades a spec row
+as passing. The newest averaged-model record
+([`design/averaged/records/20261114T233325Z-781e1a29003d.json`](design/averaged/records/20261114T233325Z-781e1a29003d.json))
+reports `pass_all: 114` / `fail_any: 48` over the 162-point grid: no grid
+point fails phase or gain margin (min PM 56.27°, min GM 22.3 dB) and all 48
+failures are frequency-error. The newest switched steady-state record
+([`sim/steady-state/records/20261102T014053Z-4a850294020b.json`](sim/steady-state/records/20261102T014053Z-4a850294020b.json))
+grades R4, R6 and R11 `fail` and R7–R10 `not_demonstrated`: the closed loop
+does not regulate in simulation yet (issue #82). No post-layout, power-metal,
 efficiency, or silicon result exists yet: those rows of the spec table are not
-yet reproducible and nothing in this repository claims them.
+reproducible and nothing in this repository claims them.
 
 The tier verdict itself is re-graded, not hand-read:
 
@@ -120,6 +147,7 @@ spec/          ratified spec + decision records
 design/        schematics / netlists (xschem)
 sim/           testbenches + PVT corner results (ngspice)
 layout/        GDS + DRC/LVS/EM reports (klayout-tools driven)
+manifests/     klt signoff manifest, tier doc and item attestations
 measurements/  silicon characterization (empty until tape-out)
 ```
 
