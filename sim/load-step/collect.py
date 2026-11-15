@@ -147,16 +147,44 @@ def r13b_table(units):
     return out
 
 
-def step_withheld_ids(units):
-    """Ids of units withheld from a graded table for a §0.4 step violation (decision record 0009)."""
-    return [u["id"] for u in units if (u.get("run") or {}).get("step_ok") is False]
+def withheld_reason_key(u):
+    """A stable bucket for why a unit is withheld from a graded table; the recorded `reason`
+    is free text, so the buckets key on what the unit carries instead. grade_unit's three
+    causes map to: a run dict whose step_ok is False is the §0.4 gate (decision record 0009);
+    a reason beginning "no waveform" failed before any waveform existed; anything else that
+    got past the waveform check failed the clock extraction. A future fourth cause still
+    lands in one of these buckets -- counted, never silently dropped (decision record 0010)."""
+    if (u.get("run") or {}).get("step_ok") is False:
+        return "step_violation"
+    if (u.get("reason") or "").startswith("no waveform"):
+        return "no_waveform"
+    return "unlocked_clock"
+
+
+def withheld_by_reason(units):
+    """Withheld unit ids bucketed by reason: every ungraded unit passed in, whatever the cause
+    (decision record 0010). `graded` is the invariant -- false means the unit contributes
+    nothing to the table -- so the count cannot miss a cause the way a count keyed on
+    run.step_ok did: two of grade_unit's three ungrading paths return before `run` exists."""
+    out = {}
+    for u in units:
+        if not u.get("graded"):
+            out.setdefault(withheld_reason_key(u), []).append(u["id"])
+    return out
 
 
 def r13c(sw_units, avg_units):
-    """R13(c) over every switched and averaged unit. Ungraded units are excluded from the table as
-    before, but one withheld for a §0.4 step violation is counted (decision record 0009): without
-    that count the row could still read `pass` on a silently smaller set."""
-    withheld = step_withheld_ids(sw_units) + step_withheld_ids(avg_units)
+    """R13(c) over every switched and averaged unit. Ungraded units are excluded from the table
+    as before, but every one of them is counted, by reason and by side (decision record 0010):
+    without that count the row could read `pass` on a silently smaller set, whatever withheld
+    a unit."""
+    sw_withheld = withheld_by_reason(sw_units)
+    avg_withheld = withheld_by_reason(avg_units)
+    n_sw_w, n_avg_w = (sum(len(ids) for ids in w.values()) for w in (sw_withheld, avg_withheld))
+    withheld = {}
+    for w in (sw_withheld, avg_withheld):
+        for k, ids in w.items():
+            withheld.setdefault(k, []).extend(ids)
     sw_units = [u for u in sw_units if u.get("graded")]
     avg_units = [u for u in avg_units if u.get("graded")]
     amap = {(u["vin_v"], u["lfac"], u["ceff_f"], u["esr_ohm"]): u for u in avg_units}
@@ -179,11 +207,14 @@ def r13c(sw_units, avg_units):
     worst = max(errs, key=lambda x: x[0], default=None)
     return {"what": "R13(c): switched step vs averaged-model step, peak deviation and recovery time of both edges, +-%d %%" % (XTOL * 100),
             "n_units": len(table), **{"n_" + k: v for k, v in n.items()},
-            "n_withheld_step_violation": len(withheld), "withheld_step_violation_units": withheld,
-            "withheld_note": "a unit whose largest saved step exceeds the spec 0.4 limit is withheld from this table and counted here, "
-                             "so the row cannot read `pass` on a smaller set (decision record 0009). Units withheld for no waveform or "
-                             "an unlocked clock are not counted: that pre-existing drop is unchanged here",
-            "verdict": "fail" if n["fail"] else ("not_demonstrated" if n["no_value"] or withheld or not table else "pass"),
+            "n_withheld": n_sw_w + n_avg_w, "n_withheld_switched": n_sw_w, "n_withheld_averaged": n_avg_w,
+            "n_withheld_by_reason": {k: len(ids) for k, ids in sorted(withheld.items())},
+            "withheld_units": {k: ids for k, ids in sorted(withheld.items())},
+            "withheld_note": "every unit withheld from this table is counted here, by reason -- no waveform, unlocked clock, or a "
+                             "spec 0.4 step violation -- so the row cannot read `pass` on a smaller set: n_units + n_withheld_switched "
+                             "is the switched population the row was handed, and any withheld unit on either side keeps the row "
+                             "`not_demonstrated` (decision record 0010)",
+            "verdict": "fail" if n["fail"] else ("not_demonstrated" if n["no_value"] or n_sw_w + n_avg_w or not table else "pass"),
             "worst": None if worst is None else {"id": worst[1], "check": worst[2], "rel_err": worst[3]["rel_err"],
                                                  "switched": worst[3]["switched"], "predicted": worst[3]["predicted"]},
             "table": table}

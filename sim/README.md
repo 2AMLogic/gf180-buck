@@ -218,8 +218,11 @@ python3 -I sim/load-step/collect.py --tol TOL.json --full FULL.json --avg AVG.js
 (steps at 600 / 680 us, `.tran` to 760 us, last 280 us saved). Each edge is graded by
 `buckmeas.load_step_pair` only if the spec §0.4 settled test passes on the cycles just before it;
 otherwise that step has no value. A run whose largest saved time step exceeds the §0.4 T/200 limit
-carries no value for either edge (decision record `0009`), and R13(c) reports the units it withholds
-for that reason (`n_withheld_step_violation`) rather than shrinking its table silently. Requests: `request_tol` = C-typ x all 18 P-T tolerance
+carries no value for either edge (decision record `0009`), and R13(c) counts every unit it
+withholds, by reason (`n_withheld_by_reason`: no waveform, unlocked clock, step violation) rather
+than shrinking its table silently; any withheld unit keeps the row `not_demonstrated`, and
+`n_units + n_withheld_switched` is the switched population the row was handed (decision record
+`0010`). Requests: `request_tol` = C-typ x all 18 P-T tolerance
 combinations (18 units); `request_full` = C-full (45) x the two deviation-binding tolerance corners
 (Ceff 4.7 uF, ESR 10 mohm, L x0.8 / x1.2; 90 units); `request_avg` = the averaged model
 (`avg_step.spice`: `design/averaged/buck_avg.spice` unchanged plus the same step) at Vin x 18

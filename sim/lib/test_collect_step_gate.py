@@ -254,6 +254,8 @@ class LoadStepStepGateTest(unittest.TestCase):
         cls.ok = write_raw(os.path.join(d, "ok.raw"), 45, OK_DT)
         cls.tol = write_raw(os.path.join(d, "tol.raw"), 45, TOL_DT)
         cls.bad = write_raw(os.path.join(d, "bad.raw"), 45, BAD_DT)
+        # too few cycles to lock a clock (5 crossings < MIN_CLOCK_CROSSINGS): the second cause
+        cls.short = write_raw(os.path.join(d, "short.raw"), 5, OK_DT)
 
     @classmethod
     def tearDownClass(cls):
@@ -261,6 +263,17 @@ class LoadStepStepGateTest(unittest.TestCase):
 
     def gated(self, bench="tol"):
         return self.mod.grade_unit(corner(self.CID, self.bad), bench, self.tm)
+
+    def no_waveform(self, bench="tol"):
+        """A klt corner that never wrote a waveform: errored, and its raw is not on disk."""
+        c = corner(self.CID, os.path.join(self.tmp.name, "missing.raw"))
+        c["status"] = "error"
+        c["diagnostics"] = [{"code": "spice_error", "message": "simulator lost the shard"}]
+        return self.mod.grade_unit(c, bench, self.tm)
+
+    def unlocked_clock(self, bench="tol"):
+        """A waveform that exists but shows too few switching cycles to lock a clock."""
+        return self.mod.grade_unit(corner(self.CID, self.short), bench, self.tm)
 
     @staticmethod
     def edge_value(dev=0.05, rec=10e-6):
@@ -314,15 +327,30 @@ class LoadStepStepGateTest(unittest.TestCase):
     def test_r13c_passes_without_the_violating_unit(self):
         row = self.mod.r13c([self.unit_pass("sw")], [self.unit_pass("avg")])
         self.assertEqual(row["verdict"], "pass")
-        self.assertEqual(row["n_withheld_step_violation"], 0)
+        self.assertEqual(row["n_withheld"], 0)
+        self.assertEqual(row["n_withheld_by_reason"], {})
+        self.assertEqual(row["withheld_units"], {})
 
-    def test_r13c_counts_a_withheld_unit_instead_of_shrinking_silently(self):
+    def test_a_missing_waveform_yields_a_no_waveform_unit(self):
+        u = self.no_waveform()
+        self.assertFalse(u["graded"])
+        self.assertNotIn("run", u, "this cause returns before the run dict exists")
+        self.assertTrue(u["reason"].startswith("no waveform"), u["reason"])
+
+    def test_an_unlocked_clock_yields_an_ungraded_unit(self):
+        u = self.unlocked_clock()
+        self.assertFalse(u["graded"])
+        self.assertNotIn("run", u, "this cause returns before the run dict exists")
+        self.assertIn("switching cycles", u["reason"], u["reason"])
+
+    def test_r13c_counts_a_step_violation_instead_of_shrinking_silently(self):
         """The finding this row needs its own criterion for: `r13c` only sees graded units, so
-        without an explicit count a step violation would leave the row `pass` on a smaller set."""
+        without an explicit count a withheld unit would leave the row `pass` on a smaller set."""
         g = self.gated()
         row = self.mod.r13c([self.unit_pass("sw"), g], [self.unit_pass("avg")])
-        self.assertEqual(row["n_withheld_step_violation"], 1)
-        self.assertEqual(row["withheld_step_violation_units"], [g["id"]])
+        self.assertEqual(row["n_withheld"], 1)
+        self.assertEqual(row["n_withheld_by_reason"], {"step_violation": 1})
+        self.assertEqual(row["withheld_units"], {"step_violation": [g["id"]]})
         self.assertEqual(row["n_units"], 1, "the table itself still holds only graded units")
         self.assertEqual(row["n_pass"], 1)
         self.assertEqual(row["verdict"], "not_demonstrated")
@@ -330,8 +358,66 @@ class LoadStepStepGateTest(unittest.TestCase):
     def test_r13c_counts_a_withheld_averaged_unit_too(self):
         g = self.gated("avg")
         row = self.mod.r13c([self.unit_pass("sw")], [self.unit_pass("avg"), g])
-        self.assertEqual(row["n_withheld_step_violation"], 1)
+        self.assertEqual(row["n_withheld"], 1)
+        self.assertEqual(row["n_withheld_by_reason"], {"step_violation": 1})
         self.assertEqual(row["verdict"], "not_demonstrated")
+
+    def test_r13c_counts_a_no_waveform_unit(self):
+        """Decision record 0010: the cause the run.step_ok-keyed count could never see, because
+        grade_unit returns before `run` is written."""
+        g = self.no_waveform()
+        row = self.mod.r13c([self.unit_pass("sw"), g], [self.unit_pass("avg")])
+        self.assertEqual(row["n_withheld"], 1)
+        self.assertEqual(row["n_withheld_by_reason"], {"no_waveform": 1})
+        self.assertEqual(row["withheld_units"], {"no_waveform": [g["id"]]})
+        self.assertEqual(row["n_units"], 1)
+        self.assertEqual(row["verdict"], "not_demonstrated")
+
+    def test_r13c_counts_an_unlocked_clock_unit(self):
+        g = self.unlocked_clock()
+        row = self.mod.r13c([self.unit_pass("sw"), g], [self.unit_pass("avg")])
+        self.assertEqual(row["n_withheld"], 1)
+        self.assertEqual(row["n_withheld_by_reason"], {"unlocked_clock": 1})
+        self.assertEqual(row["verdict"], "not_demonstrated")
+
+    def test_r13c_counts_an_ungraded_averaged_unit(self):
+        g = self.no_waveform("avg")
+        row = self.mod.r13c([self.unit_pass("sw")], [self.unit_pass("avg"), g])
+        self.assertEqual(row["n_withheld_by_reason"], {"no_waveform": 1})
+        self.assertEqual(row["n_units"], 1)
+        self.assertEqual(row["verdict"], "not_demonstrated")
+
+    def test_r13c_counts_mixed_causes_and_restores_the_denominator(self):
+        """Per-reason counts sum to the withheld total, n_units + n_withheld_switched is the
+        switched population the row was handed, and an ungraded averaged unit is counted too --
+        the identities a narrowed table used to break. The averaged side has no clock to lock,
+        so its withheld causes are no-waveform and step."""
+        sw = [self.unit_pass("sw"), self.gated(), self.unlocked_clock()]
+        avg = [self.no_waveform("avg"), self.unit_pass("avg")]
+        row = self.mod.r13c(sw, avg)
+        self.assertEqual(row["n_withheld"], 3)
+        self.assertEqual(row["n_withheld_switched"], 2)
+        self.assertEqual(row["n_withheld_averaged"], 1)
+        self.assertEqual(row["n_withheld_by_reason"], {"no_waveform": 1, "step_violation": 1, "unlocked_clock": 1})
+        self.assertEqual(sum(row["n_withheld_by_reason"].values()), row["n_withheld"])
+        self.assertEqual(row["n_units"] + row["n_withheld_switched"], len(sw))
+        self.assertEqual(row["n_units"], 1, "the table holds one entry per graded switched unit")
+        self.assertEqual(row["verdict"], "not_demonstrated")
+
+    def test_an_empty_table_with_every_unit_withheld_is_never_a_pass(self):
+        row = self.mod.r13c([self.no_waveform()], [self.no_waveform("avg")])
+        self.assertEqual(row["n_units"], 0)
+        self.assertEqual(row["n_withheld"], 2)
+        self.assertEqual(row["n_withheld_switched"], 1)
+        self.assertEqual(row["n_withheld_averaged"], 1)
+        self.assertIsNone(row["worst"], "an empty table has no worst check to report")
+        self.assertEqual(row["verdict"], "not_demonstrated")
+
+    def test_a_fail_stays_fail_alongside_withheld_units(self):
+        out = self.unit_pass("sw", dev=0.5)   # deviation far outside +-30 % of the averaged 0.05 V
+        row = self.mod.r13c([out, self.no_waveform()], [self.unit_pass("avg")])
+        self.assertEqual(row["n_withheld"], 1)
+        self.assertEqual(row["verdict"], "fail", "fail outranks not_demonstrated")
 
     def test_a_grid_of_nothing_but_violations_is_never_a_pass(self):
         g = self.gated()
