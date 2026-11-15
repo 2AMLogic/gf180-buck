@@ -3,6 +3,12 @@
 Roadmap generated from GitHub label state by the Guide role. Only the region
 between the markers is machine-generated.
 
+**Note on holds:** the priority, proposal, and epic sections below list label
+membership regardless of holds. An entry there may still carry a hold label
+(`loom:blocked`, `loom:operator`, and others) and is not takeable work.
+`## Ready` is the only hold-filtered queue; check an issue's labels, not its
+placement in this document, before starting on it.
+
 <!-- guide:plan-body:start -->
 ## Operator Attention: Merge-Risk-Hold Pileup
 
