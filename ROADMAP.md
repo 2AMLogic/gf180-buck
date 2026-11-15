@@ -36,15 +36,16 @@ and one grading library (PRs #158, #163); a netlist geometry pre-check
 (`design/check_geometry.py`); and a CI drift guard that regenerates the GDS and
 byte-compares it (PR #150).
 
-Landed since the previous roadmap pass (`a3cb225` to `a13150c`): the ngspice pin
-reconciliation (#165, PR #168, merged 2026-11-14), so `manifests/item9-inventory.json`
-and `sim/README.md` state ngspice 47, the version the newest records carry, and
-item 9 is re-attested (114/114); and the three Now objectives the previous pass
-carried, now done — the power-stage DRC findings cleared (#176, PR #184), the
-spec §0.4 max-step gate landed (#161, PR #167), and the capacity wait on the
-averaged grid submit landed (#162, PR #166). This roadmap itself (PR #175) and
-the `layout/drc/README.md` upstream-tool correction (#178, PR #187) also landed
-in the range.
+Landed since the previous roadmap pass (`a3cb225` to `a13150c`): the three Now
+objectives that pass carried, now done — the power-stage DRC findings cleared
+(#176, PR #184), the spec §0.4 max-step gate landed (#161, PR #167), and the
+capacity wait on the averaged grid submit landed (#162, PR #166). This roadmap
+itself (PR #175) and the `layout/drc/README.md` upstream-tool correction (#178,
+PR #187) also landed in the range. The previous pass's ngspice pin
+reconciliation (#165, PR #168) endures as state on `main`:
+`manifests/item9-inventory.json` and `sim/README.md` state ngspice 47, the
+version the newest records carry, and item 9 is re-attested —
+`manifests/item9-attestation.json`.
 
 **The binding fact:** the closed loop does not regulate. `sim/steady-state/DIAGNOSIS-82.md`
 traces it to the adopted error amplifier: about 1.1 MHz GBW into the type-III
