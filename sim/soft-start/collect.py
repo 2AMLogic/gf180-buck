@@ -123,6 +123,7 @@ def main(argv=None):
     ap.add_argument("--dry", action="store_true")
     a = ap.parse_args(argv)
     rep = json.load(open(a.report))
+    cm = [recordkit.corner_matrix_check(os.path.join(HERE, "matrix_grid.json"), a.report)]
     units = [unit_record(c) for c in rep["corners"]]
     rows = judge(units)
     ts, sha, hdr = recordkit.header(HERE)
@@ -131,6 +132,7 @@ def main(argv=None):
         "environment": {**hdr,
                         "report": {"file": os.path.basename(a.report), "status": rep.get("status"),
                                    "remote": recordkit.remote_subset(rep)},
+                        "corner_matrix": cm,
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "request_grid.json", "gen_requests.py"),
                             ("design/netlists/buck_top.spice",), ("bench_harness.spice", "buckmeas.py", "rawgrade.py"))},
@@ -145,8 +147,10 @@ def main(argv=None):
         "rows": rows, "units": units}
     if a.dry:
         print(json.dumps(rows, indent=1))
-        return 0
-    return recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
+        print(json.dumps({"corner_matrix": cm}, indent=1))
+        return recordkit.coverage_exit(cm)
+    rc = recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
+    return rc | recordkit.coverage_exit(cm)
 
 
 if __name__ == "__main__":

@@ -137,6 +137,8 @@ def main(argv=None):
     ap.add_argument("--dry", action="store_true")
     a = ap.parse_args(argv)
     reps = {k: json.load(open(p)) for k, p in (("ramp", a.ramp), ("min", a.mn))}
+    cm = [recordkit.corner_matrix_check(os.path.join(HERE, "matrix_%s.json" % k), p)
+          for k, p in (("ramp", a.ramp), ("min", a.mn))]
     ramp = [ramp_unit(c) for c in reps["ramp"]["corners"]]
     mn = [min_unit(c) for c in reps["min"]["corners"]]
     rows = judge(ramp, mn)
@@ -147,6 +149,7 @@ def main(argv=None):
     rec = {
         "record": "simulated, not measured; pre-layout; spec R16",
         "environment": {**hdr, "reports": [env("ramp", a.ramp), env("min", a.mn)],
+                        "corner_matrix": cm,
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "request_ramp.json", "request_min.json", "gen_requests.py"),
                             ("design/netlists/buck_top.spice",), ("bench_harness.spice", "buckmeas.py", "rawgrade.py"))},
@@ -163,8 +166,10 @@ def main(argv=None):
         "rows": rows, "units": {"ramp": ramp, "min": mn}}
     if a.dry:
         print(json.dumps(rows, indent=1))
-        return 0
-    return recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
+        print(json.dumps({"corner_matrix": cm}, indent=1))
+        return recordkit.coverage_exit(cm)
+    rc = recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
+    return rc | recordkit.coverage_exit(cm)
 
 
 if __name__ == "__main__":

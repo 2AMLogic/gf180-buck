@@ -160,6 +160,7 @@ def main(argv=None):
     ap.add_argument("--dry", action="store_true")
     a = ap.parse_args(argv)
     rep = json.load(open(a.report))
+    cm = [recordkit.corner_matrix_check(os.path.join(HERE, "matrix_%s.json" % a.set), a.report)]
     units = [unit_record(c) for c in rep["corners"]]
     ts, sha, env = recordkit.header(HERE)
     n_corners = len({(u["process"], u["vin_v"], u["temp_c"]) for u in units})
@@ -170,6 +171,7 @@ def main(argv=None):
                         "report": {"file": os.path.basename(a.report), "status": rep.get("status"),
                                    "remote": recordkit.remote_subset(rep),
                                    "jobs": ((rep.get("environment") or {}).get("remote") or {}).get("jobs") or None},
+                        "corner_matrix": cm,
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "../steady-state/opamp_two_stage.spice", "request_%s.json" % a.set, "gen_requests.py"),
                             ("design/netlists/buck_top.spice",), ("bench_harness.spice", "stressmeas.py", "rawgrade.py"))},
@@ -203,9 +205,11 @@ def main(argv=None):
     rec14 = {**common, "row": "R14", "rows": {"R14": r14}}
     rc = recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec2, a.dry)
     rc |= recordkit.write_record(os.path.join(ROOT, "sim", "dead-time", "records", "%s-%s-top.json" % (ts, sha)), rec14, a.dry)
+    rc |= recordkit.coverage_exit(cm)
     if a.dry:
         print(json.dumps({"R2": {k: v for k, v in r2.items() if k not in ("unit_status",)},
                           "R14": {k: v for k, v in r14.items() if k not in ("unit_status", "zero_overlap")}}, indent=1))
+        print(json.dumps({"corner_matrix": cm}, indent=1))
     return rc
 
 

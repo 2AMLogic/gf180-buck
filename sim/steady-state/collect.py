@@ -156,11 +156,12 @@ def main(argv=None):
     ap.add_argument("--report", action="append", required=True, help="klt sim report JSON (grid, then r8)")
     ap.add_argument("--dry", action="store_true", help="print, do not write a record")
     a = ap.parse_args(argv)
-    units, envs = [], []
+    units, envs, cm = [], [], []
     for path in a.report:
         rep = json.load(open(path))
         bench = "r8" if "lfac" in json.dumps([c["corner_id"] for c in rep["corners"]][:1]) else "grid"
         envs.append(recordkit.report_env(rep, path, jobs=True))
+        cm.append(recordkit.corner_matrix_check(os.path.join(HERE, "matrix_%s.json" % bench), path))
         for c in rep["corners"]:
             units.append(unit_record(c, bench))
     grid = [u for u in units if u["bench"] == "grid"]
@@ -170,6 +171,7 @@ def main(argv=None):
     rec = {
         "record": "simulated, not measured; pre-layout; R9/R10 are not the graded (post-layout) value",
         "environment": {**env, "local_grader_python": sys.version.split()[0], "reports": envs,
+                        "corner_matrix": cm,
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "opamp_two_stage.spice", "request_grid.json", "request_r8.json", "gen_requests.py"),
                             ("design/netlists/buck_top.spice",), ("bench_harness.spice", "buckmeas.py", "rawgrade.py"))},
@@ -183,8 +185,10 @@ def main(argv=None):
         "rows": rows, "units": units}
     if a.dry:
         print(json.dumps({k: {kk: vv for kk, vv in v.items() if kk not in ("no_value_units", "failing_units")} for k, v in rows.items()}, indent=1))
-        return 0
-    return recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
+        print(json.dumps({"corner_matrix": cm}, indent=1))
+        return recordkit.coverage_exit(cm)
+    rc = recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
+    return rc | recordkit.coverage_exit(cm)
 
 
 if __name__ == "__main__":

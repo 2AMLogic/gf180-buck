@@ -2,7 +2,8 @@
 
 One copy of what every bench's collector needs to write an append-only evidence record: the klt corner-id
 parser, the file hash, the environment header (git sha, UTC stamp, klt / ngspice versions, the remote-job
-subset of a klt report, files_sha256) and the refuse-to-overwrite writer. A fix here reaches every bench.
+subset of a klt report, files_sha256), the corner-matrix coverage verdict of the handed klt sim report,
+and the refuse-to-overwrite writer. A fix here reaches every bench.
 This module is itself hashed into every record's files_sha256 (files_sha256() adds it), so a record
 still pins every file that graded it.
 
@@ -108,6 +109,74 @@ def report_env(report, path, fields=REMOTE_FIELDS, jobs=False):
     if jobs:
         env["jobs"] = [j for j in ((report.get("environment") or {}).get("remote") or {}).get("jobs", [])] or None
     return env
+
+
+def corner_matrix_check(matrix, report):
+    """Record-ready verdict of `klt corner-matrix check MATRIX --report REPORT --format json`,
+    the completeness check of the declared corner matrix (the matrix the bench's gen_requests.py
+    wrote) against the klt sim report this collector was handed -- what actually simulated, not
+    what the request declared.
+
+    klt exit codes: 0 complete, 3 ran clean but incomplete -- both carry the verdict JSON on
+    stdout, and both come back parsed: the matrix and report basenames plus matrix_size,
+    observed_count and the six id lists (missing, extra, duplicate, not_simulated, non_finite,
+    out_of_bounds). A klt refusal (exit 1: an unreadable file, an unknown matrix key, or a
+    committed records/*.json with no corners[] array) comes back as an {"error": message} block
+    naming the refusal instead of raising, so the collector can record it and then fail on it.
+
+    Coverage is judged on missing/extra/duplicate ONLY (coverage_failures): klt's own `complete`
+    flag and exit status are NOT a coverage verdict -- they fold the per-corner lists in, and
+    out_of_bounds is every corner whose klt status is `fail`, so a bench that correctly records
+    a failing corner reports complete: false. Those lists are recorded, never gated.
+    """
+    proc = subprocess.run(
+        ["klt", "corner-matrix", "check", matrix, "--report", report, "--format", "json"],
+        capture_output=True, text=True)
+    verdict = None
+    if proc.returncode in (0, 3):
+        try:
+            verdict = json.loads(proc.stdout)
+        except ValueError:
+            verdict = None
+    if isinstance(verdict, dict) and "matrix_size" in verdict:
+        out = {"matrix": os.path.basename(matrix), "report": os.path.basename(report)}
+        out.update({k: verdict[k] for k in ("matrix_size", "observed_count", "missing", "extra",
+                                            "duplicate", "not_simulated", "non_finite", "out_of_bounds")})
+        return out
+    message = (proc.stderr.strip() or proc.stdout.strip()
+               or "klt corner-matrix exited %d with no output" % proc.returncode)
+    try:  # the --format json refusal envelope: {"error": {"command": ..., "message": ...}}
+        message = json.loads(message)["error"]["message"]
+    except (ValueError, KeyError, TypeError):
+        pass
+    return {"matrix": os.path.basename(matrix), "report": os.path.basename(report), "error": message}
+
+
+def coverage_failures(entries):
+    """One message per corner_matrix entry that is not exact coverage of its matrix: a klt
+    refusal, or a non-empty missing / extra / duplicate. The message names the counts.
+    not_simulated / non_finite / out_of_bounds are per-corner verdicts, never a failure here
+    (see corner_matrix_check)."""
+    out = []
+    for e in entries:
+        if e.get("error"):
+            out.append("%s: corner-matrix refused the report (%s)" % (e["matrix"], e["error"]))
+            continue
+        counts = [(k, len(e[k])) for k in ("missing", "extra", "duplicate") if e.get(k)]
+        if counts:
+            out.append("%s: coverage incomplete: %s"
+                       % (e["matrix"], ", ".join("%d %s" % (n, k) for k, n in counts)))
+    return out
+
+
+def coverage_exit(entries, tool="collect.py"):
+    """Print one stderr line per coverage failure and 1 if there was one, else 0. The collector
+    calls this AFTER writing its record -- a run that happened is evidence, so a coverage
+    failure never suppresses it -- and on --dry, where there is no record to keep."""
+    failures = coverage_failures(entries)
+    for f in failures:
+        print("%s: %s" % (tool, f), file=sys.stderr)
+    return 1 if failures else 0
 
 
 def write_record(path, rec, dry=False, tool="collect.py"):
