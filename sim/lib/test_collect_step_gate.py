@@ -25,6 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SIM_ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import buckmeas as bm  # noqa: E402
+import stressmeas as sm  # noqa: E402
 
 F = 2.0e6                                      # Hz, inside the R7 band: STEP_MAX_S is this run's T/200
 T = 1.0 / F
@@ -90,6 +91,69 @@ def write_cl_raw(path, dt, *, f=F, vin=VIN, t0=600e-6, span=20e-6, trip_at=None,
     return _write_rawfile(path, names, rows)
 
 
+# device-stress's half of spec 0.4's max-step row: the edge windows resolved to EDGE_STEP_MAX,
+# the whole run inside buckmeas.STEP_MAX_S. A compliant unit needs BOTH at once; the unit this
+# gate is about has the first and not the second.
+DS_FINE_DT = sm.EDGE_STEP_MAX     # s, sample step inside every edge window (stressmeas.EDGE_STEP_MAX)
+DS_DEAD = 3e-9                    # s, dead time of the synthetic gate drive (inside the 1..6 ns R14 band)
+DS_FAULT_V = 6.5                  # V, low-side gate spike: over R2's 6.0 V terminal limit, so the peaks
+                                  # a status_of-only gate would have computed fail R2 outright
+
+
+def write_ds_raw(path, n_cycles, coarse_dt, fine_dt=None, *, fault_v=None):
+    """A device-stress window: buck_top switching at F, complementary gate drive with dead time
+    DS_DEAD, sampled on a NON-UNIFORM column -- `fine_dt` inside every stressmeas edge window
+    (the <= 100 ps rule) and `coarse_dt` everywhere else (the whole-run T/200 rule the gate
+    reads). fine_dt=None samples uniformly at coarse_dt. A uniform 100 ps column over the >= 100
+    settled cycles rawgrade wants is ~500k rows, so the non-uniform column is both compact and
+    the exact shape of the uncovered case: edge-compliant, whole-run-coarse. Every cycle carries
+    the same cycle-local offset set, so consecutive settled windows are identical and the 0.4
+    settle test sees a frozen steady state. A step-violating unit returns before any peak, dead
+    time or settled clock is read, so its n_cycles can be small; fault_v spikes the low-side
+    gate for one sample in the second cycle, so its waveform would fail R2 on peaks had the
+    gate not stopped grading first."""
+    names = ("time", "i(lind)", "v(out)", "v(sw_d)", "v(vsrc)", "i(vsrc)",
+             "v(xtop.gh)", "v(xtop.gl)", "v(vin_d)", "v(gnd_d)")
+    T = 1.0 / F
+    fine = coarse_dt if fine_dt is None else fine_dt
+
+    def clamped(o):
+        return min(o, T)    # k * dt can overshoot T by an ulp; the boundary sample must exist
+
+    offs = {clamped(k * coarse_dt) for k in range(int(round(T / coarse_dt)) + 1)}
+    # edge windows around every mid-swing crossing: LS off (0), HS on (DS_DEAD), HS off
+    # (DUTY*T), LS on (DUTY*T + DS_DEAD) -- sw and both gates cross their mid levels there.
+    # One extra fine step either side: edge_resolution counts a window's first sample's step,
+    # so the sample just outside the window must be fine too.
+    for c in (0.0, DS_DEAD, DUTY * T, DUTY * T + DS_DEAD):
+        k0 = math.ceil((c - sm.EDGE_PRE) / fine) - 1
+        k1 = math.floor((c + sm.EDGE_POST) / fine) + 1
+        offs.update(clamped(k * fine) for k in range(k0, k1 + 1) if 0.0 <= k * fine <= T)
+    # the LS turn-off sits on the cycle boundary: its [-2 ns, +10 ns] window spans two cycles,
+    # so every cycle also fine-samples its own tail on the next cycle's behalf
+    k0 = math.ceil((T - sm.EDGE_PRE) / fine) - 1
+    offs.update(clamped(k * fine) for k in range(k0, int(round(T / fine)) + 1))
+    offs = sorted(offs)
+    fault_o = None
+    if fault_v is not None:
+        at = DUTY * T + 2.0 * DS_DEAD
+        fault_o = min(offs, key=lambda x: abs(x - at))
+    rows = []
+    for cycle in range(n_cycles):
+        for j, o in enumerate(offs):
+            if cycle and j == 0:
+                continue    # the boundary timestamp belongs to the previous cycle's LS turn-off
+            hs_on = DS_DEAD <= o < DUTY * T
+            gl = fault_v if o == fault_o and cycle == 1 else (5.0 if o >= DUTY * T + DS_DEAD else 0.0)
+            rows.append([cycle * T + o,
+                         0.25 + RIPPLE * ((1.0 - 2.0 * abs(o / T - 0.5)) - 0.5),   # i(lind)
+                         VO + 0.005 * math.sin(2.0 * math.pi * o / T),             # v(out), v(vo)-like
+                         VIN if hs_on else 0.0,                                    # v(sw_d)
+                         VIN, -0.25 * 0.4,                                         # v(vsrc), i(vsrc)
+                         0.0 if hs_on else 5.0, gl, VIN, 0.0])                     # gh, gl, vin_d, gnd_d
+    return _write_rawfile(path, names, rows)
+
+
 def _write_rawfile(path, names, rows):
     out = ["Title: synthetic\nPlotname: Transient Analysis\nFlags: real\n",
            "No. Variables: %d\nNo. Points: %d\nVariables:\n" % (len(names), len(rows))]
@@ -127,7 +191,7 @@ class StepReasonTest(unittest.TestCase):
         self.assertFalse(bm.step_check([0.0, BAD_DT])[1])
 
     def test_no_collector_carries_its_own_copy_of_the_threshold(self):
-        for bench in ("current-limit", "load-step", "steady-state", "soft-start"):
+        for bench in ("current-limit", "load-step", "steady-state", "soft-start", "device-stress"):
             with open(os.path.join(SIM_ROOT, bench, "collect.py")) as fh:
                 src = fh.read()
             with self.subTest(bench=bench):
@@ -516,6 +580,152 @@ class SteadyStateStepGateTest(unittest.TestCase):
         for name, row in rows.items():
             with self.subTest(row=name):
                 self.assertEqual(row["verdict"], "not_demonstrated", row)
+
+
+class DeviceStressStepGateTest(unittest.TestCase):
+    """R2 and R14 (sim/device-stress/collect.py).
+
+    This collector needs its own writer: its GATE_VECTORS (both power-device gates, vin_d,
+    gnd_d) appear in no other bench, so write_raw / ALL_VECTORS cannot drive unit_record at
+    all. A compliant unit must satisfy BOTH halves of spec 0.4's max-step row at once -- edge
+    windows resolved to 100 ps AND the whole run inside T/200 -- which write_ds_raw encodes on
+    its non-uniform column; the step-violating unit is the exact uncovered case, edge-compliant
+    and whole-run-coarse. The tolerance edge itself stays on the helper test above (the
+    collectors inherit it by calling step_check with its default threshold).
+    """
+
+    CID = "typical/5.0V/27C/params:iload=0.25"
+    BAD_CID = "typical/5.0V/27C/params:iload=0.5"    # distinct id, so row maps never collide
+    VTH_V = 1.0        # V, replica level of both power devices at this corner
+    CYCLES = 48        # >= 41 clock crossings and >= 2 x 20 settled windows
+
+    @classmethod
+    def setUpClass(cls):
+        cls.mod = load_collector("device-stress")
+        cls.tmp = tempfile.TemporaryDirectory()
+        d = cls.tmp.name
+        cls.raw = {
+            "ok": write_ds_raw(os.path.join(d, "ok.raw"), cls.CYCLES, OK_DT, DS_FINE_DT),
+            "tol": write_ds_raw(os.path.join(d, "tol.raw"), cls.CYCLES, TOL_DT, DS_FINE_DT),
+            "bad": write_ds_raw(os.path.join(d, "bad.raw"), 4, BAD_DT, DS_FINE_DT, fault_v=DS_FAULT_V),
+            "edge": write_ds_raw(os.path.join(d, "edge.raw"), cls.CYCLES, 2.0e-9),
+        }
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def ds_corner(self, raw, cid=None, vth=VTH_V):
+        c = corner(cid or self.CID, raw)
+        if vth is not None:
+            c["measurements"] = [{"name": "vthn", "value": vth}, {"name": "vthp", "value": vth}]
+        return c
+
+    def unit(self, label, cid=None):
+        return self.mod.unit_record(self.ds_corner(self.raw[label], cid))
+
+    def r2(self, units):
+        return self.mod.judge(units, "r2", self.mod.r2_margin, self.mod.EXPECTED["ctyp"], "stress", {})
+
+    def r14(self, units):
+        return self.mod.judge(units, "r14", self.mod.r14_margin, self.mod.EXPECTED["ctyp"], "dead time", {})
+
+    def test_a_compliant_run_is_still_graded_settled_and_edge_ok(self):
+        for label in ("ok", "tol"):
+            u = self.unit(label)
+            with self.subTest(step=label):
+                self.assertTrue(u["graded"], u.get("reason"))
+                self.assertTrue(u["settled"])
+                self.assertTrue(u["step_ok"])
+                self.assertLessEqual(u["step_max_s"], bm.STEP_MAX_S * (1 + bm.STEP_TOL))
+                self.assertTrue(u["edge"]["ok"])
+                self.assertTrue(u["sw_ok"] and u["term_ok"])
+                self.assertTrue(self.mod.R14_MIN <= u["dead_time"]["min_s"]
+                                <= u["dead_time"]["max_s"] <= self.mod.R14_MAX)
+                self.assertEqual(u["dead_time"]["overlap_s"], 0.0)
+
+    def test_a_step_violation_is_a_no_value_unit_that_keeps_its_evidence(self):
+        u = self.unit("bad")
+        self.assertFalse(u["graded"])
+        self.assertFalse(u["settled"])
+        self.assertFalse(u["step_ok"])
+        self.assertAlmostEqual(u["step_max_s"], BAD_DT, delta=1e-14)
+        self.assertEqual(u["reason"], bm.step_reason(u["step_max_s"]))
+        for field in ("peaks", "dead_time", "edge", "window_saved_s", "sw_ok", "term_ok",
+                      "measure_window_s"):
+            self.assertNotIn(field, u)
+
+    def test_the_gated_unit_reads_no_value_not_fail_even_though_its_peaks_would_fail_r2(self):
+        """0009 §2's distinguishing case. The gated waveform carries a 6.5 V gate spike, so the
+        peaks a status_of-only gate would still have computed fail R2 outright -- and `judge`
+        keys `valued` on the margin, not the status, so the unit would have become the row's
+        binding fail. The early return in unit_record leaves no peaks at all, so the unit is
+        no_value and drops out of pass, fail, valued and binding together."""
+        c = self.mod.rawgrade.read_ascii_raw(self.raw["bad"])
+        p = self.mod.sm.stress_peaks(c["time"], c["v(vin_d)"], c["v(sw_d)"], c["v(gnd_d)"],
+                                     c["v(xtop.gh)"], c["v(xtop.gl)"])
+        self.assertLess(self.mod.r2_margin({"peaks": p}), 0.0,
+                        "the fixture really is out of bounds on R2")
+        ok_u, bad_u = self.unit("ok"), self.unit("bad", self.BAD_CID)
+        row = self.r2([ok_u, bad_u])
+        self.assertEqual(row["verdict"], "not_demonstrated")
+        self.assertEqual(row["n_fail"], 0)
+        self.assertEqual(row["failing_units"], [])
+        self.assertEqual(row["n_no_value"], 1)
+        self.assertEqual(row["no_value_units"], [bad_u["id"]])
+        self.assertEqual(row["binding"]["id"], ok_u["id"])
+        self.assertAlmostEqual(row["binding"]["margin"], self.mod.r2_margin(ok_u), delta=1e-15)
+
+    def test_r14_drops_the_gated_unit_the_same_way(self):
+        ok_u, bad_u = self.unit("ok"), self.unit("bad", self.BAD_CID)
+        row = self.r14([ok_u, bad_u])
+        self.assertEqual(row["verdict"], "not_demonstrated")
+        self.assertEqual(row["n_fail"], 0)
+        self.assertEqual(row["n_no_value"], 1)
+        self.assertEqual(row["no_value_units"], [bad_u["id"]])
+        self.assertEqual(row["binding"]["id"], ok_u["id"])
+        self.assertEqual(row["unit_status"][bad_u["id"]], "no_value")
+        self.assertEqual(row["unit_status"][ok_u["id"]], "pass")
+
+    def test_a_row_of_nothing_but_step_violations_is_never_pass_or_fail(self):
+        bad_u = self.unit("bad", self.BAD_CID)
+        for name, row in (("R2", self.r2([bad_u])), ("R14", self.r14([bad_u]))):
+            with self.subTest(row=name):
+                self.assertEqual(row["verdict"], "not_demonstrated")
+                self.assertEqual(row["n_pass"], 0)
+                self.assertEqual(row["n_fail"], 0)
+                self.assertIsNone(row["binding"])
+
+    def test_the_edge_window_rule_is_unchanged_by_the_new_gate(self):
+        """A unit with a > 100 ps edge-window step but a whole-run step inside the limit has no
+        pass for the pre-existing reason: edge.ok is False, the step gate never fires."""
+        u = self.unit("edge")
+        self.assertTrue(u["graded"])
+        self.assertTrue(u["settled"])
+        self.assertTrue(u["step_ok"], "the whole-run gate must not fire here")
+        self.assertFalse(u["edge"]["ok"])
+        self.assertGreater(u["edge"]["max_step_s"], sm.EDGE_STEP_MAX)
+        row = self.r2([u])
+        self.assertEqual(row["verdict"], "not_demonstrated")
+        self.assertEqual(row["n_fail"], 0)
+        self.assertEqual(row["n_no_value"], 1)
+
+    def test_a_no_waveform_unit_keeps_its_reason_and_gains_no_step_evidence(self):
+        c = self.ds_corner(os.path.join(self.tmp.name, "missing.raw"), vth=None)
+        c["status"] = "error"
+        c["diagnostics"] = [{"code": "spice_error", "message": "shard lost"}]
+        u = self.mod.unit_record(c)
+        self.assertFalse(u["graded"])
+        self.assertTrue(u["reason"].startswith("no waveform"), u["reason"])
+        self.assertNotIn("step_ok", u)
+        self.assertNotIn("step_max_s", u)
+
+    def test_a_missing_vth_replica_keeps_its_r14_no_value_path(self):
+        u = self.mod.unit_record(self.ds_corner(self.raw["ok"], vth=None))
+        self.assertTrue(u["graded"])
+        self.assertTrue(u["step_ok"])
+        self.assertIsNone(u["dead_time"])
+        self.assertIn("Vth replica level missing", u["r14_reason"])
 
 
 if __name__ == "__main__":
