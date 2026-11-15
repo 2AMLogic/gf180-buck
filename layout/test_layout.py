@@ -15,11 +15,14 @@ Run: python3 -m unittest discover -s layout -p 'test_*.py'
 no-host-install klayout usually lives)
 """
 import hashlib
+import json
 import os
 import subprocess
 import sys
 import tempfile
 import unittest
+
+import klayout.db as db
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GDS = os.path.join(HERE, "buck.gds")
@@ -58,6 +61,40 @@ class PowerPathTests(unittest.TestCase):
         r = run("check_layout.py")
         self.assertEqual(r.returncode, 0,
                          "check_layout.py failed (%d):\n%s%s" % (r.returncode, r.stdout, r.stderr))
+
+    def test_cut_coverage_assertion_bites_in_both_directions(self):
+        """The coverage assertion names orphan cuts below AND above on a violating GDS.
+
+        The committed GDS is clean in all six probes; this mutant re-creates the
+        two orphan classes #182 fixed -- a Via1 under Metal2 with no Metal1
+        below it (the 1260), and a Via1 on Metal1 with no Metal2 above it (the
+        720) -- and asserts check_layout.py exits non-zero naming both. A
+        below-only proof does not satisfy the AC.
+        """
+        with open(os.path.join(HERE, "buck.info.json")) as fh:
+            info = json.load(fh)
+        rows_bot = info["rows_y"]["HS"][0]   # HS row-0 gate-rail bottom = COMP base - 5.1
+        w = info["width_um"]
+        ly = db.Layout()
+        ly.read(GDS)
+        top = ly.top_cell()
+        via1 = ly.layer(35, 0)
+        # below-orphan: in the HS gate-bus band (Metal2, x -30..W) beyond the row
+        # extent, where no Metal1 exists
+        top.shapes(via1).insert(db.DBox(w - 6.0, rows_bot - 2.35, w - 6.0 + 0.26, rows_bot - 2.35 + 0.26))
+        # above-orphan: on the row-0 gate-rail Metal1 (full width) inside a strap
+        # gap of period x0 = 288 (gap 299.7..300.3), where no Metal2 exists
+        top.shapes(via1).insert(db.DBox(299.87, rows_bot + 0.55, 299.87 + 0.26, rows_bot + 0.55 + 0.26))
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "mutant.gds")
+            ly.write(p)
+            r = run("check_layout.py", "--gds", p)
+        self.assertNotEqual(r.returncode, 0,
+                            "coverage assertion did not bite on orphan cuts:\n%s" % r.stdout)
+        self.assertIn("not covered by Metal1", r.stdout,
+                      "below-direction did not bite:\n%s" % r.stdout)
+        self.assertIn("not covered by Metal2", r.stdout,
+                      "above-direction did not bite:\n%s" % r.stdout)
 
 
 if __name__ == "__main__":

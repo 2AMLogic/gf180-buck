@@ -1,8 +1,9 @@
 # layout/drc: DRC evidence for T1 item 3 (issue #23)
 
 **Item 3 is NOT met.** The curated-deck run is clean — the Via2 enclosure
-defects were fixed by regenerating the layout (#176) — but the native 30 kA
-deck still cannot run on this 3LM variant, so item 3 cannot be claimed.
+defects were fixed by regenerating the layout (#176), and the orphan Via1 cuts
+were fixed by clipping the strap extent to the rows (#182) — but the native 30
+kA deck still cannot run on this 3LM variant, so item 3 cannot be claimed.
 
 ## Run of record
 
@@ -16,8 +17,8 @@ uvx --from klayout-tools==0.9.0 klt drc --check layout/drc/curated-gf180mcu.json
 |---|---|
 | klt | 0.9.0 (`5dbbad05`), pip KLayout 0.30.12 (engine pinned with `--with` above) |
 | Deck | curated `gf180mcu`, content hash `sha256:cf44de63f0a5b01c1d09c4d58e0535e990aa4b070bcaae17fd3a94a67a1d97e1` |
-| Input | `layout/buck.gds`, `sha256:68e7bcb2e78f2150adc9a20da6b41e7441af1d646a832e32a8abfb83536dd7a5` (equals the committed GDS) |
-| Status | `clean`, 0 findings, `rule_counts` empty. The 20 `metal2.enclosing.via2.1` findings carried by the previous GDS (at x near -7.5..-5.2 um and 580..583 um, y 88.9 and 462.4 um) are gone: `body_ties` now derives the Via2 band from the Metal2 ∩ Metal3-trunk intersection (#176). The deck's enclosing rules cannot see a cut with *no* metal under it, so `layout/check_layout.py` also asserts `Region(VIA2) - Region(METAL2)` and `Region(CONTACT) - Region(METAL1)` are empty geometrically. |
+| Input | `layout/buck.gds`, `sha256:5ac0eebee3218c441ec087bd0fb1340d2ac9dda786029dd6e07f0994129e1d0f` (equals the committed GDS) |
+| Status | `clean`, 0 findings, `rule_counts` empty. The 20 `metal2.enclosing.via2.1` findings carried by the pre-#176 GDS are gone (`body_ties` derives the Via2 band from the Metal2 ∩ Metal3-trunk intersection, #176). The deck's enclosing rules cannot see a cut with *no* metal on either side of it — `metal1.enclosing.via1.1` and `metal2.enclosing.via1.1` both sat clean over 1260 cuts with no Metal1 below and 720 with no Metal2 above (klayout-tools#5737, blind in both directions) — so `layout/check_layout.py` asserts cut coverage geometrically in both directions: `VIA1`/`VIA2`/`CONTACT` against the metal below and `VIA1` against Metal2, `VIA2` against Metal3 above (the Via1 probes added by #182). |
 
 ## Coverage (verbatim from the report)
 
@@ -68,9 +69,10 @@ uvx --from klayout-tools==0.9.1 klt drc layout/buck.gds --engine klayout \
 
 ## To close this
 
-1. ~~Regenerate the layout so `metal2.enclosing.via2.1` is clean~~ — done by #176:
-   the curated run is clean and every Via2/Contact cut is geometrically covered
-   (asserted by `layout/check_layout.py`; the deck cannot check orphan cuts itself).
+1. ~~Regenerate the layout so `metal2.enclosing.via2.1` is clean~~ — done by #176,
+   extended by #182: the curated run is clean and every cut is geometrically
+   covered below and above in all six probes (asserted by
+   `layout/check_layout.py`; the deck cannot check orphan cuts itself).
 2. A native-deck run that completes on a 3LM variant: needs an upstream fix to the PDK
    `mslot.rb` (guard `metal4_drawn`) or a klt capability to run the native deck on this
    variant (klayout-tools#4002, open; its own criteria allow the 3LM `mslot.rb`

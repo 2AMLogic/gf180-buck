@@ -65,6 +65,7 @@ PERIOD = 2 * (GROUP + GAP)
 STRAP_W, STRAP_P, N_STRAP = 3.4, 4.0, 5     # Metal2 S/D straps per group
 GSTRAP_W = 1.5            # Metal2 gate strap
 ROW_GAP = 0.5
+VIA_ENC = 0.06            # via enclosure in the strap metal (via_array margin)
 SLOT_W, SLOT_PITCH_MIN = 2.0, 30.0   # slot width; metal between slots
 SLOT_LEN, SLOT_GAP = 250.0, 10.0
 SLOT_EDGE = 10.0
@@ -203,7 +204,12 @@ class Gen:
         top = self.ly.create_cell("BUCK_POWER")
         row_hs, g_hs = self.build_row("p", hs["L"], nf_hs_row)
         row_ls, g_ls = self.build_row("n", ls["L"], nf_ls_row)
-        assert g_hs["wrow"] <= width_goal and g_ls["wrow"] <= width_goal, "row wider than the strap field"
+        for t_, g_ in (("HS", g_hs), ("LS", g_ls)):
+            assert g_["wrow"] <= width_goal, "row wider than the strap field (%s)" % t_
+        # A row narrower than the strap field is fine only because build_array
+        # clips the strap/via extent to g["wrow"] and asserts the clip (#182):
+        # an inequality alone passed silently while 1260 Via1 cuts landed off
+        # the metal they were counted on.
         self.info.update(rows_hs=rows_hs, rows_ls=rows_ls, fingers_hs=nfing_hs, fingers_ls=nfing_ls,
                          fingers_per_row_hs=nf_hs_row, fingers_per_row_ls=nf_ls_row, periods=n_per,
                          width_um=width_goal)
@@ -308,7 +314,12 @@ class Gen:
         rows_bot = base + g["ybot"]
         rows_top = base + (nrows - 1) * pitch + g["ytop"]
         gate_bus_y = (rows_bot - 3.0, rows_bot - 1.5) if tag == "HS" else (rows_top + 1.5, rows_top + 3.0)
-        # Metal2 straps span the rows only
+        # Metal2 straps span the rows only, and never past the row's Metal1
+        # extent: a row can be narrower than the nominal strap field W (split()
+        # pads the finger count to an even divisor), and a strap -- or its
+        # Via1/Via2 array -- drawn beyond wrow lands on nothing (#182).
+        clip_x = g["wrow"]
+        drawn_x1 = 0.0
         s_net = grp["A"]; d_net = grp["B"]
         for k in range(n_per):
             x0 = k * PERIOD
@@ -316,23 +327,40 @@ class Gen:
                 gx0 = x0 + gi * (GROUP + GAP)
                 for i in range(N_STRAP):
                     sx0 = gx0 + 0.3 + i * STRAP_P
-                    sx1 = sx0 + STRAP_W
+                    sx1 = min(sx0 + STRAP_W, clip_x)
+                    if sx1 - sx0 < VS + 2 * VIA_ENC:    # no room for even one via
+                        continue
                     self.box(top, "METAL2", sx0, rows_bot, sx1, rows_top)
                     # Via2 up to the Metal3 strip along the whole strap
-                    n2 = self.via_array(top, "VIA2", sx0, rows_bot, sx1, rows_top, VS, VS_P, 0.06)
+                    n2 = self.via_array(top, "VIA2", sx0, rows_bot, sx1, rows_top, VS, VS_P, VIA_ENC)
                     cnt[net]["VIA2"] += n2
                     for r in range(nrows):
                         yb = base + r * pitch
                         ya, yz = (g["yS"] if typ == "S" else g["yD"])
-                        n1 = self.via_array(top, "VIA1", sx0, yb + ya, sx1, yb + yz, VS, VS_P, 0.06)
+                        n1 = self.via_array(top, "VIA1", sx0, yb + ya, sx1, yb + yz, VS, VS_P, VIA_ENC)
                         cnt[net]["VIA1"] += n1
-            # gate straps in the two gaps of the period
+                    drawn_x1 = max(drawn_x1, sx1)
+            # gate straps in the two gaps of the period; both y edges derive
+            # from the array and the bus so HS and LS cannot drift apart (#182)
+            gy0 = min(gate_bus_y[0], rows_bot)
+            gy1 = max(gate_bus_y[1], rows_top)
             for gx in (x0 + GROUP + GAP / 2, x0 + PERIOD - GAP / 2):
-                self.box(top, "METAL2", gx - GSTRAP_W / 2, gate_bus_y[0], gx + GSTRAP_W / 2, rows_top if tag == "HS" else gate_bus_y[1])
+                gx0 = gx - GSTRAP_W / 2
+                gx1 = min(gx + GSTRAP_W / 2, clip_x)
+                if gx1 - gx0 < VS + 2 * VIA_ENC:
+                    continue
+                self.box(top, "METAL2", gx0, gy0, gx1, gy1)
                 for r in range(nrows):
                     yb = base + r * pitch
                     ya, yz = g["yG"]
-                    self.via_array(top, "VIA1", gx - GSTRAP_W / 2, yb + ya, gx + GSTRAP_W / 2, yb + yz, VS, VS_P, 0.06)
+                    self.via_array(top, "VIA1", gx0, yb + ya, gx1, yb + yz, VS, VS_P, VIA_ENC)
+                drawn_x1 = max(drawn_x1, gx1)
+        # clip invariant: the `<=` on the row width above is what let 1260
+        # orphan Via1 cuts through, so assert the extent the clip produced --
+        # a guard that cannot fail on the defect it guards is not a guard
+        assert drawn_x1 <= clip_x + 1e-9, \
+            "strap field drawn past the row extent %s (%s): no Via1 may land off the metal, see #182" \
+            % (clip_x, tag)
         # gate bus (Metal2) running left to the control area
         self.box(top, "METAL2", -30.0, gate_bus_y[0], W - 0.0, gate_bus_y[1])
         top.shapes(self.L["M2LABEL"]).insert(db.DText("GH" if tag == "HS" else "GL", db.DTrans(-29.0, snap((gate_bus_y[0] + gate_bus_y[1]) / 2))))
