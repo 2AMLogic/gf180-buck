@@ -136,7 +136,7 @@
         "role": "testbench",
         "path": "sim/current-limit/collect.py",
         "passed": true,
-        "content_hash": "sha256:ec9706977e5774cf359e6e82f7b8319c454ac28f637f34cc17245b54d1732cf9"
+        "content_hash": "sha256:e8be9781c086054eba01c4a978cb8ea9e79419e4e8ba6f98f2e694d666cb547c"
       },
       {
         "check": "present",
@@ -311,7 +311,7 @@
         "role": "testbench",
         "path": "sim/lib/recordkit.py",
         "passed": true,
-        "content_hash": "sha256:66925f46f7238fe35bd52bc6601fa5f89a5b137d23a7dc724da1cd2b1bad49f8"
+        "content_hash": "sha256:91e63e7b56523dd2ad3458e110509179e5c92bf9cd9c8b44f1e5a1ac57298635"
       },
       {
         "check": "present",
@@ -353,7 +353,7 @@
         "role": "testbench",
         "path": "sim/lib/test_recordkit.py",
         "passed": true,
-        "content_hash": "sha256:cf80879c3efa00a1cd801c88852666f15e49f4d3b32b8c29033a5068424c8012"
+        "content_hash": "sha256:49af6cdf48e022afe0206003211a7355859441d8eb9474b709df07fa548b3da9"
       },
       {
         "check": "present",
@@ -507,7 +507,7 @@
         "role": "testbench",
         "path": "sim/soft-start/collect.py",
         "passed": true,
-        "content_hash": "sha256:3262b3901dbcd45a1ee3e59a9cc0b74b95f3f38c5a4bd6cd1fd7cfef788f2cdf"
+        "content_hash": "sha256:44a4c9dd8f3b139a8eb2bba910997f9dd590359a5c7512b6e320ecb9d5d7a34f"
       },
       {
         "check": "present",

@@ -20,7 +20,10 @@ import sys
 LIB = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(LIB, "..", ".."))
 IDRE = re.compile(r"^(?P<proc>[a-z]+)/(?P<vin>[0-9.]+)V/(?P<temp>-?[0-9.]+)C/params:(?P<params>.*)$")
-REMOTE_FIELDS = ("provider", "job_id", "instance_type", "lifecycle", "elapsed_seconds", "state")
+# runner_klt_version / client_klt_version / runner_compatibility are which klt actually produced the
+# numbers: on a batch run header()'s local `klt --version` names the grading host, not the fleet runner.
+REMOTE_FIELDS = ("provider", "job_id", "instance_type", "lifecycle", "elapsed_seconds", "state",
+                 "runner_klt_version", "client_klt_version", "runner_compatibility", "region")
 GRADEABLE_STATUS = ("pass", "fail")  # a klt corner grades only once it reached a verdict
 DIAG_MSG_TAIL = 90  # chars of a diagnostic message kept in a no-waveform reason
 

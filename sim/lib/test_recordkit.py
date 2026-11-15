@@ -70,6 +70,22 @@ class EnvTest(unittest.TestCase):
         self.assertEqual((e["report"], e["status"], e["jobs"]), ("rep.json", "pass", [1]))
         self.assertNotIn("jobs", recordkit.report_env(self.REP, "rep.json"))
 
+    def test_runner_provenance_is_carried(self):
+        """The four provenance fields by name: the runner's klt, not the grading host's, is what a
+        batch-fleet record needs, and an older report (or a local run) degrades to None."""
+        provenance = {"runner_klt_version": "0.9.0", "client_klt_version": "0.9.0",
+                      "runner_compatibility": "match", "region": "us-east-1"}
+        rep = {"environment": {"remote": dict(provenance, job_id="j")}}
+        sub = recordkit.remote_subset(rep)
+        for k, v in provenance.items():
+            self.assertEqual(sub[k], v, k)
+        e = recordkit.report_env(dict(rep, status="pass"), "/x/rep.json")
+        for k, v in provenance.items():
+            self.assertEqual(e["remote"][k], v, k)
+        empty = recordkit.remote_subset({})
+        for k in provenance:
+            self.assertIsNone(empty[k], k)
+
     def test_files_sha256_pins_shared_module(self):
         with tempfile.TemporaryDirectory() as d:
             with open(os.path.join(d, "bench.spice"), "w") as fh:
