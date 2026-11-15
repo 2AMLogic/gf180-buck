@@ -4,7 +4,7 @@ gf180-buck is a synchronous buck converter on the gf180mcu open PDK (on-die
 switches, gate drive, voltage-mode PWM controller), built to exercise the
 30 kÅ MetalTop rule set and the klayout-tools evidence flow.
 
-**Status as of 2026-11-15, `main` @ `a13150c`; the tracker was re-read the same
+**Status as of 2026-11-15, `main` @ `bb1e219`; the tracker was re-read the same
 day.** Everything below is simulated or structural; nothing is measured.
 `WORK_PLAN.md` is the generated label view of the tracker; this file says what
 the order is and why.
@@ -28,7 +28,7 @@ The verdict of record (`manifests/gf180-buck.signoff.json`) is tier `null`,
 | 10 | Repo hygiene | met | `manifests/item10-attestation.json`, CI re-grades on drift |
 | 11 | Power delivery | unmet | #31 |
 
-Also on `main`: the ratified spec and ten decision records under
+Also on `main`: the ratified spec and the decision records under
 `spec/decision-records/`; the averaged-model loop-gain bench with records
 (`design/averaged/records/`); switched benches for steady state, load step,
 soft start, current limit, dead time and device stress, sharing one harness
@@ -56,14 +56,14 @@ that is closed, rows R4, R12, R13, R2 and R14 can only fail or read
 
 ## Now
 
-1. **Bring the README status into line with the verdict of record** (#177). The
-   README says "1 of 11 T1 evidence items" (`README.md:12`), "nothing is
-   designed yet" (`README.md:10`), and that the averaged-model bench "has no
-   record on `main` yet" (`README.md:103`, against the records in
-   `design/averaged/records/`); all three are stale. Done when each statement
-   matches `manifests/gf180-buck.signoff.json` and the tree, the Reproduce table
-   lists the benches `sim/cold-start.sh` runs, and `manifests/check_readme.py`
-   and the item 10 attestation still pass.
+Nothing is dispatchable from the design queue today. The four items the
+previous pass listed here (#176, #177, #161, #162) are closed and completed,
+and every other open thread waits on an operator ruling, the batch fleet, or
+the error-amplifier sibling - see Blocked. The first thread to unblock
+reorders this list; the tracker, and `WORK_PLAN.md` as its generated view,
+carry the live state. This section names trackers and done-conditions only,
+never another file's content or a pull request's review state: quoted state
+is what rots between passes.
 
 ## Next
 
