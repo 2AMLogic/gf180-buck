@@ -136,7 +136,7 @@
         "role": "testbench",
         "path": "sim/current-limit/collect.py",
         "passed": true,
-        "content_hash": "sha256:e8be9781c086054eba01c4a978cb8ea9e79419e4e8ba6f98f2e694d666cb547c"
+        "content_hash": "sha256:860014e59f8c66f1437e2ed9f8119ff1b5ec91271ab60be1336cabe9c1c38758"
       },
       {
         "check": "present",
@@ -227,7 +227,7 @@
         "role": "testbench",
         "path": "sim/device-stress/collect.py",
         "passed": true,
-        "content_hash": "sha256:c895edd3e8048bb69713767fa61e0b48fc02d693f589d284be7520b51ec68bbc"
+        "content_hash": "sha256:3ccf78941fe1098bac1e50bd96e537b97fcceb1f06ed776e94b55e929b3a2667"
       },
       {
         "check": "present",
@@ -311,7 +311,7 @@
         "role": "testbench",
         "path": "sim/lib/recordkit.py",
         "passed": true,
-        "content_hash": "sha256:91e63e7b56523dd2ad3458e110509179e5c92bf9cd9c8b44f1e5a1ac57298635"
+        "content_hash": "sha256:5d8dc413f47b6597fa9e860d761ebcb3bc3087556aa58f64bde823304242b507"
       },
       {
         "check": "present",
@@ -353,7 +353,7 @@
         "role": "testbench",
         "path": "sim/lib/test_recordkit.py",
         "passed": true,
-        "content_hash": "sha256:49af6cdf48e022afe0206003211a7355859441d8eb9474b709df07fa548b3da9"
+        "content_hash": "sha256:09b7cde9c53836733743350a78ba0cbfb263b9b94081ec4a6b1c5a79b3e3fd11"
       },
       {
         "check": "present",
@@ -381,7 +381,7 @@
         "role": "testbench",
         "path": "sim/load-step/collect.py",
         "passed": true,
-        "content_hash": "sha256:7d0bcd72869efed7895c8f426b47db0a3f0231166677d2d354c2a1e546172a66"
+        "content_hash": "sha256:53c2f8a25a6291f4c763d47c55480fdf1801c58b3b76b57d33d0668f3476f714"
       },
       {
         "check": "present",
@@ -507,7 +507,7 @@
         "role": "testbench",
         "path": "sim/soft-start/collect.py",
         "passed": true,
-        "content_hash": "sha256:44a4c9dd8f3b139a8eb2bba910997f9dd590359a5c7512b6e320ecb9d5d7a34f"
+        "content_hash": "sha256:2f61177cfe791a7b0bd638656d15959f3fa0597159de04a5a912ddccc575a73e"
       },
       {
         "check": "present",
@@ -661,7 +661,7 @@
         "role": "testbench",
         "path": "sim/steady-state/collect.py",
         "passed": true,
-        "content_hash": "sha256:10f050effbd514daaa04946f18e594e89fdb484ebf0433d8c6e07176fa6d58f7"
+        "content_hash": "sha256:0142b2719328d99f434a4d27a2f713a8a7a341546d52597af4fd478d9c15199a"
       },
       {
         "check": "present",

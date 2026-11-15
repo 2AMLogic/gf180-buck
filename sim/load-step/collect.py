@@ -227,10 +227,11 @@ def main(argv=None):
     ap.add_argument("--dry", action="store_true", help="print, do not write a record")
     a = ap.parse_args(argv)
     tm = bench_timing()
-    units, envs = {"tol": [], "full": [], "avg": []}, []
+    units, envs, cm = {"tol": [], "full": [], "avg": []}, [], []
     for k in ("tol", "full", "avg"):
         rep = json.load(open(getattr(a, k)))
         envs.append({"request": "request_%s.json" % k, **recordkit.report_env(rep, getattr(a, k))})
+        cm.append(recordkit.corner_matrix_check(os.path.join(HERE, "matrix_%s.json" % k), getattr(a, k)))
         for c in rep["corners"]:
             units[k].append(grade_unit(c, "avg" if k == "avg" else k, tm))
     counts = {k: len(v) for k, v in units.items()}
@@ -252,7 +253,8 @@ def main(argv=None):
     rec = {
         "record": "simulated, not measured; pre-layout; target tier (5 V -> 1.8 V, 50 -> 450 -> 50 mA); rows R12, R13(b), R13(c)",
         "environment": {**hdr,
-                        "local_grader_python": sys.version.split()[0], "reports": envs, "files_sha256": files},
+                        "local_grader_python": sys.version.split()[0], "reports": envs, "corner_matrix": cm,
+                        "files_sha256": files},
         "method": {
             "analysis": ".tran 2.5n 760u, waveforms saved from 480u; max step 2.5 ns = T/200 at 2 MHz",
             "startup": "Vin ramps 0 -> Vin over 10 us, rails/bias over 5 us, EN at 20 us (soft start ~200 us), load 0 -> 50 mA at 260 us",
@@ -277,8 +279,10 @@ def main(argv=None):
     if a.dry:
         brief = {k: {kk: vv for kk, vv in v.items() if kk not in ("table", "failing_steps", "no_value_steps")} for k, v in rows.items()}
         print(json.dumps(brief, indent=1))
-        return 0
-    return recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
+        print(json.dumps({"corner_matrix": cm}, indent=1))
+        return recordkit.coverage_exit(cm)
+    rc = recordkit.write_record(os.path.join(HERE, "records", "%s-%s.json" % (ts, sha)), rec)
+    return rc | recordkit.coverage_exit(cm)
 
 
 if __name__ == "__main__":

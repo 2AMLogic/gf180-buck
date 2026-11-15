@@ -186,6 +186,23 @@ lets any shared P-T part / package / rail value drift between the five decks. Ev
 written after this change pins `sim/lib/bench_harness.spice` in its `files_sha256`; records written
 before it pin the deck hashes of the day and are not edited.
 
+## Corner-matrix coverage check
+
+Every bench collector runs `klt corner-matrix check --report` (via `sim/lib/recordkit.py`) once
+per klt sim report it is handed, diffing the declared matrix (`matrix_*.json`, written by the same
+`gen_requests.py` run as the request) against **what actually simulated**, and carries the verdict
+in the record's `environment.corner_matrix` block (one entry per report, naming the matrix file,
+`matrix_size`, `observed_count` and the `missing` / `extra` / `duplicate` / `not_simulated` /
+`non_finite` / `out_of_bounds` id lists). Coverage is the gate: the collector exits non-zero --
+after writing the record, since a run that happened is evidence -- when a report `missing`, `extra`
+or `duplicate`s any declared corner, or when klt refuses the check outright (e.g. a file with no
+`corners[]` array, the shape of a committed `records/*.json`). A coverage failure means the run did
+not cover its declared corner set exactly once -- a resumed or re-pointed `--report-out`, or a
+report collected from the wrong outdir, surfaces here. Per-corner verdicts are recorded but never
+gate on their own: `out_of_bounds` is every corner whose klt status is `fail`, so klt's own
+`complete` flag and exit status fold a legitimately failing corner in and are not a coverage
+verdict -- a bench that correctly records a failing corner still exits 0.
+
 ## Steady-state bench (rows R4, R6, R7, R8, R9/R10 pre-layout, R11)
 
 ```
@@ -194,6 +211,10 @@ klt sim --batch-set sim/steady-state/request_grid.json sim/steady-state/request_
     --wait-for-capacity 600 --report-out ...
 python3 -I sim/steady-state/collect.py --report GRID.json --report R8.json    # grade + write records/<UTC>-<sha>.json
 ```
+
+The collector checks the grid report against `matrix_grid.json` and the R8 report against
+`matrix_r8.json` (paired by the same grid/r8 detection that splits the units) -- see
+"Corner-matrix coverage check" above for what the verdict records and what fails.
 
 `bench.spice` wraps `buck_top.spice`: C-full (45) x load {0, 50, 250, 500 mA} = 180 units
 (`request_grid.json`) plus the three R8 Vin / L combinations (`request_r8.json`), `.tran` to
@@ -213,6 +234,9 @@ klt sim --batch-set sim/load-step/request_tol.json sim/load-step/request_full.js
     sim/load-step/request_avg.json --wait-for-capacity 600 --report-out ...
 python3 -I sim/load-step/collect.py --tol TOL.json --full FULL.json --avg AVG.json    # grade + write records/<UTC>-<sha>.json
 ```
+
+The collector checks each report against its matrix (`matrix_tol.json`, `matrix_full.json`,
+`matrix_avg.json`) -- see "Corner-matrix coverage check" above.
 
 `bench.spice` is the shared harness with a 50 -> 450 -> 50 mA load at 1 A/us
 (steps at 600 / 680 us, `.tran` to 760 us, last 280 us saved). Each edge is graded by
@@ -242,6 +266,10 @@ python3 -I sim/soft-start/collect.py --report <soft-start report>.json
 python3 -I sim/current-limit/collect.py --ramp <ramp report>.json --min <min report>.json
 ```
 
+The soft-start collector checks its report against `matrix_grid.json`; the current-limit
+collector checks the ramp report against `matrix_ramp.json` and the min report against
+`matrix_min.json` -- see "Corner-matrix coverage check" above.
+
 Both benches include the same shared harness as `sim/steady-state/bench.spice`, so the external parts and
 package are the same file, not a copy of it (see "Shared bench harness" below).
 `TRIP` is internal to `buck_top`; it is saved hierarchically as `v(xtop.trip)`. Measurement code is
@@ -270,6 +298,9 @@ klt sim sim/device-stress/request_ctyp.json --backend batch --wait-for-capacity 
     -o OUT --report-out ctyp.json   # or request_grid.json
 python3 -I sim/device-stress/collect.py --report ctyp.json --set ctyp   # writes the R2 and the R14 record
 ```
+
+The collector checks the report against `matrix_<set>.json` for the named `--set` -- see
+"Corner-matrix coverage check" above.
 
 One closed-loop `buck_top` run per (corner, load) serves both rows; `collect.py` writes
 `sim/device-stress/records/<UTC>-<sha>.json` (R2) and `sim/dead-time/records/<UTC>-<sha>-top.json` (R14).
