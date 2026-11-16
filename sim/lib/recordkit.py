@@ -118,7 +118,7 @@ def _bounded_reason(message, tail=DIAG_MSG_TAIL):
     path-shaped token the way `corner_matrix_check` basenames its matrix/report, then tail-slice
     to `tail` chars like waveform_or_reason. A clean one-line refusal passes through unchanged."""
     line = (message.strip().splitlines() or [""])[-1]
-    words = [os.path.basename(w) if "/" in w and os.path.basename(w) else w for w in line.split()]
+    words = [os.path.basename(w.rstrip("/")) or w if "/" in w else w for w in line.split()]
     return " ".join(words)[-tail:]
 
 

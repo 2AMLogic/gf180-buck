@@ -232,6 +232,13 @@ class CornerMatrixCheckTest(unittest.TestCase):
     def test_a_message_that_is_only_a_path_loses_the_directories(self):
         self.assertEqual(self.run_check(1, stderr="/var/data/report.json")["error"], "report.json")
 
+    def test_a_trailing_slash_path_loses_the_directories_too(self):
+        """A token ending in '/' has an empty basename, which must not fall through the
+        sanitizer's guard and carry the whole host path into the record (review finding)."""
+        self.assertEqual(self.run_check(1, stderr="not a file: /var/data/records/")["error"],
+                         "not a file: records")
+        self.assertEqual(self.run_check(1, stderr="/")["error"], "/")
+
     def test_exit_0_without_a_verdict_is_an_error_not_a_crash(self):
         self.assertIn("error", self.run_check(0, stdout="not json"))
         self.assertIn("error", self.run_check(1, stderr="[1, 2]"))
@@ -304,6 +311,13 @@ class CornerMatrixCheckKltTest(unittest.TestCase):
         e = recordkit.corner_matrix_check(self.matrix, self.report)
         self.assertEqual(e["error"], "report has no corners[] array: report.json")
 
+    def test_a_trailing_slash_refusal_names_the_target_by_basename(self):
+        """The directory form of the same refusal -- the collector's --report argument can be
+        a directory, and klt echoes that path exactly as handed, trailing slash included:
+        the envelope still comes back basenamed, never as the host path."""
+        e = recordkit.corner_matrix_check(self.matrix, self.tmp.name + "/")
+        self.assertEqual(e["error"], "not a file: " + os.path.basename(self.tmp.name))
+
     def test_a_klt_crash_is_bounded_to_one_host_free_informative_line(self):
         """The shape klt itself crashes on (2AMLogic/klayout-tools#5872): an 18-line traceback
         with absolute host paths must never land in the append-only record -- the one
@@ -317,6 +331,7 @@ class CornerMatrixCheckKltTest(unittest.TestCase):
         self.assertIn("AttributeError", e["error"])
         self.assertNotIn("/", e["error"])
         self.assertNotIn(self.tmp.name, e["error"])
+
 
 class CoverageFailuresTest(unittest.TestCase):
     """The gate: missing / extra / duplicate only; refusals; per-corner verdicts never."""
