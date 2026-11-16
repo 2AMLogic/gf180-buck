@@ -3,8 +3,15 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-16
+
+- **PR #210**: fix(sim): bound the corner_matrix refusal message a record commits
+- **Issue #209** (closed): Bound the corner_matrix refusal message a collector writes into an append-only record
+
 ### 2026-11-15
 
+- **PR #208**: feat: gate each bench collector on corner-matrix coverage of the handed report
+- **Issue #202** (closed): Wire `klt corner-matrix check --report` into each bench collector: carry the coverage verdict in the committed record
 - **PR #205**: test: fail a ROADMAP.md stamp off main, warn on doc-excluding drift
 - **Issue #199** (closed): ROADMAP.md header-sha staleness is invisible until review: consider a CI ancestry/age check
 - **PR #195**: docs: refresh ROADMAP to a13150c, drop volatile per-PR review state
