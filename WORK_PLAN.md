@@ -39,26 +39,25 @@ _None._
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-- **#170**: sim/device-stress/collect.py computes the spec 0.4 step flag but no verdict reads it (R2, R14)
-- **#190**: ROADMAP.md carries per-PR review states that rot within a day: refresh, and drop the volatile fields
+_None._
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
-- **#177**: README status is stale: says 1 of 11 T1 items and "nothing is designed yet"; the verdict of record is 4 of 11
+_None._
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#191**: docs: correct README status to the verdict of record (4/11 T1) and re-attest item 10
+_None._
 
 ## Approved (Awaiting Merge)
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-_None._
+- **#212**: fix(sim): key-presence coverage gate and a coerced klt message
 
 ## Proposed
 
@@ -73,10 +72,7 @@ Issues carrying `loom:curated`.
 - **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)*
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)*
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)*
-- **#170**: sim/device-stress/collect.py computes the spec 0.4 step flag but no verdict reads it (R2, R14) *(curated)*
-- **#177**: README status is stale: says 1 of 11 T1 items and "nothing is designed yet"; the verdict of record is 4 of 11 *(curated)*
-- **#182**: Clear the 1260 orphan Via1 cuts in the power-stage strap arrays (build_array row/strap extent mismatch) *(curated)*
-- **#190**: ROADMAP.md carries per-PR review states that rot within a day: refresh, and drop the volatile fields *(curated)*
+- **#211**: corner_matrix_check: a falsy or non-string klt envelope message bypasses or crashes the coverage gate *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -97,11 +93,11 @@ _None._
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
 | Important | 8 |
-| Ready (`loom:issue`) | 2 |
-| In Progress (`loom:building`) | 1 |
-| PRs awaiting review | 1 |
-| Approved PRs awaiting merge | 0 |
-| Curated | 13 |
+| Ready (`loom:issue`) | 0 |
+| In Progress (`loom:building`) | 0 |
+| PRs awaiting review | 0 |
+| Approved PRs awaiting merge | 1 |
+| Curated | 10 |
 | Architect / Hermit proposals | 5 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
