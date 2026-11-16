@@ -5,6 +5,9 @@ Maintained by the Guide role.
 
 ### 2026-11-16
 
+- **PR #212**: fix(sim): key-presence coverage gate and a coerced klt message
+- **Issue #211** (closed): corner_matrix_check: a falsy or non-string klt envelope message bypasses or crashes the coverage gate
+- **Issue #214** (closed): Guide WORK_PLAN regeneration is non-atomic: sections disagree about label state within one commit
 - **PR #210**: fix(sim): bound the corner_matrix refusal message a record commits
 - **Issue #209** (closed): Bound the corner_matrix refusal message a collector writes into an append-only record
 

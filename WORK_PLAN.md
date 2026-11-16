@@ -14,7 +14,7 @@ placement in this document, before starting on it.
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-_None._
+- **#215**: chore(loom): resync installed Loom to v0.19.1302
 
 ## Very Important
 
@@ -39,7 +39,7 @@ _None._
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-- **#211**: corner_matrix_check: a falsy or non-string klt envelope message bypasses or crashes the coverage gate
+_None._
 
 ## In Progress
 
@@ -57,7 +57,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#212**: fix(sim): key-presence coverage gate and a coerced klt message
+- **#215**: chore(loom): resync installed Loom to v0.19.1302
 
 ## Proposed
 
@@ -72,7 +72,6 @@ Issues carrying `loom:curated`.
 - **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)*
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)*
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)*
-- **#211**: corner_matrix_check: a falsy or non-string klt envelope message bypasses or crashes the coverage gate *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -90,14 +89,14 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 0 |
+| Operator merge-risk holds | 1 |
 | Very important | 1 |
 | Important | 8 |
-| Ready (`loom:issue`) | 1 |
+| Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 10 |
+| Curated | 9 |
 | Architect / Hermit proposals | 5 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
