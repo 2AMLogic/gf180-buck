@@ -111,6 +111,17 @@ def report_env(report, path, fields=REMOTE_FIELDS, jobs=False):
     return env
 
 
+def _bounded_reason(message, tail=DIAG_MSG_TAIL):
+    """One bounded, host-free line out of a klt refusal message, in the order the block's
+    other fields already follow: keep the last non-empty line (a traceback keeps only its
+    exception line, not its frame lines -- those carry the host paths), basename every
+    path-shaped token the way `corner_matrix_check` basenames its matrix/report, then tail-slice
+    to `tail` chars like waveform_or_reason. A clean one-line refusal passes through unchanged."""
+    line = (message.strip().splitlines() or [""])[-1]
+    words = [os.path.basename(w.rstrip("/")) or w if "/" in w else w for w in line.split()]
+    return " ".join(words)[-tail:]
+
+
 def corner_matrix_check(matrix, report):
     """Record-ready verdict of `klt corner-matrix check MATRIX --report REPORT --format json`,
     the completeness check of the declared corner matrix (the matrix the bench's gen_requests.py
@@ -123,6 +134,10 @@ def corner_matrix_check(matrix, report):
     out_of_bounds). A klt refusal (exit 1: an unreadable file, an unknown matrix key, or a
     committed records/*.json with no corners[] array) comes back as an {"error": message} block
     naming the refusal instead of raising, so the collector can record it and then fail on it.
+    The recorded message is bounded the way the block's other fields already are
+    (_bounded_reason): one DIAG_MSG_TAIL line, exception line only if klt crashed instead of
+    emitting its envelope, paths basenamed -- a host path or a traceback never lands in the
+    append-only record.
 
     Coverage is judged on missing/extra/duplicate ONLY (coverage_failures): klt's own `complete`
     flag and exit status are NOT a coverage verdict -- they fold the per-corner lists in, and
@@ -149,7 +164,8 @@ def corner_matrix_check(matrix, report):
         message = json.loads(message)["error"]["message"]
     except (ValueError, KeyError, TypeError):
         pass
-    return {"matrix": os.path.basename(matrix), "report": os.path.basename(report), "error": message}
+    return {"matrix": os.path.basename(matrix), "report": os.path.basename(report),
+            "error": _bounded_reason(message)}
 
 
 def coverage_failures(entries):

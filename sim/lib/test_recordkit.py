@@ -204,14 +204,40 @@ class CornerMatrixCheckTest(unittest.TestCase):
                          "message": "report has no corners[] array: /y/rep.json"}}
         e = self.run_check(1, stderr=json.dumps(env))
         self.assertEqual((e["matrix"], e["report"]), ("matrix_grid.json", "rep.json"))
-        self.assertEqual(e["error"], "report has no corners[] array: /y/rep.json")
+        self.assertEqual(e["error"], "report has no corners[] array: rep.json")
 
     def test_plain_text_refusal_is_kept_verbatim(self):
         e = self.run_check(1, stderr="klt corner-matrix: unknown matrix key(s)")
         self.assertEqual(e["error"], "klt corner-matrix: unknown matrix key(s)")
 
     def test_no_output_at_all_names_the_exit(self):
-        self.assertIn("7", self.run_check(7)["error"])
+        e = self.run_check(7)
+        self.assertEqual(e["error"], "klt corner-matrix exited 7 with no output")
+
+    def test_a_traceback_stderr_is_reduced_to_its_exception_line(self):
+        """A klt that crashes instead of emitting its envelope (2AMLogic/klayout-tools#5872)
+        must not commit its traceback: the last line names the exception, the 17 frame
+        lines -- several carrying host paths -- are dropped."""
+        tb = ("Traceback (most recent call last):\n"
+              "  File \"/opt/klt/lib/cli.py\", line 42, in check\n"
+              "    plan = json.load(fh)\n"
+              "AttributeError: 'str' object has no attribute 'get'\n")
+        e = self.run_check(1, stderr=tb)
+        self.assertEqual(e["error"], "AttributeError: 'str' object has no attribute 'get'")
+        self.assertNotIn("/", e["error"])
+
+    def test_the_error_is_bounded_to_diag_msg_tail_chars(self):
+        self.assertEqual(len(self.run_check(1, stderr="X" * 500)["error"]), recordkit.DIAG_MSG_TAIL)
+
+    def test_a_message_that_is_only_a_path_loses_the_directories(self):
+        self.assertEqual(self.run_check(1, stderr="/var/data/report.json")["error"], "report.json")
+
+    def test_a_trailing_slash_path_loses_the_directories_too(self):
+        """A token ending in '/' has an empty basename, which must not fall through the
+        sanitizer's guard and carry the whole host path into the record (review finding)."""
+        self.assertEqual(self.run_check(1, stderr="not a file: /var/data/records/")["error"],
+                         "not a file: records")
+        self.assertEqual(self.run_check(1, stderr="/")["error"], "/")
 
     def test_exit_0_without_a_verdict_is_an_error_not_a_crash(self):
         self.assertIn("error", self.run_check(0, stdout="not json"))
@@ -276,6 +302,35 @@ class CornerMatrixCheckKltTest(unittest.TestCase):
         self.assertIn("error", e)
         self.assertIn("no corners[] array", e["error"])
         self.assertIn("refused", recordkit.coverage_failures([e])[0])
+
+    def test_a_clean_refusal_names_the_file_by_basename(self):
+        """The common refusal keeps its one-line reason, with the echoed path reduced the
+        way the block's own matrix/report fields already are -- not absolutized into the record."""
+        with open(self.report, "w") as fh:
+            json.dump({"status": "pass"}, fh)   # no corners[] array: klt's one-line refusal
+        e = recordkit.corner_matrix_check(self.matrix, self.report)
+        self.assertEqual(e["error"], "report has no corners[] array: report.json")
+
+    def test_a_trailing_slash_refusal_names_the_target_by_basename(self):
+        """The directory form of the same refusal -- the collector's --report argument can be
+        a directory, and klt echoes that path exactly as handed, trailing slash included:
+        the envelope still comes back basenamed, never as the host path."""
+        e = recordkit.corner_matrix_check(self.matrix, self.tmp.name + "/")
+        self.assertEqual(e["error"], "not a file: " + os.path.basename(self.tmp.name))
+
+    def test_a_klt_crash_is_bounded_to_one_host_free_informative_line(self):
+        """The shape klt itself crashes on (2AMLogic/klayout-tools#5872): an 18-line traceback
+        with absolute host paths must never land in the append-only record -- the one
+        exception line does, bounded by DIAG_MSG_TAIL."""
+        self.write_report([dict(self.corner(self.R8_IDS[0]), measurements={"vout": {"value": 1.8}})] +
+                          [self.corner(c) for c in self.R8_IDS[1:]])
+        e = recordkit.corner_matrix_check(self.matrix, self.report)
+        self.assertIn("error", e)
+        self.assertEqual(len(e["error"].splitlines()), 1)
+        self.assertLessEqual(len(e["error"]), recordkit.DIAG_MSG_TAIL)
+        self.assertIn("AttributeError", e["error"])
+        self.assertNotIn("/", e["error"])
+        self.assertNotIn(self.tmp.name, e["error"])
 
 
 class CoverageFailuresTest(unittest.TestCase):
