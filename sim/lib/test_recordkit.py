@@ -167,6 +167,28 @@ class WaveformOrReasonTest(unittest.TestCase):
             self.corner(status="error", diagnostics=[{"code": "spice_error"}]))
         self.assertEqual(reason, "no waveform: klt status error [('spice_error', '')]")
 
+    def test_a_null_message_keeps_the_empty_shape(self):
+        """The falsy shapes keep their existing output: no message at all and an explicit
+        JSON null both read as '' -- repr(None) would change what records already carry."""
+        for diagnostics in ([{"code": "spice_error", "message": None}], [{"code": "spice_error"}]):
+            with self.subTest(diagnostics=diagnostics):
+                _, reason = recordkit.waveform_or_reason(
+                    self.corner(status="error", diagnostics=diagnostics))
+                self.assertEqual(reason, "no waveform: klt status error [('spice_error', '')]")
+
+    def test_a_non_string_message_is_coerced_and_stays_bounded(self):
+        """A diagnostic message that is not a string must neither raise nor slice as one:
+        a dict/number raises today, and a list slices as a list, embedding the whole list
+        unbounded past DIAG_MSG_TAIL. repr() coerces, and the tail cap applies to it."""
+        for message in (42, {"a": 1}, ["B" * 200]):
+            with self.subTest(message=message):
+                _, reason = recordkit.waveform_or_reason(
+                    self.corner(status="error", diagnostics=[{"code": "spice_error", "message": message}]))
+                self.assertIn("no waveform: klt status error [('spice_error', ", reason)
+                self.assertLessEqual(
+                    len(reason),
+                    len("no waveform: klt status error [('spice_error', '')]") + recordkit.DIAG_MSG_TAIL)
+
 
 class CornerMatrixCheckTest(unittest.TestCase):
     """corner_matrix_check: the parsed verdict on exit 0 AND exit 3, and a klt refusal as an
@@ -242,6 +264,25 @@ class CornerMatrixCheckTest(unittest.TestCase):
     def test_exit_0_without_a_verdict_is_an_error_not_a_crash(self):
         self.assertIn("error", self.run_check(0, stdout="not json"))
         self.assertIn("error", self.run_check(1, stderr="[1, 2]"))
+
+    def test_a_non_string_envelope_message_comes_back_as_an_error_block(self):
+        """A refusal envelope whose message parsed but is not a string (JSON null, number,
+        object, array) must come back as an {"error": ...} block like any other refusal --
+        never raise out of corner_matrix_check, and never record a falsy error."""
+        for message in (None, 42, {"a": 1}, ["x"], ""):
+            with self.subTest(message=message):
+                env = {"error": {"command": "corner-matrix", "message": message}}
+                e = self.run_check(1, stderr=json.dumps(env))
+                self.assertIn("error", e)
+                self.assertTrue(e["error"], "the recorded error must never be falsy: %r" % (e["error"],))
+                self.assertNotIn("/", e["error"])
+
+    def test_a_whitespace_only_envelope_message_still_refuses(self):
+        """_bounded_reason collapses a whitespace-only klt message to '' -- with the old
+        truthiness gate that refusal was recorded as {"error": ""} and passed silently."""
+        env = {"error": {"command": "corner-matrix", "message": "   \n  "}}
+        e = self.run_check(1, stderr=json.dumps(env))
+        self.assertTrue(e["error"], "a whitespace-only refusal message must still record one")
 
 
 @unittest.skipUnless(KLT, "klt not on PATH (CI runs this suite before installing it)")
@@ -345,6 +386,16 @@ class CoverageFailuresTest(unittest.TestCase):
         e = {"matrix": "m.json", "error": "report has no corners[] array"}
         self.assertEqual(recordkit.coverage_failures([e]),
                          ["m.json: corner-matrix refused the report (report has no corners[] array)"])
+
+    def test_a_falsy_error_still_fails_the_gate(self):
+        """Key presence, not truthiness: a recorded refusal fails the gate whatever its
+        message contains. {"error": ""} or null produced no failure at all -- exit 0 on a
+        check that refused, permanent and indistinguishable from a clean run."""
+        for error in ("", None, 0, False, "   "):
+            with self.subTest(error=error):
+                self.assertEqual(
+                    recordkit.coverage_failures([{"matrix": "m.json", "error": error}]),
+                    ["m.json: corner-matrix refused the report (%s)" % (error,)])
 
     def test_exact_coverage_with_per_corner_verdicts_is_not_a_failure(self):
         e = {"matrix": "m.json", "missing": [], "extra": [], "duplicate": [],
@@ -496,6 +547,18 @@ class CollectorCornerMatrixTest(unittest.TestCase):
                                       [{"error": "report has no corners[] array"}])
         self.assertEqual(rc, 1)
         self.assertIn("error", written[0]["environment"]["corner_matrix"][0])
+
+    def test_a_falsy_or_non_string_refusal_exits_nonzero_and_is_recorded(self):
+        """The regression the truthiness gate allowed: a refusal whose recorded message is
+        falsy wrote its record and exited ZERO. Whatever the message shape, the record is
+        kept and the exit is non-zero -- #209's criterion, for every shape."""
+        for error in ("", None, 42):
+            with self.subTest(error=error):
+                rep = self.report_file([self.corner("typical/5.000V/27C/params:rload=1000000000")])
+                rc, written, _ = self.collect("soft-start", ["--report", rep], [{"error": error}])
+                self.assertEqual(rc, 1)
+                self.assertEqual(len(written), 1, "a run that happened is evidence: the record is kept")
+                self.assertIn("error", written[0]["environment"]["corner_matrix"][0])
 
     def test_dry_gates_too_and_writes_nothing(self):
         grid = self.report_file([self.corner("typical/5.000V/27C/params:iload=0.05")])

@@ -50,6 +50,15 @@ def parse_id(cid, lfac_default=None):
     return key
 
 
+def _msg_text(message):
+    """A klt-supplied message as text, at the one point it becomes one: a str passes through
+    unchanged, a falsy value stays '' (what both readers already make of a missing message),
+    and any other non-string becomes repr(message) so it can neither raise nor slice as one."""
+    if isinstance(message, str):
+        return message
+    return repr(message) if message else ""
+
+
 def waveform_or_reason(corner, msg_tail=DIAG_MSG_TAIL):
     """(raw path, None) when a klt corner has a gradeable waveform, else (None, reason).
 
@@ -62,7 +71,7 @@ def waveform_or_reason(corner, msg_tail=DIAG_MSG_TAIL):
     raw = (corner.get("artifacts") or {}).get("raw")
     if corner.get("status") in GRADEABLE_STATUS and raw and os.path.exists(raw):
         return raw, None
-    diag = [(d.get("code"), (d.get("message") or "")[-msg_tail:]) for d in corner.get("diagnostics") or []][:1]
+    diag = [(d.get("code"), _msg_text(d.get("message"))[-msg_tail:]) for d in corner.get("diagnostics") or []][:1]
     return None, "no waveform: klt status %s %s" % (corner.get("status"), diag)
 
 
@@ -112,14 +121,17 @@ def report_env(report, path, fields=REMOTE_FIELDS, jobs=False):
 
 
 def _bounded_reason(message, tail=DIAG_MSG_TAIL):
-    """One bounded, host-free line out of a klt refusal message, in the order the block's
-    other fields already follow: keep the last non-empty line (a traceback keeps only its
-    exception line, not its frame lines -- those carry the host paths), basename every
-    path-shaped token the way `corner_matrix_check` basenames its matrix/report, then tail-slice
-    to `tail` chars like waveform_or_reason. A clean one-line refusal passes through unchanged."""
-    line = (message.strip().splitlines() or [""])[-1]
+    """One bounded, non-empty, host-free line out of a klt refusal message, in the order the
+    block's other fields already follow: coerce the message to text first (_msg_text -- a
+    non-string envelope message neither raises nor slices as one), keep the last non-empty
+    line (a traceback keeps only its exception line, not its frame lines -- those carry the
+    host paths), basename every path-shaped token the way `corner_matrix_check` basenames its
+    matrix/report, then tail-slice to `tail` chars like waveform_or_reason. A clean one-line
+    refusal passes through unchanged; a message that sanitizes to nothing keeps a non-empty
+    sentinel, so a recorded error is never falsy."""
+    line = (_msg_text(message).strip().splitlines() or [""])[-1]
     words = [os.path.basename(w.rstrip("/")) or w if "/" in w else w for w in line.split()]
-    return " ".join(words)[-tail:]
+    return " ".join(words)[-tail:] or "klt refused with an empty message"
 
 
 def corner_matrix_check(matrix, report):
@@ -170,12 +182,13 @@ def corner_matrix_check(matrix, report):
 
 def coverage_failures(entries):
     """One message per corner_matrix entry that is not exact coverage of its matrix: a klt
-    refusal, or a non-empty missing / extra / duplicate. The message names the counts.
-    not_simulated / non_finite / out_of_bounds are per-corner verdicts, never a failure here
-    (see corner_matrix_check)."""
+    refusal (key presence -- the gate fires whatever the recorded message contains, so a
+    falsy message cannot pass silently), or a non-empty missing / extra / duplicate. The
+    message names the counts. not_simulated / non_finite / out_of_bounds are per-corner
+    verdicts, never a failure here (see corner_matrix_check)."""
     out = []
     for e in entries:
-        if e.get("error"):
+        if "error" in e:
             out.append("%s: corner-matrix refused the report (%s)" % (e["matrix"], e["error"]))
             continue
         counts = [(k, len(e[k])) for k in ("missing", "extra", "duplicate") if e.get(k)]
