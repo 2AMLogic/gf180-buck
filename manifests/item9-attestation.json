@@ -311,7 +311,7 @@
         "role": "testbench",
         "path": "sim/lib/recordkit.py",
         "passed": true,
-        "content_hash": "sha256:5d8dc413f47b6597fa9e860d761ebcb3bc3087556aa58f64bde823304242b507"
+        "content_hash": "sha256:f35d533d9179cb6b5cc3222cce941a703ab3f6adab95eb320e3695f26e054c76"
       },
       {
         "check": "present",
@@ -353,7 +353,7 @@
         "role": "testbench",
         "path": "sim/lib/test_recordkit.py",
         "passed": true,
-        "content_hash": "sha256:09b7cde9c53836733743350a78ba0cbfb263b9b94081ec4a6b1c5a79b3e3fd11"
+        "content_hash": "sha256:431059dc31ca5ebf12c9e7827a26bf38dc499d1c1d6fcd548cd08ad987da9598"
       },
       {
         "check": "present",
