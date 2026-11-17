@@ -14,7 +14,7 @@ placement in this document, before starting on it.
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-- **#217**: chore(loom): resync installed Loom to v0.19.1305
+- **#219**: chore(loom): resync installed Loom to v0.19.1306
 
 ## Very Important
 
@@ -57,7 +57,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#217**: chore(loom): resync installed Loom to v0.19.1305
+- **#219**: chore(loom): resync installed Loom to v0.19.1306
 
 ## Proposed
 
