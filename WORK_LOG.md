@@ -5,6 +5,7 @@ Maintained by the Guide role.
 
 ### 2026-11-16
 
+- **PR #215**: chore(loom): resync installed Loom to v0.19.1302
 - **PR #212**: fix(sim): key-presence coverage gate and a coerced klt message
 - **Issue #211** (closed): corner_matrix_check: a falsy or non-string klt envelope message bypasses or crashes the coverage gate
 - **Issue #214** (closed): Guide WORK_PLAN regeneration is non-atomic: sections disagree about label state within one commit
