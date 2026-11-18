@@ -45,7 +45,7 @@ Human-approved issues ready for implementation (`loom:issue`).
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#223**: Merge queue: add the merge_group trigger to the required-check workflow(s)
 
 ## PRs Awaiting Review
 
@@ -57,7 +57,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-_None._
+- **#224**: ci: add merge_group trigger to the signoff workflow — closes #223
 
 ## Proposed
 
@@ -72,6 +72,7 @@ Issues carrying `loom:curated`.
 - **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)* *(held)*
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)* *(held)*
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)* *(held)*
+- **#223**: Merge queue: add the merge_group trigger to the required-check workflow(s) *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -93,10 +94,10 @@ _None._
 | Very important | 1 |
 | Important | 8 |
 | Ready (`loom:issue`) | 1 |
-| In Progress (`loom:building`) | 0 |
+| In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 0 |
-| Curated | 9 |
+| Approved PRs awaiting merge | 1 |
+| Curated | 10 |
 | Architect / Hermit proposals | 5 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
