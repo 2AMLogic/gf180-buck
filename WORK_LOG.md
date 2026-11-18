@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-18
+
+- **PR #224**: ci: add merge_group trigger to the signoff workflow
+- **Issue #223** (closed): Merge queue: add the merge_group trigger to the required-check workflow(s)
+
 ### 2026-11-17
 
 - **PR #219**: chore(loom): resync installed Loom to v0.19.1306
