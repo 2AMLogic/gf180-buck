@@ -359,17 +359,21 @@ class CornerMatrixCheckKltTest(unittest.TestCase):
         e = recordkit.corner_matrix_check(self.matrix, self.tmp.name + "/")
         self.assertEqual(e["error"], "not a file: " + os.path.basename(self.tmp.name))
 
-    def test_a_klt_crash_is_bounded_to_one_host_free_informative_line(self):
-        """The shape klt itself crashes on (2AMLogic/klayout-tools#5872): an 18-line traceback
-        with absolute host paths must never land in the append-only record -- the one
-        exception line does, bounded by DIAG_MSG_TAIL."""
+    def test_a_malformed_measurements_report_is_bounded_to_one_host_free_informative_line(self):
+        """The malformed-measurements shape (2AMLogic/klayout-tools#5872): older klt crashes
+        on it with an 18-line traceback carrying absolute host paths; newer klt refuses
+        cleanly instead. Either diagnostic must stay one informative line bounded by
+        DIAG_MSG_TAIL -- the exception name or the validation reason, never a traceback,
+        a host path, or an unrelated message."""
         self.write_report([dict(self.corner(self.R8_IDS[0]), measurements={"vout": {"value": 1.8}})] +
                           [self.corner(c) for c in self.R8_IDS[1:]])
         e = recordkit.corner_matrix_check(self.matrix, self.report)
         self.assertIn("error", e)
         self.assertEqual(len(e["error"].splitlines()), 1)
         self.assertLessEqual(len(e["error"]), recordkit.DIAG_MSG_TAIL)
-        self.assertIn("AttributeError", e["error"])
+        self.assertTrue("AttributeError" in e["error"]
+                        or "measurements must be an array of objects" in e["error"],
+                        "unrelated or empty diagnostic: %r" % (e["error"],))
         self.assertNotIn("/", e["error"])
         self.assertNotIn(self.tmp.name, e["error"])
 
