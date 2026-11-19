@@ -5,6 +5,8 @@ Maintained by the Guide role.
 
 ### 2026-11-19
 
+- **PR #231**: docs: record full C-full soft-start and current-limit envelopes (R15, R16, R6)
+- **Issue #60** (closed): T1 item 5d: soft-start and current-limit benches (R15, R16) as klt sim envelopes
 - **PR #229**: test: accept either klt diagnostic for a malformed-measurements report
 - **Issue #227** (closed): Make the malformed-measurements test pass with both klt diagnostics
 
