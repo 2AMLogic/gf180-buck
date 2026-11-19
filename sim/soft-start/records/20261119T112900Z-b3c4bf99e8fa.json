@@ -1,0 +1,4416 @@
+{
+ "environment": {
+  "corner_matrix": [
+   {
+    "duplicate": [],
+    "extra": [],
+    "matrix": "matrix_grid.json",
+    "matrix_size": 90,
+    "missing": [],
+    "non_finite": [],
+    "not_simulated": [],
+    "observed_count": 90,
+    "out_of_bounds": [],
+    "report": "report_grid.json"
+   }
+  ],
+  "files_sha256": {
+   "bench.spice": "773965eb57fc907b2ba2b7e445f00cd164017d5a71bb4405b5801f141cebb13d",
+   "design/netlists/buck_top.spice": "47b57bbae1330c9a878db61837c85d0662109ca0cab3b8b7970554d4ebccfa4d",
+   "gen_requests.py": "dd368f20abdf87ed8f728be78f48f3d6e817471de2be427d6a20acd06a9200c1",
+   "request_grid.json": "1d15d7600a7b5c21958c2c5272170f5ce2e11514ed43ba93f5744e55c80e9175",
+   "sim/lib/bench_harness.spice": "f4d4b5b89064e122bf65ed7d953df9a3e7333a41b85d02a144df024e337d3385",
+   "sim/lib/buckmeas.py": "72feee6e082f4635c903127d829754a13f942c85971eef7657f70cc0cdccf39f",
+   "sim/lib/rawgrade.py": "50529ea5c71a89b66f618ca51b7d7b8d8890e70546afb6123f0c57bdeb2e4cb7",
+   "sim/lib/recordkit.py": "4e4818ca5055a847a47b542c04eaa3bab885cfe2ac1706d94fecbf576eed3d1b"
+  },
+  "klt": "klt 0.9.3.dev1796+g8c4c56a9159b",
+  "repo_commit": "b3c4bf99e8fa",
+  "report": {
+   "file": "report_grid.json",
+   "remote": {
+    "client_klt_version": null,
+    "elapsed_seconds": null,
+    "instance_type": null,
+    "job_id": null,
+    "lifecycle": null,
+    "provider": null,
+    "region": null,
+    "runner_compatibility": null,
+    "runner_klt_version": null,
+    "state": null
+   },
+   "status": "pass"
+  },
+  "utc": "20261119T112900Z"
+ },
+ "method": {
+  "analysis": ".tran 2.5n 700u, saved from 20 us (EN); max step 2.5 ns = T/200 at 2 MHz (unit.step_ok)",
+  "corner_count": 90,
+  "overshoot": "peak of Vout after the 20 MHz first-order low-pass (as R11), minus the R4 max 1.872 V",
+  "startup": "Vin ramps 0 -> Vin over 10 us, control rails / bias over 5 us, EN at 20 us; load resistor present from t = 0",
+  "steady_state": "not applicable to the start itself: the run ends 180 us after the latest allowed 90 % time; the R6 clause reads the last 100 us (~200 cycles) at 0 load",
+  "t_90": "per-cycle mean of Vout (cycles between rising crossings of Vin/2 on V(sw)) first >= 0.9 x 1.8 V, interpolated, from EN"
+ },
+ "record": "simulated, not measured; pre-layout; spec R15 and the R6 no-trip clause",
+ "rows": {
+  "R15": {
+   "binding_per_criterion": {
+    "max_drawdown_v": {
+     "id": "sf/4.500V/27C/params:rload=3.6",
+     "margin": -2.1399812472992332,
+     "value": 2.140981247299233
+    },
+    "overshoot_v": {
+     "id": "sf/5.500V/125C/params:rload=1000000000",
+     "margin": -3.95313464467168,
+     "value": 4.04313464467168
+    },
+    "peak_il_a": {
+     "id": "sf/5.500V/125C/params:rload=1000000000",
+     "margin": -1.854814447612115,
+     "value": 2.554814447612115
+    },
+    "t_90_s": {
+     "id": "sf/4.500V/27C/params:rload=3.6",
+     "margin": 3.2310777731676715e-05,
+     "value": 0.0004676892222683233
+    }
+   },
+   "failing_units": [
+    "typical/4.500V/-40C/params:rload=1000000000",
+    "typical/4.500V/-40C/params:rload=3.6",
+    "typical/4.500V/27C/params:rload=1000000000",
+    "typical/4.500V/27C/params:rload=3.6",
+    "typical/4.500V/125C/params:rload=1000000000",
+    "typical/4.500V/125C/params:rload=3.6",
+    "typical/5.000V/-40C/params:rload=3.6",
+    "typical/5.000V/27C/params:rload=1000000000",
+    "typical/5.000V/27C/params:rload=3.6",
+    "typical/5.000V/125C/params:rload=1000000000",
+    "typical/5.000V/125C/params:rload=3.6",
+    "typical/5.500V/-40C/params:rload=1000000000",
+    "typical/5.500V/-40C/params:rload=3.6",
+    "typical/5.500V/27C/params:rload=1000000000",
+    "typical/5.500V/27C/params:rload=3.6",
+    "typical/5.500V/125C/params:rload=1000000000",
+    "typical/5.500V/125C/params:rload=3.6",
+    "ff/4.500V/-40C/params:rload=1000000000",
+    "ff/4.500V/27C/params:rload=1000000000",
+    "ff/4.500V/125C/params:rload=1000000000",
+    "ff/4.500V/125C/params:rload=3.6",
+    "ff/5.000V/-40C/params:rload=1000000000",
+    "ff/5.000V/-40C/params:rload=3.6",
+    "ff/5.000V/27C/params:rload=1000000000",
+    "ff/5.000V/27C/params:rload=3.6",
+    "ff/5.000V/125C/params:rload=1000000000",
+    "ff/5.000V/125C/params:rload=3.6",
+    "ff/5.500V/-40C/params:rload=1000000000",
+    "ff/5.500V/-40C/params:rload=3.6",
+    "ff/5.500V/27C/params:rload=1000000000",
+    "ff/5.500V/27C/params:rload=3.6",
+    "ff/5.500V/125C/params:rload=1000000000",
+    "ff/5.500V/125C/params:rload=3.6",
+    "ss/4.500V/125C/params:rload=1000000000",
+    "ss/4.500V/125C/params:rload=3.6",
+    "ss/5.000V/125C/params:rload=1000000000",
+    "ss/5.000V/125C/params:rload=3.6",
+    "ss/5.500V/125C/params:rload=1000000000",
+    "ss/5.500V/125C/params:rload=3.6",
+    "fs/4.500V/-40C/params:rload=1000000000",
+    "fs/4.500V/-40C/params:rload=3.6",
+    "fs/4.500V/27C/params:rload=1000000000",
+    "fs/4.500V/27C/params:rload=3.6",
+    "fs/4.500V/125C/params:rload=1000000000",
+    "fs/4.500V/125C/params:rload=3.6",
+    "fs/5.000V/-40C/params:rload=1000000000",
+    "fs/5.000V/-40C/params:rload=3.6",
+    "fs/5.000V/27C/params:rload=1000000000",
+    "fs/5.000V/27C/params:rload=3.6",
+    "fs/5.000V/125C/params:rload=1000000000",
+    "fs/5.000V/125C/params:rload=3.6",
+    "fs/5.500V/-40C/params:rload=1000000000",
+    "fs/5.500V/-40C/params:rload=3.6",
+    "fs/5.500V/27C/params:rload=1000000000",
+    "fs/5.500V/27C/params:rload=3.6",
+    "fs/5.500V/125C/params:rload=1000000000",
+    "fs/5.500V/125C/params:rload=3.6",
+    "sf/4.500V/-40C/params:rload=1000000000",
+    "sf/4.500V/-40C/params:rload=3.6",
+    "sf/4.500V/27C/params:rload=1000000000",
+    "sf/4.500V/27C/params:rload=3.6",
+    "sf/4.500V/125C/params:rload=1000000000",
+    "sf/4.500V/125C/params:rload=3.6",
+    "sf/5.000V/-40C/params:rload=1000000000",
+    "sf/5.000V/27C/params:rload=1000000000",
+    "sf/5.000V/27C/params:rload=3.6",
+    "sf/5.000V/125C/params:rload=1000000000",
+    "sf/5.000V/125C/params:rload=3.6",
+    "sf/5.500V/-40C/params:rload=3.6",
+    "sf/5.500V/27C/params:rload=1000000000",
+    "sf/5.500V/27C/params:rload=3.6",
+    "sf/5.500V/125C/params:rload=1000000000",
+    "sf/5.500V/125C/params:rload=3.6"
+   ],
+   "n_fail": 73,
+   "n_never_reached_90pct_in_window": 26,
+   "n_no_value": 15,
+   "n_units": 90,
+   "n_valued": 75,
+   "no_value_units": [
+    "typical/5.000V/-40C/params:rload=1000000000",
+    "ss/4.500V/-40C/params:rload=1000000000",
+    "ss/4.500V/-40C/params:rload=3.6",
+    "ss/4.500V/27C/params:rload=1000000000",
+    "ss/4.500V/27C/params:rload=3.6",
+    "ss/5.000V/-40C/params:rload=1000000000",
+    "ss/5.000V/-40C/params:rload=3.6",
+    "ss/5.000V/27C/params:rload=1000000000",
+    "ss/5.000V/27C/params:rload=3.6",
+    "ss/5.500V/-40C/params:rload=1000000000",
+    "ss/5.500V/-40C/params:rload=3.6",
+    "ss/5.500V/27C/params:rload=1000000000",
+    "ss/5.500V/27C/params:rload=3.6",
+    "sf/5.000V/-40C/params:rload=3.6",
+    "sf/5.500V/-40C/params:rload=1000000000"
+   ],
+   "per_load": {
+    "3.6 ohm": {
+     "n_fail": 36,
+     "n_valued": 38
+    },
+    "none": {
+     "n_fail": 37,
+     "n_valued": 37
+    }
+   },
+   "verdict": "fail",
+   "what": "soft start 0 -> 90 % of 1.8 V from EN: 100 - 500 us, monotonic (per-cycle mean, 1 mV floor), overshoot above R4 max <= 90 mV, peak I(L) < 0.70 A (R16 min trip); C-full x load {none, 3.6 ohm}"
+  },
+  "R6_no_trip_at_0_load": {
+   "failing_units": [
+    "typical/4.500V/27C/params:rload=1000000000",
+    "typical/4.500V/125C/params:rload=1000000000",
+    "typical/5.000V/125C/params:rload=1000000000",
+    "typical/5.500V/-40C/params:rload=1000000000",
+    "typical/5.500V/125C/params:rload=1000000000",
+    "ff/4.500V/-40C/params:rload=1000000000",
+    "ff/4.500V/27C/params:rload=1000000000",
+    "ff/5.000V/-40C/params:rload=1000000000",
+    "ff/5.000V/27C/params:rload=1000000000",
+    "ff/5.000V/125C/params:rload=1000000000",
+    "ff/5.500V/-40C/params:rload=1000000000",
+    "ff/5.500V/27C/params:rload=1000000000",
+    "ss/4.500V/125C/params:rload=1000000000",
+    "ss/5.000V/125C/params:rload=1000000000",
+    "ss/5.500V/125C/params:rload=1000000000",
+    "fs/4.500V/-40C/params:rload=1000000000",
+    "fs/4.500V/27C/params:rload=1000000000",
+    "fs/4.500V/125C/params:rload=1000000000",
+    "fs/5.000V/-40C/params:rload=1000000000",
+    "fs/5.000V/27C/params:rload=1000000000",
+    "fs/5.000V/125C/params:rload=1000000000",
+    "fs/5.500V/-40C/params:rload=1000000000",
+    "fs/5.500V/27C/params:rload=1000000000",
+    "fs/5.500V/125C/params:rload=1000000000",
+    "sf/4.500V/-40C/params:rload=1000000000",
+    "sf/4.500V/27C/params:rload=1000000000",
+    "sf/4.500V/125C/params:rload=1000000000",
+    "sf/5.000V/-40C/params:rload=1000000000",
+    "sf/5.000V/27C/params:rload=1000000000",
+    "sf/5.000V/125C/params:rload=1000000000",
+    "sf/5.500V/27C/params:rload=1000000000",
+    "sf/5.500V/125C/params:rload=1000000000"
+   ],
+   "il_min_note": "TRIP assertions during the start itself are recorded per unit (trip_whole_run), not graded here; R15 grades the start by peak I(L)",
+   "n_fail": 32,
+   "n_no_value": 8,
+   "n_units": 45,
+   "no_value_units": [
+    "typical/5.000V/-40C/params:rload=1000000000",
+    "ss/4.500V/-40C/params:rload=1000000000",
+    "ss/4.500V/27C/params:rload=1000000000",
+    "ss/5.000V/-40C/params:rload=1000000000",
+    "ss/5.000V/27C/params:rload=1000000000",
+    "ss/5.500V/-40C/params:rload=1000000000",
+    "ss/5.500V/27C/params:rload=1000000000",
+    "sf/5.500V/-40C/params:rload=1000000000"
+   ],
+   "verdict": "fail",
+   "what": "R6 clause: at 0 load the reverse inductor peak does not trip the limit; TRIP (xtop.trip) never asserts in the last 100 us of the run (Vout in regulation), C-full"
+  }
+ },
+ "units": [
+  {
+   "graded": true,
+   "id": "typical/4.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "peak_il_a_whole_run": 0.8235349493614987,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "r6_ok": true,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 299,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 299,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 1,
+    "trip_il_a": 0.6388738020325652
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/4.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.7278413584795117,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 328,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 328,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 1,
+    "trip_il_a": 0.6326934739437157
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/4.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 577,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 577,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.3483459589505953,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.01104830529541978,
+    "peak_il_a": 0.9574974505645684,
+    "t_90_abs_s": 0.00021964506365556186,
+    "t_90_s": 0.00019964506365556186,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8830483052954199
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 3,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 10,
+    "trip_il_a": 0.8638620560908451
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/4.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.5432060284806391,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1314,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1314,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 17,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 105,
+    "trip_il_a": 0.5070583220811233
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/4.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 462,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 462,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.14701285687497445,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.4141953830726514,
+    "t_90_abs_s": 0.00019793711255365975,
+    "t_90_s": 0.00017793711255365975,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8413810146018927
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 14,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 20,
+    "trip_il_a": 0.0983051356276507
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/4.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.41249678728927,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1564,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1564,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 1,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 2,
+    "trip_il_a": 0.395411414234865
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": false,
+   "id": "typical/5.000V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "typical",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 1000000000.0,
+   "temp_c": -40.0,
+   "vin_v": 5.0
+  },
+  {
+   "graded": true,
+   "id": "typical/5.000V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.7861179471626951,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 224,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 224,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 5,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 16,
+    "trip_il_a": 0.7342044062967945
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.000V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": true,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 551,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 551,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.3203421742220234,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 1.036832247752218,
+    "t_90_abs_s": 0.00021768219083467274,
+    "t_90_s": 0.00019768219083467274,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.825368184874479
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 5,
+    "trip_il_a": 0.8539678699261698
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.000V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 960,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 960,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.19511925551336334,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.5803582269741532,
+    "t_90_abs_s": 0.00023963825397403096,
+    "t_90_s": 0.00021963825397403096,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.7709510016218022
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": false,
+    "n_assertions": 0,
+    "trip_il_a": null
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.000V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 507,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 507,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.15749086914556165,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.4632503330200999,
+    "t_90_abs_s": 0.0001977879199687059,
+    "t_90_s": 0.0001777879199687059,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8453612501265713
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 18,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 68,
+    "trip_il_a": 0.41954396573865554
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.000V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.4633980332711316,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1656,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1656,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 3,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 23,
+    "trip_il_a": 0.41519856796047216
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "peak_il_a_whole_run": 0.9564610514538647,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 161,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 161,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 2,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 7,
+    "trip_il_a": 0.9076166636662624
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.8984220115759461,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 181,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 181,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 2,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 7,
+    "trip_il_a": 0.8546238376448296
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": true,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 330,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 330,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.2791353663658204,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 1.101700354589091,
+    "t_90_abs_s": 0.00021220430093719182,
+    "t_90_s": 0.00019220430093719182,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.7636272144524345
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 8,
+    "trip_il_a": 0.9332187838743237
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 815,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 815,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.3379022998438047,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.6837092502853384,
+    "t_90_abs_s": 0.00022490617883687416,
+    "t_90_s": 0.00020490617883687416,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8097791794245444
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 1,
+    "trip_il_a": 0.6359893506809684
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 417,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 417,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.2674230105327211,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.5220634892932483,
+    "t_90_abs_s": 0.0002017937955990042,
+    "t_90_s": 0.0001817937955990042,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8658961074388944
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 1,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 91,
+    "trip_il_a": 0.515111811714985
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "typical/5.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.521995025314441,
+   "process": "typical",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1744,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1744,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 4,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 46,
+    "trip_il_a": 0.47130656640804525
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/4.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 454,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 454,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.00443515708154818,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.9785379999077591,
+    "t_90_abs_s": 0.0001941226707420021,
+    "t_90_s": 0.0001741226707420021,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.867824126070965
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 5,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 47,
+    "trip_il_a": 0.6439189429234514
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/4.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": true,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": true,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 833,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 833,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.0,
+    "mono_eps_v": 0.001,
+    "monotonic": true,
+    "overshoot_v": 0.022386486409521344,
+    "peak_il_a": 0.6516213154353243,
+    "t_90_abs_s": 0.00020311010980185007,
+    "t_90_s": 0.00018311010980185007,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8943864864095215
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 29,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 163,
+    "trip_il_a": 0.6384060680187792
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/4.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 284,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 284,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.0637572840108187,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.9169819903532199,
+    "t_90_abs_s": 0.00018206861862786833,
+    "t_90_s": 0.00016206861862786833,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8636272515035308
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 2,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 25,
+    "trip_il_a": 0.5743600712627575
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/4.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": true,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": true,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1202,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 1202,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.0,
+    "mono_eps_v": 0.001,
+    "monotonic": true,
+    "overshoot_v": 0.004630552282644196,
+    "peak_il_a": 0.5890489792491258,
+    "t_90_abs_s": 0.00018456768492159065,
+    "t_90_s": 0.00016456768492159065,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8766305522826443
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 7,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 24,
+    "trip_il_a": 0.5066635756432192
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/4.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": true,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 736,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 736,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.11132158036263284,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.7779513779674351,
+    "t_90_abs_s": 0.00018023570494481422,
+    "t_90_s": 0.00016023570494481422,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8170704210244133
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 9,
+    "trip_il_a": 0.7755436693621565
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/4.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 833,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 833,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.03422865330907743,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.038437751927873354,
+    "peak_il_a": 0.7769775745533957,
+    "t_90_abs_s": 0.00017368998972362606,
+    "t_90_s": 0.00015368998972362606,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.9104377519278735
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 61,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 211,
+    "trip_il_a": 0.7699690708118969
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.000V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": true,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 415,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 415,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.0,
+    "mono_eps_v": 0.001,
+    "monotonic": true,
+    "overshoot_v": 0.0,
+    "peak_il_a": 1.028237709072492,
+    "t_90_abs_s": 0.00019315310314546637,
+    "t_90_s": 0.00017315310314546637,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8643182601523036
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 1,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 5,
+    "trip_il_a": 0.7123165362472763
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.000V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 794,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 794,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.014651255257430273,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.013676638590759405,
+    "peak_il_a": 0.7227474837308144,
+    "t_90_abs_s": 0.00020064985205387278,
+    "t_90_s": 0.00018064985205387278,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8856766385907595
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 15,
+    "trip_il_a": 0.7212502050843279
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.000V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 280,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 280,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.07878857815706453,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.07376356519659844,
+    "peak_il_a": 1.142821843054673,
+    "t_90_abs_s": 0.00018334565779530622,
+    "t_90_s": 0.00016334565779530622,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.9457635651965985
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 15,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 44,
+    "trip_il_a": 0.6293863926936591
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.000V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 823,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 823,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.006352305271420944,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.04015758309264705,
+    "peak_il_a": 0.643358264811702,
+    "t_90_abs_s": 0.00018287614366965801,
+    "t_90_s": 0.00016287614366965802,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.9121575830926472
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 4,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 83,
+    "trip_il_a": 0.5917527866167902
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.000V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 662,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 662,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 1.3269535213356265,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.8369991859458018,
+    "t_90_abs_s": 0.00026805803960414413,
+    "t_90_s": 0.00024805803960414413,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8278270577902966
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 3,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 14,
+    "trip_il_a": 0.8327810470585167
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.000V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 880,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 880,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.03681004313209235,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0021508345260357054,
+    "peak_il_a": 0.8360274375966456,
+    "t_90_abs_s": 0.00017416376708101112,
+    "t_90_s": 0.00015416376708101112,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8741508345260358
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 4,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 36,
+    "trip_il_a": 0.8297130290586626
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": true,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 155,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 155,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.0,
+    "mono_eps_v": 0.001,
+    "monotonic": true,
+    "overshoot_v": 0.0,
+    "peak_il_a": 1.147478862558141,
+    "t_90_abs_s": 0.00019245493582961863,
+    "t_90_s": 0.00017245493582961863,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8090069858208744
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 1,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 5,
+    "trip_il_a": 0.7259731285025831
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.9105468179303728,
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 400,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 400,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 2,
+    "trip_il_a": 0.7843580306844433
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 241,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 241,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.041721756097357066,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.930727400975599,
+    "t_90_abs_s": 0.00017993620319713745,
+    "t_90_s": 0.00015993620319713746,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8711326261327486
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 6,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 9,
+    "trip_il_a": 0.5013114683980285
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 783,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 783,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.008616227197679516,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.693181261765403,
+    "t_90_abs_s": 0.00018071691976034987,
+    "t_90_s": 0.00016071691976034987,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8643975221309217
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 4,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 7,
+    "trip_il_a": 0.5716907351821584
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": true,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 610,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 610,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.14969564181917017,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.8949208606295949,
+    "t_90_abs_s": 0.00017167134351100925,
+    "t_90_s": 0.00015167134351100925,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8336361609991643
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 13,
+    "trip_il_a": 0.8908664724516242
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ff/5.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ff",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 717,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 717,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.24245398614277347,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 4.982127916242085e-05,
+    "peak_il_a": 0.8968629997778075,
+    "t_90_abs_s": 0.00017123100271194803,
+    "t_90_s": 0.00015123100271194803,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8720498212791625
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 5,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 25,
+    "trip_il_a": 0.8893380305888259
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": false,
+   "id": "ss/4.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 1000000000.0,
+   "temp_c": -40.0,
+   "vin_v": 4.5
+  },
+  {
+   "graded": false,
+   "id": "ss/4.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 3.6,
+   "temp_c": -40.0,
+   "vin_v": 4.5
+  },
+  {
+   "graded": false,
+   "id": "ss/4.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 1000000000.0,
+   "temp_c": 27.0,
+   "vin_v": 4.5
+  },
+  {
+   "graded": false,
+   "id": "ss/4.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 3.6,
+   "temp_c": 27.0,
+   "vin_v": 4.5
+  },
+  {
+   "graded": true,
+   "id": "ss/4.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": false,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 864,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 864,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 1.8524835381949432,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 1.015056279380267,
+    "peak_il_a": 1.367867763336377,
+    "t_90_abs_s": 0.00022599443371396313,
+    "t_90_s": 0.00020599443371396313,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 2.887056279380267
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 22,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 156,
+    "trip_il_a": 0.6732562107675032
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ss/4.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.4216330785781361,
+   "process": "ss",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1202,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1202,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 2,
+    "trip_il_a": 0.3834343894430775
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": false,
+   "id": "ss/5.000V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 1000000000.0,
+   "temp_c": -40.0,
+   "vin_v": 5.0
+  },
+  {
+   "graded": false,
+   "id": "ss/5.000V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 3.6,
+   "temp_c": -40.0,
+   "vin_v": 5.0
+  },
+  {
+   "graded": false,
+   "id": "ss/5.000V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 1000000000.0,
+   "temp_c": 27.0,
+   "vin_v": 5.0
+  },
+  {
+   "graded": false,
+   "id": "ss/5.000V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 3.6,
+   "temp_c": 27.0,
+   "vin_v": 5.0
+  },
+  {
+   "graded": true,
+   "id": "ss/5.000V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": false,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 864,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 864,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 1.3831758980429036,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 1.1606471899780149,
+    "peak_il_a": 1.52750079981876,
+    "t_90_abs_s": 0.00021585579038066056,
+    "t_90_s": 0.00019585579038066057,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 3.032647189978015
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 16,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 127,
+    "trip_il_a": 0.6353231062592659
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ss/5.000V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.4437565877549799,
+   "process": "ss",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1259,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1259,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 2,
+    "trip_il_a": 0.43476837578741023
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": false,
+   "id": "ss/5.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 1000000000.0,
+   "temp_c": -40.0,
+   "vin_v": 5.5
+  },
+  {
+   "graded": false,
+   "id": "ss/5.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 3.6,
+   "temp_c": -40.0,
+   "vin_v": 5.5
+  },
+  {
+   "graded": false,
+   "id": "ss/5.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 1000000000.0,
+   "temp_c": 27.0,
+   "vin_v": 5.5
+  },
+  {
+   "graded": false,
+   "id": "ss/5.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "ss",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 3.6,
+   "temp_c": 27.0,
+   "vin_v": 5.5
+  },
+  {
+   "graded": true,
+   "id": "ss/5.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "ss",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": false,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 850,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 850,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.9123467553704603,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 1.32276207031017,
+    "peak_il_a": 1.684151928679223,
+    "t_90_abs_s": 0.00021301881556422112,
+    "t_90_s": 0.00019301881556422112,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 3.19476207031017
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 37,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 104,
+    "trip_il_a": 0.7586384352766732
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "ss/5.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.5513918841619054,
+   "process": "ss",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1319,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1319,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 1,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 4,
+    "trip_il_a": 0.4908541810291419
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/4.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 279,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 279,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.33031438062905955,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.021755042485606557,
+    "peak_il_a": 1.028315395412387,
+    "t_90_abs_s": 0.00021974280348497686,
+    "t_90_s": 0.00019974280348497686,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8937550424856067
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 1,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 3,
+    "trip_il_a": 0.595049432816244
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/4.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 846,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 846,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.14745561031823895,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.5968344774430353,
+    "t_90_abs_s": 0.00024508460655509273,
+    "t_90_s": 0.00022508460655509273,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8302572894308957
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": false,
+    "n_assertions": 0,
+    "trip_il_a": null
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/4.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 445,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 445,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.38964329652971785,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.010674221830354602,
+    "peak_il_a": 0.5156440195987071,
+    "t_90_abs_s": 0.0002042057126377614,
+    "t_90_s": 0.0001842057126377614,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8826742218303547
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 5,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 24,
+    "trip_il_a": 0.4148399836748438
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/4.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.4666071234420939,
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1331,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1331,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 7,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 29,
+    "trip_il_a": 0.441201035160973
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/4.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 764,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 764,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.06106234556173362,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.3680915958329097,
+    "t_90_abs_s": 0.00019443227697120966,
+    "t_90_s": 0.00017443227697120967,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8496631222792868
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 22,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 51,
+    "trip_il_a": 0.35912546074829377
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/4.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.3694816939411215,
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1536,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1536,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 8,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 46,
+    "trip_il_a": 0.36544453609310723
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.000V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 303,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 303,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.1807771428425159,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 1.154061384672763,
+    "t_90_abs_s": 0.00022887529780623157,
+    "t_90_s": 0.00020887529780623157,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8140964305168996
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 4,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 31,
+    "trip_il_a": 0.6631922706509042
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.000V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 747,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 747,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.1620924224784447,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.6689850769004618,
+    "t_90_abs_s": 0.00023439528558659423,
+    "t_90_s": 0.00021439528558659423,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.868064589548991
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 15,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 83,
+    "trip_il_a": 0.6663459436194938
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.000V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 470,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 470,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.3714458180308885,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.5705585624425342,
+    "t_90_abs_s": 0.000201847795806103,
+    "t_90_s": 0.000181847795806103,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8568016825130929
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 3,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 46,
+    "trip_il_a": 0.3874842332059364
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.000V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.543490743022958,
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1407,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1407,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 8,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 76,
+    "trip_il_a": 0.5107643675881318
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.000V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 675,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 675,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.08029809095079743,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.010550712822138042,
+    "peak_il_a": 0.4137594058300263,
+    "t_90_abs_s": 0.00019278040055806752,
+    "t_90_s": 0.00017278040055806752,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8825507128221382
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 8,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 24,
+    "trip_il_a": 0.40634569898184236
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.000V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.4145581603505704,
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1623,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1623,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 7,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 37,
+    "trip_il_a": 0.40802461884633795
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 180,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 180,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 1.6040790836733383,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 1.21601970954508,
+    "t_90_abs_s": 0.00031890388791064593,
+    "t_90_s": 0.00029890388791064594,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8271952244888425
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 2,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 2,
+    "trip_il_a": 1.1181640142877065
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 664,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 664,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.27631097654797315,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.7625637165650142,
+    "t_90_abs_s": 0.0002303903463992669,
+    "t_90_s": 0.0002103903463992669,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.855793510198417
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 2,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 8,
+    "trip_il_a": 0.741917051053399
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 344,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 344,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.18905529460890325,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.5865849133660119,
+    "t_90_abs_s": 0.00020754754067017712,
+    "t_90_s": 0.00018754754067017713,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8481990170576235
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 4,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 143,
+    "trip_il_a": 0.09470805554486895
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1186,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 1186,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.020825184843100808,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.587066614838442,
+    "t_90_abs_s": 0.00021410980920999746,
+    "t_90_s": 0.00019410980920999747,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8200003928643014
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 7,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 37,
+    "trip_il_a": 0.539189911167366
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": true,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 638,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 638,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.08526043148783691,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.468703459503839,
+    "t_90_abs_s": 0.0001946327114640685,
+    "t_90_s": 0.0001746327114640685,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8605554498032952
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 14,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 64,
+    "trip_il_a": 0.0849012395780843
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "fs/5.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.4677066707368561,
+   "process": "fs",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 1696,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 1696,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 7,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 35,
+    "trip_il_a": 0.46035219740218725
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/4.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "peak_il_a_whole_run": 0.7908214379640381,
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 31,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 31,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 1,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 1,
+    "trip_il_a": 0.762536882427504
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/4.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.7682058296096856,
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 30,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 30,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 1,
+    "trip_il_a": 0.7655776824785167
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/4.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": false,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 443,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 443,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 1.3592366320014566,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.2846783450555701,
+    "peak_il_a": 1.088280531986307,
+    "t_90_abs_s": 0.0002532329287220497,
+    "t_90_s": 0.00023323292872204972,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 2.15667834505557
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 15,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 61,
+    "trip_il_a": 0.7523315110620796
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/4.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 640,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 640,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 2.140981247299233,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.9341968910715956,
+    "t_90_abs_s": 0.0004876892222683233,
+    "t_90_s": 0.0004676892222683233,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.6974895490283246
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 3,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 23,
+    "trip_il_a": 0.71400743409163
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/4.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": false,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 724,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 724,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.7370976084903139,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 2.9300318339359936,
+    "peak_il_a": 2.088721400768949,
+    "t_90_abs_s": 0.00020538864554667415,
+    "t_90_s": 0.00018538864554667415,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 4.8020318339359935
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 42,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 202,
+    "trip_il_a": 0.886938832877058
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/4.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 597,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 597,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.3405923812330718,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 0.9644734228074949,
+    "t_90_abs_s": 0.0002149300649638075,
+    "t_90_s": 0.0001949300649638075,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8675372761520088
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 20,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 82,
+    "trip_il_a": 0.9472115851613223
+   },
+   "vin_v": 4.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/5.000V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "peak_il_a_whole_run": 0.8386372016471777,
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 20,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 20,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 1,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 1,
+    "trip_il_a": 0.8349146739885441
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": false,
+   "id": "sf/5.000V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "sf",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 3.6,
+   "temp_c": -40.0,
+   "vin_v": 5.0
+  },
+  {
+   "graded": true,
+   "id": "sf/5.000V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "peak_il_a_whole_run": 1.12561619472662,
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 431,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 431,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 17,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 71,
+    "trip_il_a": 0.8091667595137463
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/5.000V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.9069083461297954,
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 544,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 544,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 2,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 19,
+    "trip_il_a": 0.7788647569367007
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/5.000V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": false,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 754,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 754,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 1.0926440931813854,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 2.793719189230356,
+    "peak_il_a": 2.261842144865833,
+    "t_90_abs_s": 0.00020563766133980786,
+    "t_90_s": 0.00018563766133980787,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 4.665719189230356
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 21,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 127,
+    "trip_il_a": 1.0135838913813948
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/5.000V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 589,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 589,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.2394182971826091,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 0.0,
+    "peak_il_a": 1.02706121632432,
+    "t_90_abs_s": 0.0002123263828501403,
+    "t_90_s": 0.0001923263828501403,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8632697446280304
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 12,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 72,
+    "trip_il_a": 1.0115449546124848
+   },
+   "vin_v": 5.0,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": false,
+   "id": "sf/5.500V/-40C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "sf",
+   "reason": "switching already under way at the start of the saved window (EN): start-up not captured",
+   "rload_ohm": 1000000000.0,
+   "temp_c": -40.0,
+   "vin_v": 5.5
+  },
+  {
+   "graded": true,
+   "id": "sf/5.500V/-40C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.9380425778278323,
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 17,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 17,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": -40.0,
+   "trip_tail": {
+    "engaged": false,
+    "n_assertions": 0,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": false,
+    "n_assertions": 0,
+    "trip_il_a": null
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/5.500V/27C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "peak_il_a_whole_run": 1.168186732591059,
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 374,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 374,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 15,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 55,
+    "trip_il_a": 0.8573026615407418
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/5.500V/27C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "peak_il_a_whole_run": 0.9245665817203556,
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": null,
+    "overshoot": null,
+    "peak_il": null,
+    "t_90": false
+   },
+   "r15_fail_reason": "Vout never reached 90 % of target in the run within 680 us of EN (limit 500 us)",
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 452,
+   "soft_start": {
+    "available": false,
+    "cycles_seen": 452,
+    "frac": 0.9,
+    "mono_eps_v": 0.001,
+    "reason": "Vout never reached 90 % of target in the run",
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_target_v": 1.8
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 27.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 5,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 20,
+    "trip_il_a": 0.8502633396872836
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/5.500V/125C/params:rload=1000000000",
+   "klt_status": "pass",
+   "load": "none",
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": false,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "r6_ok": false,
+   "rload_ohm": 1000000000.0,
+   "run_cycles_saved": 419,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 419,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 1.9680703339837469,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 4.04313464467168,
+    "peak_il_a": 2.554814447612115,
+    "t_90_abs_s": 0.00025461300316142327,
+    "t_90_s": 0.00023461300316142327,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 5.91513464467168
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 21,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 90,
+    "trip_il_a": 1.0801248552053133
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  },
+  {
+   "graded": true,
+   "id": "sf/5.500V/125C/params:rload=3.6",
+   "klt_status": "pass",
+   "load": "3.6 ohm",
+   "process": "sf",
+   "r15_checks": {
+    "monotonic": false,
+    "overshoot": true,
+    "peak_il": false,
+    "t_90": true
+   },
+   "r15_ok": false,
+   "rload_ohm": 3.6,
+   "run_cycles_saved": 586,
+   "soft_start": {
+    "available": true,
+    "cycles_seen": 586,
+    "frac": 0.9,
+    "lowpass_hz": 20000000.0,
+    "max_drawdown_v": 0.25927778666594836,
+    "mono_eps_v": 0.001,
+    "monotonic": false,
+    "overshoot_v": 6.240935216816901e-05,
+    "peak_il_a": 1.156531142077629,
+    "t_90_abs_s": 0.0002255330851637751,
+    "t_90_s": 0.0002055330851637751,
+    "t_en_s": 2e-05,
+    "t_end_s": 0.0007,
+    "t_start_s": 2e-05,
+    "threshold_v": 1.62,
+    "v_reg_max_v": 1.872,
+    "v_target_v": 1.8,
+    "vout_peak_lp_v": 1.8720624093521683
+   },
+   "step_max_s": 2.5000000001206783e-09,
+   "step_ok": true,
+   "temp_c": 125.0,
+   "trip_tail": {
+    "engaged": true,
+    "n_assertions": 38,
+    "t_end_s": 0.0007,
+    "t_from_s": 0.0006
+   },
+   "trip_whole_run": {
+    "engaged": true,
+    "n_assertions": 129,
+    "trip_il_a": 1.0731345457486186
+   },
+   "vin_v": 5.5,
+   "window_s": [
+    2e-05,
+    0.0007
+   ]
+  }
+ ]
+}
