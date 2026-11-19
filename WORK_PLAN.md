@@ -10,7 +10,7 @@ membership regardless of holds. An entry there may still carry a hold label
 placement in this document, before starting on it.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-19T02:43:15Z (snapshot; compare against live labels)_
+_Generated: 2026-11-19T06:43:55Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -47,7 +47,6 @@ _None._
 Issues currently being built (`loom:building`).
 
 - **#60**: T1 item 5d: soft-start and current-limit benches (R15, R16) as klt sim envelopes
-- **#227**: Make the malformed-measurements test pass with both klt diagnostics
 
 ## PRs Awaiting Review
 
@@ -74,7 +73,6 @@ Issues carrying `loom:curated`.
 - **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)* *(held)*
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)* *(held)*
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)* *(held)*
-- **#227**: Make the malformed-measurements test pass with both klt diagnostics *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -96,10 +94,10 @@ _None._
 | Very important | 1 |
 | Important | 8 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 2 |
+| In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
-| Curated | 10 |
+| Curated | 9 |
 | Architect / Hermit proposals | 5 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
