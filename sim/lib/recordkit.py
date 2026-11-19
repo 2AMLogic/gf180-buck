@@ -25,6 +25,16 @@ IDRE = re.compile(r"^(?P<proc>[a-z]+)/(?P<vin>[0-9.]+)V/(?P<temp>-?[0-9.]+)C/par
 # numbers: on a batch run header()'s local `klt --version` names the grading host, not the fleet runner.
 REMOTE_FIELDS = ("provider", "job_id", "instance_type", "lifecycle", "elapsed_seconds", "state",
                  "runner_klt_version", "client_klt_version", "runner_compatibility", "region")
+# A sharded (split) batch run moves job identity inside remote.fleet[] -- one job block per shard,
+# null where a shard was lost -- and leaves only the job_ids / worst-of runner_compatibility
+# roll-ups at the top level (klayout-tools#5522, settled by #5529), so the single-job scalars are
+# all absent. remote_subset() summarises that shape; these name what the summary rolls up.
+FLEET_IDENTITY_FIELDS = ("provider", "region", "instance_type", "lifecycle", "state")
+FLEET_VERSION_FIELDS = ("runner_klt_version", "client_klt_version")
+# klt's own worst-of precedence (sim_batch_features._COMPATIBILITY_RANK): a proved skew outranks
+# an unreadable or lost shard, which outranks a clean match.
+COMPATIBILITY_RANK = ("mismatch", "unknown", "match")
+JOB_IDS_MAX = 32  # beyond this a record carries a sha256 of the sorted ids, not the list
 GRADEABLE_STATUS = ("pass", "fail")  # a klt corner grades only once it reached a verdict
 DIAG_MSG_TAIL = 90  # chars of a diagnostic message kept in a no-waveform reason
 
@@ -106,18 +116,72 @@ def header(here):
     return ts, sha, {"utc": ts, "repo_commit": sha, "klt": klt}
 
 
+def fleet_runner_compatibility(fleet):
+    """Worst-of runner_compatibility across fleet[] -- klt rolled this up at the top level itself
+    since klayout-tools#5529; this re-derives it for an older report that carries only fleet[].
+    A lost (null) shard, a field-less pre-#2719 block, or a value this klt does not define folds
+    into "unknown", and an empty fleet degrades to "unknown": the summary never reads as clean
+    on evidence it does not have."""
+    statuses = {e.get("runner_compatibility") if isinstance(e, dict)
+                and e.get("runner_compatibility") in COMPATIBILITY_RANK else "unknown"
+                for e in fleet}
+    return next((s for s in COMPATIBILITY_RANK if s in statuses), "unknown")
+
+
+def fleet_summary(remote):
+    """Record-ready roll-up of a sharded batch report's environment.remote (issue #232).
+
+    Splitting (batch.max_units_per_job / job_ceiling_check "split" / remote.hosts > 1) moves job
+    identity inside remote.fleet[], so a reader written against the single-job scalars recorded
+    an all-None provenance block on exactly the large grids where provenance matters most. The
+    summary states the whole fleet instead: the shard count and lost slots; provider / region /
+    instance_type / lifecycle / state as the bare value while the shards agree, a sorted list
+    where they differ, None where no shard names one; sorted runner/client klt version sets;
+    the worst-of runner_compatibility (klt's own top-level roll-up when present, re-derived from
+    fleet[] otherwise); the summed elapsed_seconds; and job_ids in shard order -- a sha256 of
+    the sorted ids once the list passes JOB_IDS_MAX."""
+    fleet = remote.get("fleet") or []
+    shards = [e for e in fleet if isinstance(e, dict)]
+    out = {"job_count": len(fleet), "jobs_lost": len(fleet) - len(shards)}
+    for f in FLEET_IDENTITY_FIELDS + FLEET_VERSION_FIELDS:
+        vals = sorted({e.get(f) for e in shards if e.get(f) is not None})
+        out[f] = None if not vals else (vals[0] if len(vals) == 1 and f in FLEET_IDENTITY_FIELDS else vals)
+    out["runner_compatibility"] = remote.get("runner_compatibility") or fleet_runner_compatibility(fleet)
+    elapsed = [e["elapsed_seconds"] for e in shards if isinstance(e.get("elapsed_seconds"), (int, float))]
+    out["elapsed_seconds"] = sum(elapsed) if elapsed else None
+    ids = [e["job_id"] for e in shards if e.get("job_id")] or remote.get("job_ids") or None
+    if ids and len(ids) > JOB_IDS_MAX:
+        ids = "sha256:" + hashlib.sha256(json.dumps(sorted(ids)).encode()).hexdigest()
+    out["job_ids"] = ids
+    return out
+
+
+def backend_resolved(report):
+    """environment.backend.resolved of a klt sim report: which backend actually executed
+    (--backend > request.backend > $KLT_SIM_BACKEND > local, klayout-tools issue #2977). None
+    when the report carries no such block."""
+    backend = (report.get("environment") or {}).get("backend")
+    return backend.get("resolved") if isinstance(backend, dict) else None
+
+
 def remote_subset(report, fields=REMOTE_FIELDS):
-    """The remote-job fields of a klt sim report's environment."""
+    """The remote-job fields of a klt sim report's environment: the single-job scalar block as
+    before (`fields`), or -- when the run was sharded (environment.remote.fleet is a list) --
+    fleet_summary(), so a split run still states where it ran, on which klt, and under which job
+    ids instead of an all-None block (issue #232). A local run has no remote block and keeps the
+    all-None scalar shape."""
     remote = (report.get("environment") or {}).get("remote") or {}
+    if isinstance(remote.get("fleet"), list):
+        return fleet_summary(remote)
     return {k: remote.get(k) for k in fields}
 
 
-def report_env(report, path, fields=REMOTE_FIELDS, jobs=False):
-    """{report file, status, remote subset[, jobs]} of one klt sim report."""
-    env = {"report": os.path.basename(path), "status": report.get("status"), "remote": remote_subset(report, fields)}
-    if jobs:
-        env["jobs"] = [j for j in ((report.get("environment") or {}).get("remote") or {}).get("jobs", [])] or None
-    return env
+def report_env(report, path, fields=REMOTE_FIELDS):
+    """{report file, backend, status, remote subset} of one klt sim report. The old remote["jobs"]
+    read is gone: klt never wrote that key -- a sharded run's job list is remote.fleet[], which
+    remote_subset() summarises into the remote block, ids included."""
+    return {"report": os.path.basename(path), "status": report.get("status"),
+            "backend": backend_resolved(report), "remote": remote_subset(report, fields)}
 
 
 def _bounded_reason(message, tail=DIAG_MSG_TAIL):

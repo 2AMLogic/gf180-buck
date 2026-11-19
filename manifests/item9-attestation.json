@@ -227,7 +227,7 @@
         "role": "testbench",
         "path": "sim/device-stress/collect.py",
         "passed": true,
-        "content_hash": "sha256:3ccf78941fe1098bac1e50bd96e537b97fcceb1f06ed776e94b55e929b3a2667"
+        "content_hash": "sha256:8d03ba49c296753ff9c36f20e37b45127827a75e5a0c2f11de20df7be3d6d2e1"
       },
       {
         "check": "present",
@@ -311,7 +311,7 @@
         "role": "testbench",
         "path": "sim/lib/recordkit.py",
         "passed": true,
-        "content_hash": "sha256:4e4818ca5055a847a47b542c04eaa3bab885cfe2ac1706d94fecbf576eed3d1b"
+        "content_hash": "sha256:4a272294b2e057727eb1bc107d95e7d41ba60f459ffa11e80dfb4f309fae9659"
       },
       {
         "check": "present",
@@ -353,7 +353,7 @@
         "role": "testbench",
         "path": "sim/lib/test_recordkit.py",
         "passed": true,
-        "content_hash": "sha256:8ce23d6a3cbfad86020da0b120b6740f8ef03b48aba51856b1780cecf80eeb87"
+        "content_hash": "sha256:ab69e10f8b2cbd98d49f16522c571c325117b12b6cfd5a7f52f920ad782d27cd"
       },
       {
         "check": "present",
@@ -507,7 +507,7 @@
         "role": "testbench",
         "path": "sim/soft-start/collect.py",
         "passed": true,
-        "content_hash": "sha256:2f61177cfe791a7b0bd638656d15959f3fa0597159de04a5a912ddccc575a73e"
+        "content_hash": "sha256:a88f7fbeec6ca2e12733a302eb7bb0e89806b823fdd747319fb138dfa1bcf2a3"
       },
       {
         "check": "present",
@@ -661,7 +661,7 @@
         "role": "testbench",
         "path": "sim/steady-state/collect.py",
         "passed": true,
-        "content_hash": "sha256:0142b2719328d99f434a4d27a2f713a8a7a341546d52597af4fd478d9c15199a"
+        "content_hash": "sha256:b11b584243028ac35dad9c7b7ea9fcf13d568d52c3a28a75c64fd8a85f2ebbb5"
       },
       {
         "check": "present",

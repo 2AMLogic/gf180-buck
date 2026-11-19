@@ -2,6 +2,7 @@
 
 Run: python3 -I -m unittest discover sim/lib
 """
+import hashlib
 import io
 import json
 import os
@@ -63,7 +64,20 @@ class WriteTest(unittest.TestCase):
 
 
 class EnvTest(unittest.TestCase):
-    REP = {"status": "pass", "environment": {"remote": {"provider": "p", "job_id": "j", "state": "done", "jobs": [1]}}}
+    REP = {"status": "pass", "environment": {"remote": {"provider": "p", "job_id": "j", "state": "done"}}}
+
+    # A sharded (split) batch report per klayout-tools#5522/#5529: job identity lives inside
+    # remote.fleet[] -- one block per shard, null where a shard was lost -- and only the
+    # job_ids / worst-of runner_compatibility roll-ups sit at the top level (a klt older than
+    # #5529 writes fleet[] alone).
+    JOB = {"provider": "aws-batch-fleet", "region": "us-east-1", "instance_type": "c7i.4xlarge",
+           "lifecycle": "spot", "state": "done", "elapsed_seconds": 11,
+           "runner_klt_version": "0.9.0", "client_klt_version": "0.9.0",
+           "runner_compatibility": "match"}
+
+    @classmethod
+    def shard(cls, n, **over):
+        return dict(cls.JOB, job_id="klt-sim-%d" % n, **over)
 
     def test_remote_subset(self):
         self.assertEqual(recordkit.remote_subset(self.REP, ("provider", "state", "instance_type")),
@@ -71,9 +85,13 @@ class EnvTest(unittest.TestCase):
         self.assertEqual(recordkit.remote_subset({}), {k: None for k in recordkit.REMOTE_FIELDS})
 
     def test_report_env(self):
-        e = recordkit.report_env(self.REP, "/x/rep.json", jobs=True)
-        self.assertEqual((e["report"], e["status"], e["jobs"]), ("rep.json", "pass", [1]))
-        self.assertNotIn("jobs", recordkit.report_env(self.REP, "rep.json"))
+        rep = {"status": "pass", "environment": {"remote": {"provider": "p"},
+                                                 "backend": {"resolved": "batch", "source": "host-default",
+                                                             "requested": None}}}
+        e = recordkit.report_env(rep, "/x/rep.json")
+        self.assertEqual((e["report"], e["status"], e["backend"]), ("rep.json", "pass", "batch"))
+        self.assertEqual(list(e), ["report", "status", "backend", "remote"])
+        self.assertIsNone(recordkit.report_env({}, "/x/rep.json")["backend"])
 
     def test_runner_provenance_is_carried(self):
         """The four provenance fields by name: the runner's klt, not the grading host's, is what a
@@ -90,6 +108,78 @@ class EnvTest(unittest.TestCase):
         empty = recordkit.remote_subset({})
         for k in provenance:
             self.assertIsNone(empty[k], k)
+
+    def test_sharded_summary(self):
+        fleet = [self.shard(1), self.shard(2, region="us-west-2", elapsed_seconds=13)]
+        rep = {"status": "pass", "environment": {"remote": {
+            "fleet": fleet, "job_ids": ["klt-sim-1", "klt-sim-2"], "runner_compatibility": "match"}}}
+        s = recordkit.remote_subset(rep)
+        self.assertEqual((s["job_count"], s["jobs_lost"]), (2, 0))
+        self.assertEqual(s["provider"], "aws-batch-fleet")          # unanimous -> the bare value
+        self.assertEqual(s["region"], ["us-east-1", "us-west-2"])   # distinct -> sorted list
+        self.assertEqual((s["instance_type"], s["lifecycle"], s["state"]), ("c7i.4xlarge", "spot", "done"))
+        self.assertEqual((s["runner_klt_version"], s["client_klt_version"]), (["0.9.0"], ["0.9.0"]))
+        self.assertEqual(s["runner_compatibility"], "match")        # klt's own top-level worst-of wins
+        self.assertEqual(s["elapsed_seconds"], 24)                  # summed across the shards
+        self.assertEqual(s["job_ids"], ["klt-sim-1", "klt-sim-2"])  # shard order
+        e = recordkit.report_env(rep, "/x/rep.json")
+        self.assertEqual(e["remote"]["job_count"], 2)               # a sharded record is never all-null
+
+    def test_sharded_without_top_level_rollups(self):
+        """A klt older than klayout-tools#5529 writes fleet[] alone: job_ids re-derived from the
+        shards in shard order, worst-of runner_compatibility re-derived from fleet[]."""
+        fleet = [self.shard(1), self.shard(2, runner_compatibility="mismatch")]
+        s = recordkit.remote_subset({"environment": {"remote": {"fleet": fleet}}})
+        self.assertEqual(s["job_ids"], ["klt-sim-1", "klt-sim-2"])
+        self.assertEqual(s["runner_compatibility"], "mismatch")
+
+    def test_sharded_worst_of_folds_unknowns(self):
+        """klt's worst-of precedence (#5529): a proved skew outranks anything not a clean match --
+        an unreadable value, a field-less pre-#2719 block and a lost (null) shard all fold into
+        unknown, so the summary never reads as clean on evidence it does not have."""
+
+        def fleet(entry2):
+            return [self.shard(1), entry2]
+
+        cases = [(fleet(self.shard(2, runner_compatibility="unknown")), "unknown"),
+                 (fleet(self.shard(2, runner_compatibility="0.8.9")), "unknown"),   # unreadable value
+                 (fleet({k: v for k, v in self.shard(2).items() if k != "runner_compatibility"}),
+                  "unknown"),                                                       # field-less block
+                 (fleet(None), "unknown")]                                          # lost shard
+        for fl, want in cases:
+            with self.subTest(want=want):
+                s = recordkit.remote_subset({"environment": {"remote": {"fleet": fl}}})
+                self.assertEqual(s["runner_compatibility"], want)
+        # a proved skew outranks even a lost shard, and an empty fleet is never a vacuous match:
+        fl = [self.shard(1, runner_compatibility="mismatch"), None]
+        s = recordkit.remote_subset({"environment": {"remote": {"fleet": fl}}})
+        self.assertEqual(s["runner_compatibility"], "mismatch")
+        s = recordkit.remote_subset({"environment": {"remote": {"fleet": []}}})
+        self.assertEqual(s["runner_compatibility"], "unknown")
+
+    def test_sharded_lost_shards(self):
+        fleet = [None, self.shard(1), None]
+        s = recordkit.remote_subset({"environment": {"remote": {"fleet": fleet}}})
+        self.assertEqual((s["job_count"], s["jobs_lost"]), (3, 2))
+        self.assertEqual(s["job_ids"], ["klt-sim-1"])
+        self.assertEqual(s["elapsed_seconds"], 11)
+        self.assertEqual(s["runner_compatibility"], "unknown")      # a lost shard is not a clean run
+
+    def test_sharded_empty_fleet_degrades(self):
+        s = recordkit.remote_subset({"environment": {"remote": {"fleet": []}}})
+        self.assertEqual((s["job_count"], s["jobs_lost"]), (0, 0))
+        for k in ("provider", "region", "instance_type", "lifecycle", "state",
+                  "runner_klt_version", "client_klt_version", "elapsed_seconds", "job_ids"):
+            self.assertIsNone(s[k], k)
+        self.assertEqual(s["runner_compatibility"], "unknown")
+
+    def test_sharded_job_ids_digest_when_long(self):
+        fleet = [{"job_id": "j%02d" % i, "state": "done"} for i in range(recordkit.JOB_IDS_MAX + 1)]
+        s = recordkit.remote_subset({"environment": {"remote": {"fleet": fleet}}})
+        want = "sha256:" + hashlib.sha256(
+            json.dumps(sorted(e["job_id"] for e in fleet)).encode()).hexdigest()
+        self.assertEqual(s["job_ids"], want)
+        self.assertEqual(s["job_count"], recordkit.JOB_IDS_MAX + 1)
 
     def test_files_sha256_pins_shared_module(self):
         with tempfile.TemporaryDirectory() as d:
