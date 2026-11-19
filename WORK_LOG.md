@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-19
+
+- **PR #229**: test: accept either klt diagnostic for a malformed-measurements report
+- **Issue #227** (closed): Make the malformed-measurements test pass with both klt diagnostics
+
 ### 2026-11-18
 
 - **PR #224**: ci: add merge_group trigger to the signoff workflow
