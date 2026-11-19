@@ -131,6 +131,7 @@ def main(argv=None):
         "record": "simulated, not measured; pre-layout; spec R15 and the R6 no-trip clause",
         "environment": {**hdr,
                         "report": {"file": os.path.basename(a.report), "status": rep.get("status"),
+                                   "backend": recordkit.backend_resolved(rep),
                                    "remote": recordkit.remote_subset(rep)},
                         "corner_matrix": cm,
                         "files_sha256": recordkit.files_sha256(

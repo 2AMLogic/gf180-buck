@@ -160,7 +160,7 @@ def main(argv=None):
     for path in a.report:
         rep = json.load(open(path))
         bench = "r8" if "lfac" in json.dumps([c["corner_id"] for c in rep["corners"]][:1]) else "grid"
-        envs.append(recordkit.report_env(rep, path, jobs=True))
+        envs.append(recordkit.report_env(rep, path))
         cm.append(recordkit.corner_matrix_check(os.path.join(HERE, "matrix_%s.json" % bench), path))
         for c in rep["corners"]:
             units.append(unit_record(c, bench))

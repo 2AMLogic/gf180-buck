@@ -169,8 +169,8 @@ def main(argv=None):
             "full" if a.set == "grid" else "typ", [int(x * 1000) for x in LOADS], len(units), n_corners),
         "environment": {**env, "local_grader_python": sys.version.split()[0], "local_ngspice_banner": recordkit.ngspice_banner(),
                         "report": {"file": os.path.basename(a.report), "status": rep.get("status"),
-                                   "remote": recordkit.remote_subset(rep),
-                                   "jobs": ((rep.get("environment") or {}).get("remote") or {}).get("jobs") or None},
+                                   "backend": recordkit.backend_resolved(rep),
+                                   "remote": recordkit.remote_subset(rep)},
                         "corner_matrix": cm,
                         "files_sha256": recordkit.files_sha256(
                             HERE, ("bench.spice", "../steady-state/opamp_two_stage.spice", "request_%s.json" % a.set, "gen_requests.py"),
