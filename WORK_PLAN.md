@@ -10,7 +10,6 @@ membership regardless of holds. An entry there may still carry a hold label
 placement in this document, before starting on it.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-20T06:53:07Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -21,23 +20,23 @@ _None._
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-- **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(held)*
+- **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading)
 
 ## Important
 
 `loom:important`; taken before unlabelled work.
 
-- **#59**: T1 item 5c: load-step bench and averaged-model cross-check (R12, R13b/c) as klt sim envelopes *(held)*
-- **#62**: Draw device-level layout for the control blocks (gate_drive, osc_ramp, pwm_comp, soft_start, ocp_sense, compensator) *(held)*
-- **#69**: T1 item 5b remainder: run the R2 / R14 C-full grid (135 units at 100 ps) on the fleet *(held)*
-- **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(held)*
-- **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(held)*
-- **#111**: Lay out osc_ramp, pwm_comp, soft_start, ocp_sense, compensator and route the control strip (second split of #62) *(held)*
-- **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(held)*
+- **#59**: T1 item 5c: load-step bench and averaged-model cross-check (R12, R13b/c) as klt sim envelopes
+- **#62**: Draw device-level layout for the control blocks (gate_drive, osc_ramp, pwm_comp, soft_start, ocp_sense, compensator)
+- **#69**: T1 item 5b remainder: run the R2 / R14 C-full grid (135 units at 100 ps) on the fleet
+- **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice
+- **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62)
+- **#111**: Lay out osc_ramp, pwm_comp, soft_start, ocp_sense, compensator and route the control strip (second split of #62)
+- **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53)
 
 ## Ready
 
-Human-approved issues (`loom:issue`) ready for implementation — excluding held (`loom:blocked`/`loom:operator`/`loom:frozen`), `loom:building`, and issues closed by an open `loom:pr` PR (listed under Approved).
+Human-approved issues ready for implementation (`loom:issue`).
 
 _None._
 
@@ -63,22 +62,22 @@ _None._
 
 Issues carrying `loom:curated`.
 
-- **#5**: Track the gap to T1 (klayout-tools design-evidence-tiers.md) *(curated)* *(held)*
-- **#23**: T1 item 3 (DRC clean): klt drc on the buck GDS plus the PDK-native 30 kA MetalTop rule family, coverage disclosed *(curated)* *(held)*
-- **#24**: T1 item 4 (LVS clean): klt lvs of the buck layout against its schematic netlist *(curated)* *(held)*
-- **#26**: T1 item 6 (Monte Carlo): classify the statistical rows and produce klt yield evidence for R4 (and any other matching-dependent row) *(curated)* *(held)*
-- **#69**: T1 item 5b remainder: run the R2 / R14 C-full grid (135 units at 100 ps) on the fleet *(curated)* *(held)*
-- **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)* *(held)*
-- **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)* *(held)*
-- **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)* *(held)*
+- **#5**: Track the gap to T1 (klayout-tools design-evidence-tiers.md) *(curated)*
+- **#23**: T1 item 3 (DRC clean): klt drc on the buck GDS plus the PDK-native 30 kA MetalTop rule family, coverage disclosed *(curated)*
+- **#24**: T1 item 4 (LVS clean): klt lvs of the buck layout against its schematic netlist *(curated)*
+- **#26**: T1 item 6 (Monte Carlo): classify the statistical rows and produce klt yield evidence for R4 (and any other matching-dependent row) *(curated)*
+- **#69**: T1 item 5b remainder: run the R2 / R14 C-full grid (135 units at 100 ps) on the fleet *(curated)*
+- **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)*
+- **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)*
+- **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)*
 
 ## Proposed (Architect / Hermit)
 
-- **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)* *(held)*
-- **#159**: Stop tracking layout/buck.info.json: generator by-product that nothing reads or guards (219 lines) *(hermit)* *(held)*
-- **#173**: design/averaged/records: six committed records re-inline a byte-identical 3404-line payload (24,669 of design/'s 29,098 lines) *(hermit)* *(held)*
-- **#180**: Gate the sim/smoke record write: 5 of 6 records carry a byte-identical result block *(hermit)* *(held)*
-- **#181**: Single-source the batch capacity wait in genkit.BATCH: nine generated requests carry none, three mechanisms solve it *(hermit)* *(held)*
+- **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)*
+- **#159**: Stop tracking layout/buck.info.json: generator by-product that nothing reads or guards (219 lines) *(hermit)*
+- **#173**: design/averaged/records: six committed records re-inline a byte-identical 3404-line payload (24,669 of design/'s 29,098 lines) *(hermit)*
+- **#180**: Gate the sim/smoke record write: 5 of 6 records carry a byte-identical result block *(hermit)*
+- **#181**: Single-source the batch capacity wait in genkit.BATCH: nine generated requests carry none, three mechanisms solve it *(hermit)*
 
 ## Epics
 
@@ -91,7 +90,7 @@ _None._
 | Operator merge-risk holds | 0 |
 | Very important | 1 |
 | Important | 7 |
-| Ready (`loom:issue`, net of holds/building/merge-pending) | 0 |
+| Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
