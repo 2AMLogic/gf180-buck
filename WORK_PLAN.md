@@ -44,7 +44,7 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#180**: Gate the sim/smoke record write: 5 of 6 records carry a byte-identical result block
+- **#181**: Single-source the batch capacity wait in genkit.BATCH: nine generated requests carry none, three mechanisms solve it
 
 ## PRs Awaiting Review
 
@@ -56,7 +56,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#239**: feat(sim): gate the smoke record write on the evidence fields
+- **#242**: refactor(sim): single-source the batch capacity wait in genkit
 
 ## Proposed
 
@@ -78,7 +78,6 @@ Issues carrying `loom:curated`.
 - **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)*
 - **#159**: Stop tracking layout/buck.info.json and generate test metadata in a temporary directory *(hermit)*
 - **#173**: design/averaged/records: six committed records re-inline a byte-identical 3404-line payload (24,669 of design/'s 29,098 lines) *(hermit)*
-- **#181**: Single-source the batch capacity wait in genkit.BATCH: nine generated requests carry none, three mechanisms solve it *(hermit)*
 
 ## Epics
 
@@ -96,6 +95,6 @@ _None._
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
 | Curated | 10 |
-| Architect / Hermit proposals | 4 |
+| Architect / Hermit proposals | 3 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
