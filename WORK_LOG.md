@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-23
+
+- **PR #239**: feat(sim): gate the smoke record write on the evidence fields
+- **Issue #180** (closed): Gate the sim/smoke record write: 5 of 6 records carry a byte-identical result block
+
 ### 2026-11-19
 
 - **PR #234**: feat(sim): record sharded-batch provenance and the resolved backend in sim records
