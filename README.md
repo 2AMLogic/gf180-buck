@@ -106,8 +106,9 @@ not reached.
 
 Every result on `main` is simulated, never measured. Run from the repository
 root; prerequisites (ngspice, jq, the pinned gf180mcuD PDK install) are in
-[`sim/README.md`](sim/README.md). Each command appends a new record under its
-`records/` directory; records are append-only evidence.
+[`sim/README.md`](sim/README.md). Records are append-only evidence under each
+command's `records/` directory; the smoke bench writes one only when its
+evidence is new (issue #180), the other benches one per run.
 
 | Result | Cold-start command | Record |
 |---|---|---|
