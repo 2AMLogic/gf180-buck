@@ -44,7 +44,7 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#181**: Single-source the batch capacity wait in genkit.BATCH: nine generated requests carry none, three mechanisms solve it
+_None._
 
 ## PRs Awaiting Review
 
@@ -56,7 +56,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#242**: refactor(sim): single-source the batch capacity wait in genkit
+_None._
 
 ## Proposed
 
@@ -71,7 +71,6 @@ Issues carrying `loom:curated`.
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)*
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)*
 - **#159**: Stop tracking layout/buck.info.json and generate test metadata in a temporary directory *(curated)*
-- **#181**: Single-source the batch capacity wait in genkit.BATCH: nine generated requests carry none, three mechanisms solve it *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -91,10 +90,10 @@ _None._
 | Very important | 1 |
 | Important | 7 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 1 |
+| In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 1 |
-| Curated | 10 |
+| Approved PRs awaiting merge | 0 |
+| Curated | 9 |
 | Architect / Hermit proposals | 3 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
