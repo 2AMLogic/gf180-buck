@@ -37,11 +37,13 @@ GM >= 10 dB. Failing points are reported as failures.
 
 `run.sh` regenerates the request and submits it with `klt sim`; on a dispatch
 worker `KLT_SIM_BACKEND=batch` sends the grid to the Spot batch fleet, and
-`run.sh` defaults to `batch` otherwise. On that backend it passes
-`--wait-for-capacity 600`, so a launch the vCPU-budgeted fleet refuses
-(`batch_no_capacity` / `batch_concurrency_cap`) is re-launched with jittered
-backoff for up to 600 s rather than failing at once; klt rejects the flag on
-any other backend, so `run.sh` passes it only when the backend is `batch`. It
+`run.sh` defaults to `batch` otherwise. The request's own
+`batch.capacity_wait_s = 600` (written by `gen_request.py` from
+`sim/lib/genkit.py`) re-launches a launch the vCPU-budgeted fleet refuses
+(`batch_no_capacity` / `batch_concurrency_cap`) with jittered
+backoff for up to 600 s rather than failing at once; the pinned klt accepts
+the field on any backend, so `run.sh` passes the selected backend directly
+and no capacity flag on any backend. It
 never loops `ngspice` locally; a submit that still fails exits non-zero. The
 record carries fc, PM and GM for every point with per-bound pass/fail, the
 ngspice version, the deck sha256, the request sha256, the batch job id and

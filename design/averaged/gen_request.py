@@ -11,7 +11,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "sim", "lib"))
 import genkit  # noqa: E402
-from genkit import CEFF, ESR, LFAC, VIN  # noqa: E402
+from genkit import BATCH_WAIT, CEFF, ESR, LFAC, VIN  # noqa: E402
 
 ILOAD = [0.0, 0.25, 0.5]                # ideal current sink, A
 
@@ -30,6 +30,7 @@ request = {
         {"name": "fc_klt", "transfer": {"num": "v(t)", "den": "v(b)", "metric": "unity_crossing_hz"}, "unit": "Hz"},
         {"name": "pm_klt", "transfer": {"num": "v(t)", "den": "v(b)", "metric": "phase_margin_deg"}, "unit": "deg"},
     ],
+    "batch": BATCH_WAIT,
     "options": {"complex_vectors": ["v(vo)", "v(b)"], "keep_artifacts": True, "timeout_s": 120},
 }
 assert len(rows) == 162

@@ -61,6 +61,7 @@ dump("request_avg.json", {
     "netlist": "avg_step.spice", "engine": "ngspice", "corners": avg,
     "analysis": {"kind": "tran", "args": TRAN},
     "measurements": [{"name": "vout_last", "spice": ".meas tran vout_last FIND v(vo) AT=759u", "unit": "V"}],
+    "batch": genkit.BATCH_WAIT,
     "options": {"keep_artifacts": True, "waveforms": True, "timeout_s": 300, "save_vectors": ["v(vo)", "i(l1)"]}})
 dump("matrix_avg.json", avg)
 assert len(CUBE) == 18 and len(rows) == 54

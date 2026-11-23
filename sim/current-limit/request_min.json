@@ -94,7 +94,8 @@
  ],
  "batch": {
   "max_units_per_job": 1,
-  "max_concurrent_jobs": 12
+  "max_concurrent_jobs": 12,
+  "capacity_wait_s": 600
  },
  "options": {
   "keep_artifacts": true,
