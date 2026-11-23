@@ -15,6 +15,11 @@ Definitions (per point):
 Phase is unwrapped from the lowest frequency sample, where T is an integrator.
 
 Record plumbing is sim/lib/recordkit.py, the one shared copy (stdlib-only too).
+
+A full record (points inlined) is written only for a results_sha256 not already
+in --out-dir. An equal-hash re-run writes no record: it appends one provenance
+row to <out-dir>/runs.jsonl (append-only), naming the record that holds the
+payload. Existing records are never edited (issue #173).
 """
 import argparse
 import hashlib
@@ -151,6 +156,53 @@ def build_record(report, request_path):
     }
 
 
+RUNS_LOG = "runs.jsonl"
+
+
+def find_record_for_hash(out_dir, sha):
+    """Name of the first record in out_dir carrying results_sha256 == sha, else None.
+    Reads the key only; runs.jsonl is not a record (it does not end in .json)."""
+    if not os.path.isdir(out_dir):
+        return None
+    for name in sorted(os.listdir(out_dir)):
+        if not name.endswith(".json"):
+            continue
+        with open(os.path.join(out_dir, name)) as fh:
+            if json.load(fh).get("results_sha256") == sha:
+                return name
+    return None
+
+
+def run_row(rec, record_name):
+    env, remote = rec["environment"], rec["environment"].get("remote") or {}
+    return {
+        "generated_utc": rec["generated_utc"],
+        "results_sha256": rec["results_sha256"],
+        "record": record_name,
+        "ngspice": rec["ngspice"],
+        "remote": {k: remote.get(k) for k in ("job_id", "client_klt_version", "runner_klt_version")},
+        "environment": {k: env.get(k) for k in ("repo_commit", "files_sha256")},
+    }
+
+
+def append_run(out_dir, row):
+    """Append one sorted-key JSON line to runs.jsonl. A malformed existing line is a
+    hard error (ValueError): the log is evidence, so it is never skipped or rewritten."""
+    path = os.path.join(out_dir, RUNS_LOG)
+    if os.path.exists(path):
+        with open(path) as fh:
+            for n, line in enumerate(fh, 1):
+                try:
+                    if not isinstance(json.loads(line), dict):
+                        raise ValueError("not an object")
+                except ValueError as e:
+                    raise ValueError("%s:%d is malformed (%s); refusing to append" % (path, n, e))
+    os.makedirs(out_dir, exist_ok=True)
+    with open(path, "a") as fh:
+        fh.write(json.dumps(row, sort_keys=True) + "\n")
+    return path
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--report", required=True, help="klt sim --report-out JSON")
@@ -174,10 +226,20 @@ def main(argv=None):
             lib_files=("genkit.py",)),
     }
     rec["generated_utc"] = ts
-    path = os.path.join(a.out_dir, "%s-%s%s.json" % (ts, rec["results_sha256"][:12], a.tag))
-    rc = recordkit.write_record(path, rec, tool="extract.py")
-    if rc:
-        return rc
+    try:
+        existing = find_record_for_hash(a.out_dir, rec["results_sha256"])
+        if existing:
+            print("extract.py: results_sha256 %s already recorded in %s; no new record" % (
+                rec["results_sha256"][:16], existing))
+            print("extract.py: run row appended to %s" % append_run(a.out_dir, run_row(rec, existing)))
+    except ValueError as e:
+        print("extract.py: %s" % e, file=sys.stderr)
+        return 1
+    if not existing:
+        path = os.path.join(a.out_dir, "%s-%s%s.json" % (ts, rec["results_sha256"][:12], a.tag))
+        rc = recordkit.write_record(path, rec, tool="extract.py")
+        if rc:
+            return rc
     s = rec["summary"]
     print("points %d  pass %d  fail %d (fc %d, pm %d, gm %d)  results_sha256 %s" % (
         rec["point_count"], s["pass_all"], s["fail_any"], s["fail_fc"], s["fail_pm"], s["fail_gm"], rec["results_sha256"][:16]))

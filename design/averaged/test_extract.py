@@ -5,6 +5,7 @@ import math
 import os
 import tempfile
 import unittest
+from unittest import mock
 
 import extract
 
@@ -139,6 +140,47 @@ class RecordEnvelope(unittest.TestCase):
                              name)
             newest = rec
         self.assertTrue(newest and newest["results_sha256"].startswith("781e1a29003d"), records[-1])
+
+    def run_main(self, d, out, banner="ngspice-47", job="a", tag=()):
+        report = os.path.join(d, "report.json")
+        with open(report, "w") as fh:
+            json.dump(self.fixture(d, banner=banner, remote={"job_id": job}), fh)
+        # sweep_request.json is generated and gitignored, so stub the file hash.
+        with mock.patch.object(extract.recordkit, "files_sha256", return_value={"x": "0"}):
+            return extract.main(["--report", report, "--request", self.request_file(d),
+                                 "--out-dir", out, *tag])
+
+    def test_new_hash_writes_full_record_and_no_run_row(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "records")
+            self.assertEqual(self.run_main(d, out), 0)
+            self.assertEqual([n.endswith(".json") for n in os.listdir(out)], [True])
+
+    def test_equal_hash_appends_one_row_and_no_record(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "records")
+            self.run_main(d, out)
+            (first,) = os.listdir(out)
+            self.assertEqual(self.run_main(d, out, banner="ngspice-48", job="b", tag=["--tag=-x"]), 0)
+            self.assertEqual(sorted(os.listdir(out)), sorted([first, "runs.jsonl"]))
+            with open(os.path.join(out, "runs.jsonl")) as fh:
+                rows = [json.loads(x) for x in fh]
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["record"], first)
+            self.assertEqual(rows[0]["remote"]["job_id"], "b")
+            self.assertEqual(self.run_main(d, out, job="c"), 0)
+            with open(os.path.join(out, "runs.jsonl")) as fh:
+                self.assertEqual(len(fh.readlines()), 2)
+
+    def test_malformed_runs_log_is_a_hard_error(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "records")
+            self.run_main(d, out)
+            with open(os.path.join(out, "runs.jsonl"), "w") as fh:
+                fh.write("{broken\n")
+            self.assertEqual(self.run_main(d, out), 1)
+            with open(os.path.join(out, "runs.jsonl")) as fh:
+                self.assertEqual(fh.read(), "{broken\n")
 
     @staticmethod
     def request_file(d, body='{"netlist": "buck_avg.spice"}'):

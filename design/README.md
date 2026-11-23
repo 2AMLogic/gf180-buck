@@ -59,13 +59,20 @@ reaches -180 inside 100 Hz - 20 MHz.
 
 ### Status of the sweep record
 
-Two 162-point records are committed in `averaged/records/` (simulated, not
-measured). Both ran on the Spot batch fleet (jobs `klt-sim-a298dda7effa` and
-`klt-sim-361f1a84fa74`, runner klt 0.8.0, ngspice 46, deck sha256 `1b953b6413df...`,
-request sha256 `41eea10aa550...`) and carry the same `results_sha256`
-`781e1a29003df405`, so a re-run reproduced the numbers to the printed precision.
-The earlier batch blocker (runner image on klt 0.7.0, klayout-tools#3676) is
+29 full 162-point records are committed in `averaged/records/` (simulated, not
+measured), all with the same `results_sha256` `781e1a29003df405`: re-runs on the
+Spot batch fleet reproduced the numbers to the printed precision. The newest ran
+on runner klt 0.9.0 and ngspice 47 (older ones on klt 0.8.0 / ngspice 46). The
+earlier batch blocker (runner image on klt 0.7.0, klayout-tools#3676) is
 resolved: the runner now reports every required feature supported.
+
+Convention (issue #173): `extract.py` writes a full record only for a
+`results_sha256` not already in `records/`. An equal-hash re-run (every item 9
+re-attest) writes no record and appends one provenance row to
+`averaged/records/runs.jsonl` (append-only; time, job id, klt and ngspice
+versions, repo commit, `files_sha256`, and the record that holds the payload).
+The 29 existing records are untouched and are not backfilled into `runs.jsonl`;
+their provenance is in their own files.
 
 Result: 114 of 162 points pass all three bounds; **48 fail**, all on fc.
 PM min 56.27 deg and GM min 22.30 dB, so PM and GM hold everywhere; fc spans
