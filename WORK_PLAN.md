@@ -44,13 +44,13 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#173**: design/averaged/records: six committed records re-inline a byte-identical 3404-line payload (24,669 of design/'s 29,098 lines)
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-_None._
+- **#246**: feat: write a full averaged-model record only for a new results_sha256
 
 ## Approved (Awaiting Merge)
 
@@ -70,13 +70,11 @@ Issues carrying `loom:curated`.
 - **#82**: Diagnose closed-loop non-regulation: no switched unit passes the §0.4 settled test (R4 fail, blocks R12/R13/R2/R14 grading) *(curated)*
 - **#109**: Lay out gate_drive and connect GH/GL to the power-stage gate buses (first split of #62) *(curated)*
 - **#123**: Resize gate_drive final stages MP_HG5/MP_LG5: 0.189 um fingers below the 0.30 um Dualgate COMP minimum (r7-q53) *(curated)*
-- **#159**: Stop tracking layout/buck.info.json and generate test metadata in a temporary directory *(curated)*
+- **#173**: design/averaged/records: six committed records re-inline a byte-identical 3404-line payload (24,669 of design/'s 29,098 lines) *(curated)*
 
 ## Proposed (Architect / Hermit)
 
 - **#96**: Remove 600-line buck_top_kelvin.spice copy: 6-line delta from buck_top.spice *(hermit)*
-- **#159**: Stop tracking layout/buck.info.json and generate test metadata in a temporary directory *(hermit)*
-- **#173**: design/averaged/records: six committed records re-inline a byte-identical 3404-line payload (24,669 of design/'s 29,098 lines) *(hermit)*
 
 ## Epics
 
@@ -90,10 +88,10 @@ _None._
 | Very important | 1 |
 | Important | 7 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 0 |
-| PRs awaiting review | 0 |
+| In Progress (`loom:building`) | 1 |
+| PRs awaiting review | 1 |
 | Approved PRs awaiting merge | 0 |
 | Curated | 9 |
-| Architect / Hermit proposals | 3 |
+| Architect / Hermit proposals | 1 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
