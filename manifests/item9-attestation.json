@@ -451,7 +451,7 @@
         "role": "testbench",
         "path": "sim/smoke/run.sh",
         "passed": true,
-        "content_hash": "sha256:73e42d9a42265e050083b21edff78c150ca516d2827e215a705bb4f41ba7c2d5"
+        "content_hash": "sha256:2c71c03667c0dc35f66b3916d192cde98c597df2e1b354bb2ce2d23c5153795c"
       },
       {
         "check": "present",
