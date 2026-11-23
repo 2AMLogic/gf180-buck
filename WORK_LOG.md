@@ -5,6 +5,8 @@ Maintained by the Guide role.
 
 ### 2026-11-23
 
+- **PR #247**: chore: stop tracking generator-local buck.info.json
+- **Issue #159** (closed): Stop tracking layout/buck.info.json and generate test metadata in a temporary directory
 - **PR #242**: refactor(sim): single-source the batch capacity wait in genkit
 - **Issue #181** (closed): Single-source the batch capacity wait in genkit.BATCH: nine generated requests carry none, three mechanisms solve it
 - **PR #239**: feat(sim): gate the smoke record write on the evidence fields
