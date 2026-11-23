@@ -37,8 +37,11 @@ is no local-grid fallback. Needs `klt` on `PATH`, at the
 version pinned in `.github/workflows/signoff.yml` (currently 0.9.0: the fleet runner
 refuses a client whose version differs from its own, `batch_runner_version_mismatch`),
 in a throwaway environment, not a host install.
-Each bench appends a new record under its `records/`; commit only the ones a PR
-intends and never delete one.
+Each bench records its evidence append-only under its `records/`; never edit
+or delete a record. The smoke bench writes a record only when its evidence is
+new (issue #180: identical simulator, PDK, model file, deck sha256 and printed
+numbers as the newest record skip the write, failing open); the other benches
+append one record per run. Commit only the records a PR intends.
 
 Attest it (needs the PDK, ngspice and the fleet, so this is local-only):
 
@@ -75,8 +78,12 @@ sim/smoke/run.sh
 This sources `sim/env.sh` (resolves the PDK, refuses with `PDK_MISMATCH` /
 `PDK_NOT_FOUND` / `MISSING_TOOL` if the install is not the pinned one, prints
 the resolved paths), runs `sim/smoke/inverter.spice` (one `.op` + a 60 ns
-`.tran`, typical corner, 5 V) in a single local ngspice process, and writes a
-new `sim/smoke/records/<UTC-timestamp>-<sha>.md`.
+`.tran`, typical corner, 5 V) in a single local ngspice process, and appends a
+`sim/smoke/records/<UTC-timestamp>-<sha>.md` only when the newest record does
+not already carry this run's evidence (simulator, PDK, model file, deck sha256
+and the five printed numbers; anything unparseable writes, issue #180) — a
+re-run with unchanged evidence prints
+`run.sh: OK, unchanged since <record>; no new record`.
 
 `env.sh` checks the install's revision (taken from the resolved
 `.../versions/<hash>/` path) and the sha256 of `sm141064.ngspice` and

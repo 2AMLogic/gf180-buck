@@ -4,7 +4,10 @@
 # grid, in order. Usage: sim/cold-start.sh
 # Not every attested bench: the rest are hashed in
 # manifests/item9-inventory.json but not run here (see sim/README.md).
-# Each bench appends a new record under its records/ (append-only evidence).
+# The smoke bench appends a record only when its evidence is new (issue #180:
+# same simulator, PDK, model file, deck sha256 and numbers as the newest
+# record means no write, failing open); the other benches append a record per
+# run. All records are append-only evidence.
 # design/averaged/run.sh sends its grid through `klt sim` (batch fleet); a
 # launch refused for fleet capacity waits up to 600 s with backoff first, and
 # a submit that still fails fails this script. There is no local-grid fallback.

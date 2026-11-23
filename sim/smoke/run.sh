@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 # Cold-start smoke run: one .op + one short .tran, a single ngspice process.
-# Writes sim/build/smoke/ (ignored) and a new append-only record under
-# sim/smoke/records/. Usage: sim/smoke/run.sh
+# Writes sim/build/smoke/ (ignored). A record is appended under
+# sim/smoke/records/ only when its evidence is new (issue #180): if the
+# newest existing record already carries this run's simulator version, PDK
+# revision, model file, deck sha256 and all five printed numbers, the run is
+# a duplicate and no record is written. Anything unparseable writes anyway
+# (fail open). Usage: sim/smoke/run.sh
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 root="$(cd "$here/../.." && pwd)"
@@ -25,7 +29,7 @@ sha="$(git -C "$root" rev-parse --short=12 HEAD)"
 ts="$(date -u +%Y%m%dT%H%M%SZ)"
 rec="$here/records/$ts-$sha.md"
 [[ ! -e "$rec" ]] || { echo "run.sh: records are append-only; $rec exists" >&2; exit 1; }
-{
+body="$({
   echo "# Smoke record $ts (simulated, not measured)"
   echo
   echo "- simulator: $ngspice_ver"
@@ -41,5 +45,35 @@ rec="$here/records/$ts-$sha.md"
   echo "$op_line"
   grep -E '^(vout_hi|vout_lo|tphl|tplh) ' "$build/ngspice.log"
   echo '```'
-} > "$rec"
+})"
+
+# Print a record body's evidence fields (simulator, PDK, model file, deck
+# sha256, the RESULT op line and the four .meas lines) on stdout; fail when
+# any of them is missing, so an unparseable body never suppresses a write.
+evidence() {
+  local src sim pdk model deck op meas
+  src="$(cat)"
+  sim="$(grep -m1 '^- simulator: ' <<<"$src")"    || return 1
+  pdk="$(grep -m1 '^- PDK: ' <<<"$src")"          || return 1
+  model="$(grep -m1 '^- model file: ' <<<"$src")" || return 1
+  deck="$(grep -m1 '^- deck: ' <<<"$src")"        || return 1
+  op="$(grep -m1 '^RESULT op' <<<"$src")"         || return 1
+  meas="$(grep -E '^(vout_hi|vout_lo|tphl|tplh) ' <<<"$src")"
+  [[ "$(wc -l <<<"$meas")" -eq 4 ]]               || return 1
+  printf '%s\n%s\n%s\n%s\n%s\n%s\n' "$sim" "$pdk" "$model" "$deck" "$op" "$meas"
+}
+
+newest=""
+shopt -s nullglob
+recs=( "$here/records"/*.md )
+shopt -u nullglob
+if [[ ${#recs[@]} -gt 0 ]]; then newest="${recs[${#recs[@]}-1]}"; fi
+if [[ -n "$newest" ]] \
+   && new_ev="$(printf '%s\n' "$body" | evidence)" \
+   && old_ev="$(evidence < "$newest")" \
+   && [[ "$new_ev" == "$old_ev" ]]; then
+  echo "run.sh: OK, unchanged since $(basename "$newest" .md); no new record"
+  exit 0
+fi
+printf '%s\n' "$body" > "$rec"
 echo "run.sh: OK, record $rec"

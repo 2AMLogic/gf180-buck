@@ -122,7 +122,7 @@
         "role": "testbench",
         "path": "sim/cold-start.sh",
         "passed": true,
-        "content_hash": "sha256:f5c8ada03a5e4b21bc5d8aabf4fbff66badd03da190c12b33f14560a6366760f"
+        "content_hash": "sha256:99ec41b133b6a65d68e580ea9658fd40bfae10cafd234919d3be92f0d613d642"
       },
       {
         "check": "present",
@@ -451,7 +451,7 @@
         "role": "testbench",
         "path": "sim/smoke/run.sh",
         "passed": true,
-        "content_hash": "sha256:db34dcd4f45837cba64d87abfbdae73c7df9c8cecf6c263bfa773896b5361306"
+        "content_hash": "sha256:73e42d9a42265e050083b21edff78c150ca516d2827e215a705bb4f41ba7c2d5"
       },
       {
         "check": "present",
