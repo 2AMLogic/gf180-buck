@@ -30,8 +30,9 @@ source sim/env.sh && sim/cold-start.sh
 
 In order: the smoke bench, the ideal-buck bench, `python3 -m unittest discover sim/lib`,
 the `design/averaged` unit tests, then `design/averaged/run.sh`. The last step sends
-its 162-point grid to the Spot batch fleet through `klt sim --wait-for-capacity 600`,
-so a launch the fleet refuses for capacity is re-launched with backoff for up to
+its 162-point grid to the Spot batch fleet through `klt sim`; the request's own
+`batch.capacity_wait_s = 600` (written by `gen_request.py` from `sim/lib/genkit.py`)
+re-launches a launch the fleet refuses for capacity with backoff for up to
 600 s; a submit that still fails exits non-zero and so fails this script, and there
 is no local-grid fallback. Needs `klt` on `PATH`, at the
 version pinned in `.github/workflows/signoff.yml` (currently 0.9.0: the fleet runner
@@ -133,16 +134,18 @@ commented in `buck.spice`.
 - The smoke bench is a toolchain check, not a device choice.
 - Grids (corners, Monte Carlo) are not run by hand here; express them as
   `klt sim` requests so they go to the batch fleet.
-- Every batch submit below passes `--wait-for-capacity 600`: the fleet is
+- Every request below carries `batch.capacity_wait_s = 600` from one Python definition
+  (`sim/lib/genkit.py`, issue #181): the fleet is
   vCPU-budgeted, so a burst is refused (`batch_no_capacity` /
-  `batch_concurrency_cap`) and the flag re-launches with jittered backoff for
-  up to 600 s instead of failing at once. The pinned client takes it only on
-  backend `batch`. `--batch-set` is itself always backend `batch` ("Always
+  `batch_concurrency_cap`) and the wait re-launches with jittered backoff for
+  up to 600 s instead of failing at once. The pinned client accepts the field
+  on any backend — unlike the `--wait-for-capacity 600` flag, which is
+  batch-only — so no submit site passes the flag. Pass it by hand only for an
+  ad-hoc request with no `batch` block, stating `--backend batch` (or running
+  with `KLT_SIM_BACKEND=batch`, as on a dispatch worker) so the flag is
+  accepted; `--batch-set` is itself always backend `batch` ("Always
   backend `batch`; never falls back to local ngspice", `klt sim --help` on
-  0.9.0), so those blocks take the flag with no `--backend batch` and no
-  `KLT_SIM_BACKEND=batch` prefix; a single-request block states `--backend
-  batch` (or runs with `KLT_SIM_BACKEND=batch`, as on a dispatch worker) for
-  the flag to be accepted.
+  0.9.0).
 - `lib/pdk_env.sh` is adopted from `2AMLogic/gf180-sram` by pinned reference;
   see [`../reuse.lock.json`](../reuse.lock.json).
 
@@ -215,7 +218,7 @@ verdict -- a bench that correctly records a failing corner still exits 0.
 ```
 python3 -I sim/steady-state/gen_requests.py     # rewrites request_grid.json, request_r8.json, matrix_*.json
 klt sim --batch-set sim/steady-state/request_grid.json sim/steady-state/request_r8.json \
-    --wait-for-capacity 600 --report-out ...
+    --report-out ...
 python3 -I sim/steady-state/collect.py --report GRID.json --report R8.json    # grade + write records/<UTC>-<sha>.json
 ```
 
@@ -238,7 +241,7 @@ evidence; R9/R10 are not the graded post-layout value. See the record for per-un
 ```
 python3 -I sim/load-step/gen_requests.py      # rewrites request_{tol,full,avg}.json, matrix_*.json
 klt sim --batch-set sim/load-step/request_tol.json sim/load-step/request_full.json \
-    sim/load-step/request_avg.json --wait-for-capacity 600 --report-out ...
+    sim/load-step/request_avg.json --report-out ...
 python3 -I sim/load-step/collect.py --tol TOL.json --full FULL.json --avg AVG.json    # grade + write records/<UTC>-<sha>.json
 ```
 
@@ -268,7 +271,7 @@ python3 -I sim/soft-start/gen_requests.py       # request_grid.json, matrix_grid
 python3 -I sim/current-limit/gen_requests.py    # request_ramp.json, request_min.json, matrix_*.json
 KLT_SIM_BACKEND=batch klt sim --batch-set sim/soft-start/request_grid.json \
     sim/current-limit/request_ramp.json sim/current-limit/request_min.json \
-    --wait-for-capacity 600 -o OUT --report-out BATCH.json
+    -o OUT --report-out BATCH.json
 python3 -I sim/soft-start/collect.py --report <soft-start report>.json
 python3 -I sim/current-limit/collect.py --ramp <ramp report>.json --min <min report>.json
 ```
@@ -301,7 +304,7 @@ Records are append-only under `records/`, simulated and pre-layout.
 
 ```
 python3 -I sim/device-stress/gen_requests.py     # rewrites request_grid.json (135), request_ctyp.json (3), matrix_*.json
-klt sim sim/device-stress/request_ctyp.json --backend batch --wait-for-capacity 600 \
+klt sim sim/device-stress/request_ctyp.json --backend batch \
     -o OUT --report-out ctyp.json   # or request_grid.json
 python3 -I sim/device-stress/collect.py --report ctyp.json --set ctyp   # writes the R2 and the R14 record
 ```

@@ -16,8 +16,15 @@ TEMP = [-40, 27, 125]
 LFAC = [0.8, 1.0, 1.2]                      # L 3.3 uH +/- 20 %
 CEFF = [4.7e-6, 6e-6, 12e-6]                # Ceff 4.7-12 uF (effective at 1.8 V bias)
 ESR = [5e-3, 10e-3]                         # ESR 5-10 mOhm
+# The batch capacity wait (issue #181): the fleet is vCPU-budgeted, so a burst is refused
+# (batch_no_capacity / batch_concurrency_cap); the wait re-launches with jittered backoff
+# for up to 600 s instead of failing the submit at once. Every request carries it from this
+# one definition -- the pinned klt accepts the field on any backend, unlike the batch-only
+# --wait-for-capacity flag, so a generated request cannot forget a flag an operator must.
+CAPACITY_WAIT_S = 600
 # One unit per batch job: measured on the fleet, units sharing an instance run slower than serial.
-BATCH = {"max_units_per_job": 1, "max_concurrent_jobs": 12}
+BATCH = {"max_units_per_job": 1, "max_concurrent_jobs": 12, "capacity_wait_s": CAPACITY_WAIT_S}
+BATCH_WAIT = {"capacity_wait_s": CAPACITY_WAIT_S}   # the averaged benches shard nothing; the wait only
 MATRIX_KEYS = ("process", "supply_v", "temperature_c", "params")
 
 

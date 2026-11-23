@@ -677,7 +677,9 @@ class GenkitTest(unittest.TestCase):
         r = genkit.request(c, "1n 1u", [genkit.vout_last(9)], {"o": 1})
         self.assertEqual(list(r), ["netlist", "engine", "models", "analysis", "corners", "measurements", "batch", "options"])
         self.assertEqual(r["measurements"][0]["spice"], ".meas tran vout_last FIND v(out) AT=9u")
-        self.assertEqual(r["batch"], {"max_units_per_job": 1, "max_concurrent_jobs": 12})
+        self.assertEqual(r["batch"], {"max_units_per_job": 1, "max_concurrent_jobs": 12,
+                                      "capacity_wait_s": 600})
+        self.assertEqual(genkit.BATCH_WAIT, {"capacity_wait_s": 600})   # averaged benches: wait only
         self.assertEqual(list(genkit.request(c, "t", [], {}, [{"x": 1}]))[-1], "exclude")
         self.assertEqual(genkit.matrix(c), c)
         self.assertEqual(genkit.matrix(c, [1])["exclude"], [1])
