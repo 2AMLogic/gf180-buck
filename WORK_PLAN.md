@@ -50,7 +50,7 @@ Issues currently being built (`loom:building`).
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#246**: feat: write a full averaged-model record only for a new results_sha256
+_None._
 
 ## Approved (Awaiting Merge)
 
@@ -89,7 +89,7 @@ _None._
 | Important | 7 |
 | Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 1 |
-| PRs awaiting review | 1 |
+| PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
 | Curated | 9 |
 | Architect / Hermit proposals | 1 |
