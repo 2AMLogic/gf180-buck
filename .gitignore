@@ -103,3 +103,6 @@ flow/build/
 
 # Repo Skills Codex-side machine-local install metadata (never committed)
 .agents/skills/repo/.install-local.json
+
+# Local generator by-product of layout/gen_layout.py (#159)
+layout/buck.info.json

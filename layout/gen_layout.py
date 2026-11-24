@@ -107,7 +107,6 @@ class Gen:
         self.ly = db.Layout()
         self.ly.dbu = 0.001
         self.L = {k: self.ly.layer(*v) for k, v in LAYERS.items()}
-        self.nets = {}      # label -> record data
         self.gate_bus_rect = {}   # GH/GL -> drawn gate-bus Metal2 rect (x0, y0, x1, y1)
         self.m2_power = {}        # power net -> its drawn Metal2 rects, for the isolation assert
         self.info = {}
