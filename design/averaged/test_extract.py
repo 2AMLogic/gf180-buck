@@ -145,8 +145,12 @@ class RecordEnvelope(unittest.TestCase):
         report = os.path.join(d, "report.json")
         with open(report, "w") as fh:
             json.dump(self.fixture(d, banner=banner, remote={"job_id": job}), fh)
-        # sweep_request.json is generated and gitignored, so stub the file hash.
-        with mock.patch.object(extract.recordkit, "files_sha256", return_value={"x": "0"}):
+        # sweep_request.json is generated and gitignored, so stub the file hash. header()
+        # shells out to `klt` and `git`, neither of which the stdlib-only CI lane has before
+        # the pinned klt install, so pin it too and keep the test hermetic.
+        hdr = {"utc": "20000101T000000Z", "repo_commit": "0" * 12, "klt": "klt-stub"}
+        with mock.patch.object(extract.recordkit, "files_sha256", return_value={"x": "0"}), \
+                mock.patch.object(extract.recordkit, "header", return_value=("20000101T000000Z", "0" * 12, hdr)):
             return extract.main(["--report", report, "--request", self.request_file(d),
                                  "--out-dir", out, *tag])
 
