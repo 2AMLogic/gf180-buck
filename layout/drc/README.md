@@ -2,8 +2,10 @@
 
 **Item 3 is NOT met.** The curated-deck run is clean — the Via2 enclosure
 defects were fixed by regenerating the layout (#176), and the orphan Via1 cuts
-were fixed by clipping the strap extent to the rows (#182) — but the native 30
-kA deck still cannot run on this 3LM variant, so item 3 cannot be claimed.
+were fixed by clipping the strap extent to the rows (#182) — while the native 30
+kA deck still aborts on released klt `0.9.2` and runs to completion on
+unreleased klt `main` (`e41ef7a1`) with `600753` findings, so item 3 cannot be
+claimed.
 
 ## Run of record
 
@@ -51,9 +53,46 @@ uvx --from klayout-tools==0.9.1 klt drc layout/buck.gds --engine klayout \
 - Upstream friction filed: klayout-tools#5091 (also #4950 for the earlier binary gap;
   #4950 is closed — it delivered the pinned standalone-KLayout env). #5091 was closed
   `completed` on 2026-11-06; it delivered the structured abort cause with
-  `decks_executed` and a 3LM documentation note, never a way to run the deck. The live
-  upstream dependency for running the native deck is **klayout-tools#4002** (open):
-  make gf180mcu's native sign-off deck runnable from `klt drc --engine klayout`.
+  `decks_executed` and a 3LM documentation note, never a way to run the deck. At the
+  time of this attempt, the live upstream dependency for running the native deck was
+  **klayout-tools#4002** (make gf180mcu's native sign-off deck runnable from
+  `klt drc --engine klayout`); it and the 3LM `mslot.rb` follow-ups (#6910 / #6916,
+  PR #6956) have since closed — see the 2026-11-24 attempt below.
+
+## Native 30 kA deck: completes on klt main, NOT clean (third attempt, 2026-11-24)
+
+```
+uvx --from "git+https://github.com/2AMLogic/klayout-tools@e41ef7a1eefe9c93e632cdd9a7a12896c1be3310" \
+    --with "klayout==0.30.12" klt drc layout/buck.gds --engine klayout \
+    --klayout-binary /usr/bin/klayout --pdk gf180mcuA --format json -o native.json
+```
+
+- klt `0.9.3.dev4930+ge41ef7a1eefe` (unreleased `main`; PyPI latest is 0.9.2, which still
+  aborts), KLayout 0.30.12, open_pdks `f6eeac7d`, native deck `gf180mcu.drc` content hash
+  `sha256:e7c7d2597890cfcb4cf0e5312f5652051a119fb3e1cc1772a6e5c04594bc65d8`, variant
+  `gf180mcuA`, klt's `gf180mcu_3lm_prelude.rb` supplies the empty `metal4_drawn` that
+  aborted earlier attempts (klayout-tools#6916, split from #6910, closed by PR #6956;
+  klayout-tools#4002 / PR #4833 resolved the native main script earlier and was already in
+  0.9.1/0.9.2 without fixing the 3LM `metal4_drawn` abort). Input hash equals the
+  committed GDS (`a7afbfe7...2106c3`). `status: violations`, 600753 findings.
+- Not committed: the JSON is 257 MB (600k findings, mostly one rule). It is reproducible
+  with the command above.
+- Rule counts: `V1.2b` 77160 and `V2.2b` 523578 (via space in 4x4-or-larger arrays,
+  0.36 um), `DV.8` 4 and `PL.9` 2 (dualgate/poly, in `ROW_n_448` and `ROW_p_500`),
+  `MSLOT3.1` 2 (30 um unslotted metal, Metal3 pads at x -12..128 um,
+  y 32..94 and 235..297 um), `MT30.8` 1 (2x2 top-via array, bbox x 564.3..565.0 um,
+  y 98..194.5 um), and die-level density rules `M1.4`, `M2.4`, `M3.4`, `MT30.7`, `PL.8`,
+  `DCF.1b` 1 each (chip-assembly rules; MT30.7 is out-of-block per 0001 section 8 item 7).
+- The deck's own coverage block is empty (`deck_scope`, `rules_skipped`,
+  `layers_in_stream_without_rules` all `[]`; `coverage.unknown` names
+  `unmeasured_rule_execution`), so it cannot be quoted as a disclosure; the curated block
+  above remains the disclosure for that deck.
+- Negative control not run: a clean native result is the precondition.
+
+Remaining work is layout (plus a PyPI `klayout-tools` release > `0.9.2` carrying the
+3LM prelude), not deck-runner tooling: via arrays pitched below the 4x4 spacing, Metal3
+pad slotting, a 2x2 top-via array, and the dualgate/poly findings. Which of the
+density findings are in-block must be ruled on against 0001 section 8.
 
 ## Acceptance criteria status
 
@@ -61,8 +100,8 @@ uvx --from klayout-tools==0.9.1 klt drc layout/buck.gds --engine klayout \
 |---|---|
 | Clean curated report, hashes match | Met (#176): `clean`, hashes above |
 | Claim quotes coverage fields verbatim | Done above, for the record only |
-| 30 kA family run to completion under pinned KLayout | Unmet: native deck aborts in `mslot.rb` on 3LM (KLayout 0.30.12, klt 0.9.1); live dependency klayout-tools#4002 |
-| Negative control on violating variant | Not done: meaningless until the native deck can run, since the curated deck has no MT30 rule to trip |
+| 30 kA family run to completion under pinned KLayout | Runs to completion on klt main `e41ef7a1` (unreleased) but NOT clean: 600753 findings (section above). Aborts on released klt 0.9.2 |
+| Negative control on violating variant | Not done: precondition is a clean native run |
 | Method recorded | Done: curated deck + native deck attempt, pins above |
 | MT30.7 out-of-block | Listed as out-of-block per 0001 section 8 item 7 |
 | `klt signoff` item 3 `met` | Unmet; not attested |
@@ -73,9 +112,21 @@ uvx --from klayout-tools==0.9.1 klt drc layout/buck.gds --engine klayout \
    extended by #182: the curated run is clean and every cut is geometrically
    covered below and above in all six probes (asserted by
    `layout/check_layout.py`; the deck cannot check orphan cuts itself).
-2. A native-deck run that completes on a 3LM variant: needs an upstream fix to the PDK
-   `mslot.rb` (guard `metal4_drawn`) or a klt capability to run the native deck on this
-   variant (klayout-tools#4002, open; its own criteria allow the 3LM `mslot.rb`
-   breakage to be *disclosed* rather than fixed, so #4002 closing may not be enough).
-   #5091 is closed and delivered only the structured abort cause and the 3LM
-   documentation note. Then re-run both decks, add the negative control, attest item 3.
+2. ~~Unblock native 30 kA execution on the 3LM variant (`gf180mcuA`)~~ — done
+   upstream on `klayout-tools` `main` (`klayout-tools#4002` / PR #4833 resolved
+   the native main script; `klayout-tools#6916`, split from #6910, / PR #6956
+   added `gf180mcu_3lm_prelude.rb` so `mslot.rb` no longer aborts on
+   `metal4_drawn`; #5091 delivered the earlier structured abort disclosure).
+   Needs a released `klayout-tools` > `0.9.2` on PyPI so sign-off pins a release
+   rather than an unreleased git SHA.
+3. Fix the in-block native-deck violations in `layout/gen_layout.py` and
+   regenerate `layout/buck.gds`: `V1.2b` (77160) and `V2.2b` (523578) 4x4+
+   via-array spacing, `MSLOT3.1` (2) Metal3 pad slotting, `MT30.8` (1) 2x2
+   top-via array, and `DV.8` (4) / `PL.9` (2) dualgate/poly geometry.
+4. Rule on which of the remaining die-level density findings (`M1.4`, `M2.4`,
+   `M3.4`, `PL.8`, `DCF.1b`; `MT30.7` is already out-of-block per decision
+   record 0001 section 8 item 7) apply at block level versus chip assembly
+   against decision record 0001 section 8.
+5. Re-run both the curated and native 30 kA decks on a released
+   `klayout-tools` > `0.9.2` to a clean result, run the negative control on a
+   deliberately violating variant, and attest `klt signoff` item 3.
