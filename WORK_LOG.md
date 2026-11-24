@@ -3,6 +3,10 @@
 Chronological record of merged PRs and closed issues, newest first.
 Maintained by the Guide role.
 
+### 2026-11-24
+
+- **PR #250**: docs: record native 30 kA DRC run on klt main, item 3 unmet
+
 ### 2026-11-23
 
 - **PR #247**: chore: stop tracking generator-local buck.info.json
