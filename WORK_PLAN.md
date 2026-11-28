@@ -10,11 +10,12 @@ membership regardless of holds. An entry there may still carry a hold label
 placement in this document, before starting on it.
 
 <!-- guide:plan-body:start -->
+_Generated: 2026-11-28T18:40:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-_None._
+- **#254**: chore: resync installed Loom surfaces *(held: blocked)*
 
 ## Very Important
 
@@ -54,9 +55,9 @@ _None._
 
 ## Approved (Awaiting Merge)
 
-PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
+PRs that passed review and are queued for Champion auto-merge (`loom:pr`); held PRs are not queued.
 
-_None._
+- **#254**: chore: resync installed Loom surfaces *(held: blocked)*
 
 ## Proposed
 
@@ -84,13 +85,13 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 0 |
+| Operator merge-risk holds | 1 |
 | Very important | 1 |
 | Important | 7 |
 | Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 0 |
+| Approved PRs awaiting merge | 1 |
 | Curated | 9 |
 | Architect / Hermit proposals | 1 |
 | Active epics | 0 |
