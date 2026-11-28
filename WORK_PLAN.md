@@ -10,12 +10,11 @@ membership regardless of holds. An entry there may still carry a hold label
 placement in this document, before starting on it.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-28T18:40:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-- **#254**: chore: resync installed Loom surfaces *(held: blocked)*
+- **#254**: chore: resync installed Loom surfaces
 
 ## Very Important
 
@@ -55,9 +54,9 @@ _None._
 
 ## Approved (Awaiting Merge)
 
-PRs that passed review and are queued for Champion auto-merge (`loom:pr`); held PRs are not queued.
+PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#254**: chore: resync installed Loom surfaces *(held: blocked)*
+- **#254**: chore: resync installed Loom surfaces
 
 ## Proposed
 
