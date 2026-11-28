@@ -36,31 +36,61 @@ ALLOWED_OVERLAP = {"README.md"}
 _ANCHOR_MOVED = "the `create_docs_pr` staging anchor moved - re-point this test"
 
 
-def staged_paths(guide_text):
-    """Literal paths staged by create_docs_pr()'s fixed `git add` line.
-
-    Raises ValueError when the function anchor or a literal staging path cannot
-    be found: an unparseable staging set would otherwise make the overlap check
-    pass vacuously on an empty set. Shell-expanded arguments (the per-file
-    archive `git add` loop) are not literal staged paths and are ignored.
-    """
-    joined = re.sub(r"\\\n\s*", " ", guide_text)
-    anchor = re.search(r"^create_docs_pr\(\)\s*\{", joined, re.M)
+def _function_body(joined, name):
+    """Body text of the shell function `name() {`, or None if absent."""
+    anchor = re.search(rf"^{name}\(\)\s*\{{", joined, re.M)
     if anchor is None:
-        raise ValueError(_ANCHOR_MOVED)
+        return None
     body = joined[anchor.end():]
     close = re.search(r"^\}", body, re.M)
-    body = body[: close.start()] if close else body[:4000]
+    return body[: close.start()] if close else body[:4000]
+
+
+def _literal_tokens(text):
+    return {
+        token
+        for token in (t.strip("'\"") for t in text.split())
+        if not (token.startswith("-") or "$" in token or "`" in token or token == ";")
+    }
+
+
+def staged_paths(guide_text, config_pinned=()):
+    """Literal paths Guide's docs PR stages.
+
+    Current Loom shape: stage_docs_paths() loops over a fixed set of doc names
+    (`for doc_path in A B C; do`) and skips any the repo declared in
+    guide.docsMaintenance.pinnedPaths (`config_pinned`). Older shape: a fixed
+    `git add` line inside create_docs_pr(). The helper is preferred; the
+    legacy parse is the fallback.
+
+    Raises ValueError when no literal staging path can be found: an
+    unparseable staging set would otherwise make the overlap check pass
+    vacuously on an empty set. Shell-expanded arguments (the per-file archive
+    `git add` loop) are not literal staged paths and are ignored.
+    """
+    joined = re.sub(r"\\\n\s*", " ", guide_text)
     paths = set()
+    helper = _function_body(joined, "stage_docs_paths")
+    if helper is not None:
+        for loop in re.finditer(r"^\s*for\s+\w+\s+in\s+([^;\n]+);\s*do", helper, re.M):
+            paths |= _literal_tokens(loop.group(1))
+        if not paths:
+            raise ValueError(_ANCHOR_MOVED)
+        return paths - set(config_pinned)
+    body = _function_body(joined, "create_docs_pr")
+    if body is None:
+        raise ValueError(_ANCHOR_MOVED)
     for add in re.finditer(r"^\s*git\s+(?:-C\s+\S+\s+)?add\s+(.+)$", body, re.M):
-        for token in add.group(1).split():
-            token = token.strip("'\"")
-            if token.startswith("-") or "$" in token or "`" in token:
-                continue
-            paths.add(token)
+        paths |= _literal_tokens(add.group(1))
     if not paths:
         raise ValueError(_ANCHOR_MOVED)
     return paths
+
+
+def config_pinned_paths():
+    """guide.docsMaintenance.pinnedPaths from .loom/config.json (default [])."""
+    cfg = json.loads((REPO_ROOT / ".loom" / "config.json").read_text())
+    return cfg.get("guide", {}).get("docsMaintenance", {}).get("pinnedPaths", [])
 
 
 def pinned_paths(inventories):
@@ -112,8 +142,8 @@ class DocsStagingPins(unittest.TestCase):
         self.assertTrue(
             inventories, "no manifests/item*-inventory.json found - glob broke"
         )
-        overlap = staged_paths(GUIDE_PATH.read_text()) & pinned_paths(inventories)
-        check_overlap(overlap)
+        staged = staged_paths(GUIDE_PATH.read_text(), config_pinned_paths())
+        check_overlap(staged & pinned_paths(inventories))
 
     def test_parse_failure_is_a_failure_not_a_pass(self):
         # A resync that moves or rewrites the staging line must fail loudly
@@ -128,6 +158,31 @@ class DocsStagingPins(unittest.TestCase):
                 '}\n'
             )
         self.assertIn("anchor moved", str(no_literals.exception))
+
+
+class HelperShape(unittest.TestCase):
+    """The stage_docs_paths() helper shape (Loom resync, rjwalters/loom#13897)."""
+
+    HELPER = (
+        "stage_docs_paths() {\n"
+        "  for doc_path in WORK_LOG.md WORK_PLAN.md README.md; do\n"
+        "    :\n"
+        "  done\n"
+        "}\n"
+        "create_docs_pr() {\n"
+        '  git -C "$DOCS_WT" add -- "$archive_rel"\n'
+        "}\n"
+    )
+
+    def test_helper_loop_is_parsed(self):
+        self.assertEqual(
+            staged_paths(self.HELPER), {"WORK_LOG.md", "WORK_PLAN.md", "README.md"}
+        )
+
+    def test_config_pinned_path_is_excluded(self):
+        self.assertEqual(
+            staged_paths(self.HELPER, ["README.md"]), {"WORK_LOG.md", "WORK_PLAN.md"}
+        )
 
 
 class NegativeCases(unittest.TestCase):
